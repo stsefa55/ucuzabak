@@ -1,0 +1,34 @@
+{
+  "name": "ucuzabakcom",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm -C apps/web dev",
+    "dev:api": "pnpm -C apps/api dev",
+    "dev:worker": "pnpm -C apps/worker dev",
+    "build:web": "pnpm -C apps/web build",
+    "build:api": "pnpm -C apps/api build",
+    "build:worker": "pnpm -C apps/worker build",
+    "lint:web": "pnpm -C apps/web lint",
+    "lint:api": "pnpm -C apps/api lint",
+    "lint:worker": "pnpm -C apps/worker lint",
+    "migrate": "pnpm -C apps/api prisma:migrate",
+    "seed": "pnpm -C apps/api prisma:seed",
+    "test:api": "pnpm -C apps/api test",
+    "test:web:e2e": "pnpm -C apps/web test:e2e",
+    "test": "pnpm test:api && pnpm test:web:e2e"
+  },
+  "engines": {
+    "node": ">=18.18.0",
+    "pnpm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.12.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "prettier": "^3.3.3",
+    "rimraf": "^5.0.10",
+    "typescript": "^5.6.3"
+  }
+}

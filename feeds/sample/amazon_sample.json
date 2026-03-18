@@ -1,0 +1,37 @@
+[
+  {
+    "asin": "AM-LENOVO-IP3-R5",
+    "title": "Lenovo IdeaPad 3 Ryzen 5 8GB 512GB SSD",
+    "price": 17999,
+    "originalPrice": 18999,
+    "currency": "TRY",
+    "stock": 7,
+    "ean": "0196112341234",
+    "modelNumber": "82KU00LUTX",
+    "url": "https://www.amazon.com/lenovo-ideapad-3-r5",
+    "imageUrl": "https://example.com/lenovo-ideapad-3-r5.jpg",
+    "specs": {
+      "brand": "Lenovo",
+      "ram_gb": 8,
+      "ssd_gb": 512
+    }
+  },
+  {
+    "asin": "AM-SAMSUNG-55UHD",
+    "title": "Samsung 55 inç 4K UHD Smart TV",
+    "price": 20999,
+    "originalPrice": 22999,
+    "currency": "TRY",
+    "stock": 4,
+    "ean": "8806094991234",
+    "modelNumber": "UE55AU7100",
+    "url": "https://www.amazon.com/samsung-55-4k-uhd",
+    "imageUrl": "https://example.com/samsung-55-4k-uhd.jpg",
+    "specs": {
+      "brand": "Samsung",
+      "screen_size_inch": 55,
+      "resolution": "4K"
+    }
+  }
+]
+

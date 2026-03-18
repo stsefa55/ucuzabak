@@ -1,0 +1,4 @@
+id,title,price,originalPrice,currency,stock,ean,modelNumber,url,imageUrl,specs
+HB-IP13-128-MID,Apple iPhone 13 128GB Gece Yarısı,28990,30990,TRY,3,0194253141234,A2633,https://www.hepsiburada.com/iphone-13-128-midnight,https://example.com/iphone13-128-midnight.jpg,"{""brand"":""Apple"",""capacity_gb"":128}"
+HB-A54-128-BLK,Samsung Galaxy A54 128GB Siyah,14990,16990,TRY,10,8806094881234,SM-A546B,https://www.hepsiburada.com/galaxy-a54-128-siyah,https://example.com/galaxy-a54-128-black.jpg,"{""brand"":""Samsung"",""capacity_gb"":128}"
+

@@ -1,0 +1,39 @@
+<products>
+  <product>
+    <id>TY-IPHONE14-128-BLK</id>
+    <title>Apple iPhone 14 128GB Siyah</title>
+    <price>34999</price>
+    <originalPrice>36999</originalPrice>
+    <currency>TRY</currency>
+    <stock>5</stock>
+    <ean>0194253371234</ean>
+    <modelNumber>A2882</modelNumber>
+    <url>https://www.trendyol.com/iphone-14-128-siyah</url>
+    <imageUrl>https://example.com/iphone14-128-black.jpg</imageUrl>
+  </product>
+  <product>
+    <id>TY-S23-256-GRN</id>
+    <title>Samsung Galaxy S23 256GB Yeşil</title>
+    <price>28999</price>
+    <originalPrice>30999</originalPrice>
+    <currency>TRY</currency>
+    <stock>8</stock>
+    <ean>8806094841234</ean>
+    <modelNumber>SM-S911B</modelNumber>
+    <url>https://www.trendyol.com/galaxy-s23-256-yesil</url>
+    <imageUrl>https://example.com/galaxy-s23-256-green.jpg</imageUrl>
+  </product>
+  <product>
+    <id>TY-LENOVO-IDP3-R5</id>
+    <title>Lenovo IdeaPad 3 15 Ryzen 5 5500U</title>
+    <price>18999</price>
+    <originalPrice>19999</originalPrice>
+    <currency>TRY</currency>
+    <stock>3</stock>
+    <ean>0198765432101</ean>
+    <modelNumber>82K200LETX</modelNumber>
+    <url>https://www.trendyol.com/lenovo-ideapad-3-ryzen-5</url>
+    <imageUrl>https://example.com/lenovo-ideapad-3.jpg</imageUrl>
+  </product>
+</products>
+
