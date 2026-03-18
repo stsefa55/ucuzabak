@@ -160,7 +160,7 @@ export default function AdminFeedImportsPage() {
       </h2>
       <p className="text-muted" style={{ fontSize: "0.85rem", marginBottom: "1rem" }}>
         Mağaza feed’lerinden yapılan import kayıtları. Manuel import için Mağazalar sayfasında ilgili
-        mağazanın "Şimdi içeri aktar" butonunu kullanın.
+        mağazanın &quot;Şimdi içeri aktar&quot; butonunu kullanın.
       </p>
       <div style={{ marginBottom: "1rem", display: "flex", alignItems: "center", gap: 12 }}>
         <label style={{ fontSize: "0.85rem" }}>

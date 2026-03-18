@@ -118,7 +118,7 @@ export class AdminController {
         modelNumber: body.modelNumber,
         mainImageUrl: body.mainImageUrl,
         description: body.description,
-        specsJson: body.specsJson
+        specsJson: body.specsJson as unknown as Prisma.InputJsonValue
       }
     });
 
@@ -282,7 +282,7 @@ export class AdminController {
             modelNumber: modelNumber || undefined,
             mainImageUrl: mainImageUrl || undefined,
             description: description || undefined,
-            specsJson
+            specsJson: specsJson as unknown as Prisma.InputJsonValue
           }
         });
         createdCount++;
@@ -617,7 +617,10 @@ export class AdminController {
     if (body.modelNumber !== undefined) data.modelNumber = body.modelNumber;
     if (body.mainImageUrl !== undefined) data.mainImageUrl = body.mainImageUrl;
     if (body.description !== undefined) data.description = body.description;
-    if (body.specsJson !== undefined) data.specsJson = body.specsJson as Prisma.JsonValue;
+    if (body.specsJson !== undefined) {
+      data.specsJson =
+        body.specsJson === null ? Prisma.JsonNull : (body.specsJson as unknown as Prisma.InputJsonValue);
+    }
     if ((body as { status?: ProductStatus }).status !== undefined) {
       data.status = (body as { status?: ProductStatus }).status as ProductStatus;
     }
@@ -737,11 +740,11 @@ export class AdminController {
     const topStoreGroups = await this.prisma.affiliateClick.groupBy({
       by: ["storeId"],
       _count: {
-        _all: true
+        id: true
       },
       orderBy: {
         _count: {
-          _all: "desc"
+          id: "desc"
         }
       },
       take: 5
@@ -750,11 +753,11 @@ export class AdminController {
     const topProductGroups = await this.prisma.affiliateClick.groupBy({
       by: ["productId"],
       _count: {
-        _all: true
+        id: true
       },
       orderBy: {
         _count: {
-          _all: "desc"
+          id: "desc"
         }
       },
       take: 5
@@ -786,7 +789,7 @@ export class AdminController {
       return {
         storeId: g.storeId,
         storeName: store?.name ?? "",
-        clicks: g._count._all
+        clicks: g._count.id
       };
     });
 
@@ -795,7 +798,7 @@ export class AdminController {
       return {
         productId: g.productId,
         productName: product?.name ?? "",
-        clicks: g._count._all
+        clicks: g._count.id
       };
     });
 

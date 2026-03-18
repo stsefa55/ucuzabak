@@ -32,14 +32,14 @@ export class AuthController {
   ) {}
 
   @Get("check-email")
-  @Throttle(20, 60)
+  @Throttle({ default: { limit: 20, ttl: 60 } })
   async checkEmail(@Query("email") email: string) {
     const available = await this.authService.isEmailAvailable(email ?? "");
     return { available };
   }
 
   @Post("register")
-  @Throttle(5, 60)
+  @Throttle({ default: { limit: 5, ttl: 60 } })
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const { user, accessToken, refreshToken } = await this.authService.register(dto);
     this.setRefreshCookie(res, refreshToken);
@@ -48,7 +48,7 @@ export class AuthController {
 
   @Post("login")
   @HttpCode(HttpStatus.OK)
-  @Throttle(10, 60)
+  @Throttle({ default: { limit: 10, ttl: 60 } })
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const { user, accessToken, refreshToken } = await this.authService.login(dto);
     this.setRefreshCookie(res, refreshToken);
@@ -57,7 +57,7 @@ export class AuthController {
 
   @Post("refresh")
   @HttpCode(HttpStatus.OK)
-  @Throttle(20, 60)
+  @Throttle({ default: { limit: 20, ttl: 60 } })
   async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies?.refresh_token;
     if (!refreshToken) {
@@ -87,7 +87,7 @@ export class AuthController {
 
   @Post("logout")
   @HttpCode(HttpStatus.OK)
-  @Throttle(20, 60)
+  @Throttle({ default: { limit: 20, ttl: 60 } })
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie("refresh_token", this.getRefreshCookieOptions());
     return { success: true };

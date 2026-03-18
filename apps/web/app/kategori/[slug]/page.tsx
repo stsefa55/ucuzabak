@@ -125,7 +125,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 <p className="text-muted">Bu kategoride filtrelerinize uygun ürün bulunamadı.</p>
               ) : (
                 <div className="grid grid-3">
-                  {productsData.items.map((p: { id: string }) => (
+                  {productsData.items.map((p: any) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
                 </div>

@@ -402,8 +402,8 @@ export class ProductsService {
   async getMostClickedProducts(limit = 12) {
     const groups = await this.prisma.affiliateClick.groupBy({
       by: ["productId"],
-      _count: { _all: true },
-      orderBy: { _count: { _all: "desc" } },
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
       take: limit
     });
     const productIds = groups.map((g) => g.productId);

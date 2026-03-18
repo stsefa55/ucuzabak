@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../../src/components/layout/Header";
 import { apiFetch } from "../../src/lib/api-client";
 import { useAuthStore } from "../../src/stores/auth-store";
@@ -43,10 +43,11 @@ export default function ProfilePage() {
     }
   });
 
-  if (!user) {
-    router.push("/giris");
-    return null;
-  }
+  useEffect(() => {
+    if (!user) router.push("/giris");
+  }, [router, user]);
+
+  if (!user) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
