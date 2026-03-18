@@ -1,11 +1,25 @@
+# build
 node_modules
 .next
 dist
 coverage
+
+# env
 .env
 .env.*
 !.env.example
+
+# logs
 *.log
 pnpm-debug.log*
+
+# worker compiled files
+apps/worker/src/**/*.js
+apps/worker/src/**/*.js.map
+
+# backups
 backup.sql
+backup_*.sql
+
+# system
 .DS_Store
