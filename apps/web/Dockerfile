@@ -1,32 +1,53 @@
 FROM node:20-alpine AS base
+
 WORKDIR /app
 
-FROM base AS deps
 RUN corepack enable
-COPY package.json pnpm-workspace.yaml ./
+
+FROM base AS deps
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps ./apps
 COPY packages ./packages
-COPY apps/web/package.json ./apps/web/package.json
-RUN pnpm install --filter "@ucuzabak/web..." --prod=false
+
+RUN pnpm install
 
 FROM base AS build
-RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps ./apps
+COPY packages ./packages
+
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+
 WORKDIR /app/apps/web
+
+RUN pnpm install --offline --frozen-lockfile
 RUN pnpm build
 
 FROM node:20-alpine AS runner
+
 WORKDIR /app
-ENV NODE_ENV=production
 
 RUN corepack enable
+ENV NODE_ENV=production
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps ./apps
+COPY packages ./packages
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=build /app/apps/web/.next ./.next
-COPY --from=build /app/apps/web/public ./public
-COPY --from=build /app/apps/web/package.json ./package.json
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=build /app/apps/web/.next ./apps/web/.next
+COPY --from=build /app/apps/web/public ./apps/web/public
+COPY --from=build /app/apps/web/package.json ./apps/web/package.json
+COPY --from=build /app/apps/web/next.config.* ./apps/web/
+COPY --from=build /app/apps/web/src ./apps/web/src
+COPY --from=build /app/apps/web/app ./apps/web/app
+
+WORKDIR /app/apps/web
 
 EXPOSE 3000
 
 CMD ["pnpm", "start"]
-
