@@ -1,27 +1,49 @@
 FROM node:20-alpine AS base
+
 WORKDIR /app
 
-FROM base AS deps
+RUN apk add --no-cache openssl
 RUN corepack enable
-COPY package.json pnpm-workspace.yaml ./
+
+FROM base AS deps
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps ./apps
 COPY packages ./packages
-COPY apps/worker/package.json ./apps/worker/package.json
-RUN pnpm install --filter "@ucuzabak/worker..." --prod=false
+
+RUN pnpm install
+RUN pnpm --filter @ucuzabak/api exec prisma generate --schema=prisma/schema.prisma
 
 FROM base AS build
-RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps ./apps
+COPY packages ./packages
+
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=deps /app/apps/worker/node_modules ./apps/worker/node_modules
+
 WORKDIR /app/apps/worker
+
+RUN pnpm install --offline --frozen-lockfile
 RUN pnpm build
 
 FROM node:20-alpine AS runner
+
 WORKDIR /app
+
+RUN apk add --no-cache openssl
+RUN corepack enable
 ENV NODE_ENV=production
 
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps ./apps
+COPY packages ./packages
+
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=build /app/apps/worker/dist ./dist
-COPY --from=build /app/apps/worker/package.json ./package.json
+COPY --from=deps /app/apps/worker/node_modules ./apps/worker/node_modules
+COPY --from=build /app/apps/worker/dist ./apps/worker/dist
+
+WORKDIR /app/apps/worker
 
 CMD ["node", "dist/main.js"]
-
