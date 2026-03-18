@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:16
@@ -64,7 +62,7 @@ services:
       - postgres
       - redis
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: ${API_PORT:-4000}
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
