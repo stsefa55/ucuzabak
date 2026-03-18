@@ -6,8 +6,7 @@ export const dynamic = "force-dynamic";
 
 async function fetchDealProducts() {
   const res = await fetch(`${API_BASE_URL}/products/deals`, {
-    next: { revalidate: 10 },
-    credentials: "include"
+    next: { revalidate: 10 }
   });
   return res.json();
 }

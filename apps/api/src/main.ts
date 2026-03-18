@@ -10,8 +10,16 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api/v1");
 
+  const isProd = process.env.NODE_ENV === "production";
+  const fallbackWebOrigin = isProd ? "https://ucuzabak.com" : "http://localhost:3000";
+  const corsOriginsRaw = (process.env.WEB_ORIGIN || process.env.CORS_ORIGIN || fallbackWebOrigin).trim();
+  const corsOrigins = corsOriginsRaw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: "http://localhost:3000",
+    origin: corsOrigins.length <= 1 ? corsOrigins[0] : corsOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
@@ -49,7 +57,7 @@ async function bootstrap() {
   const port = process.env.PORT || 4000;
   await app.listen(port);
   // eslint-disable-next-line no-console
-  console.log(`API listening on http://localhost:${port}`);
+  console.log(`API listening on port ${port}`);
 }
 
 bootstrap().catch((err) => {

@@ -37,7 +37,7 @@ export default function ComparePage() {
     Promise.all(
       compareProducts.map(async (p): Promise<CompareRow> => {
         try {
-          const res = await fetch(`${API_BASE_URL}/products/${p.slug}`, { credentials: "include" });
+          const res = await fetch(`${API_BASE_URL}/products/${p.slug}`);
           if (!res.ok) {
             if (res.status === 404) return { ...p, _fetchError: true };
             return { ...p, _fetchError: true };

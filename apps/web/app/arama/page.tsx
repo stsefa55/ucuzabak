@@ -24,9 +24,9 @@ async function fetchSearchData(params: URLSearchParams) {
   const url = `${API_BASE_URL}/search/products${query ? `?${query}` : ""}`;
 
   const [productsRes, categoriesWithCountRes, brandsRes] = await Promise.all([
-    fetch(url, { cache: "no-store", credentials: "include" }),
-    fetch(`${API_BASE_URL}/categories/with-counts/list`, { next: { revalidate: 300 }, credentials: "include" }),
-    fetch(`${API_BASE_URL}/brands`, { next: { revalidate: 300 }, credentials: "include" })
+    fetch(url, { cache: "no-store" }),
+    fetch(`${API_BASE_URL}/categories/with-counts/list`, { next: { revalidate: 300 } }),
+    fetch(`${API_BASE_URL}/brands`, { next: { revalidate: 300 } })
   ]);
 
   const productsData = await productsRes.json();

@@ -20,8 +20,7 @@ interface ProductPageProps {
 
 async function fetchProduct(slug: string) {
   const res = await fetch(`${API_BASE_URL}/products/${slug}`, {
-    next: { revalidate: 0 },
-    credentials: "include"
+    next: { revalidate: 0 }
   });
   if (res.status === 404) {
     return null;
@@ -31,16 +30,14 @@ async function fetchProduct(slug: string) {
 
 async function fetchOffers(slug: string) {
   const res = await fetch(`${API_BASE_URL}/products/${slug}/offers`, {
-    next: { revalidate: 0 },
-    credentials: "include"
+    next: { revalidate: 0 }
   });
   return res.json();
 }
 
 async function fetchSimilar(slug: string) {
   const res = await fetch(`${API_BASE_URL}/products/${slug}/similar`, {
-    next: { revalidate: 60 },
-    credentials: "include"
+    next: { revalidate: 60 }
   });
   return res.json();
 }

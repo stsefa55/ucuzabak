@@ -737,11 +737,11 @@ export class AdminController {
     const topStoreGroups = await this.prisma.affiliateClick.groupBy({
       by: ["storeId"],
       _count: {
-        id: true
+        _all: true
       },
       orderBy: {
         _count: {
-          id: "desc"
+          _all: "desc"
         }
       },
       take: 5
@@ -750,11 +750,11 @@ export class AdminController {
     const topProductGroups = await this.prisma.affiliateClick.groupBy({
       by: ["productId"],
       _count: {
-        id: true
+        _all: true
       },
       orderBy: {
         _count: {
-          id: "desc"
+          _all: "desc"
         }
       },
       take: 5
@@ -786,7 +786,7 @@ export class AdminController {
       return {
         storeId: g.storeId,
         storeName: store?.name ?? "",
-        clicks: g._count.id
+        clicks: g._count._all
       };
     });
 
@@ -795,7 +795,7 @@ export class AdminController {
       return {
         productId: g.productId,
         productName: product?.name ?? "",
-        clicks: g._count.id
+        clicks: g._count._all
       };
     });
 

@@ -246,7 +246,7 @@ async function upsertOfferAndPriceHistory(
 
   let logData: LogData | null = null;
 
-  await prisma.$transaction(async (tx) => {
+  logData = await prisma.$transaction(async (tx) => {
     const store = await tx.store.findUniqueOrThrow({
       where: { id: storeProduct.storeId }
     });
@@ -355,7 +355,7 @@ async function upsertOfferAndPriceHistory(
       offerCountCache = offers.length;
     }
 
-    logData = {
+    const txLogData: LogData = {
       storeProductId: storeProduct.id,
       offerId: offer.id,
       oldPrice: oldPriceStr,
@@ -365,6 +365,8 @@ async function upsertOfferAndPriceHistory(
       lowestPriceCache,
       offerCountCache
     };
+
+    return txLogData;
   });
 
   if (logContext && logData) {

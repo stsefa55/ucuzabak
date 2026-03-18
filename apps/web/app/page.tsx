@@ -18,10 +18,10 @@ const EMPTY_HOME_DATA = {
 async function fetchHomeData() {
   try {
     const [resProducts, resPopular, resPriceDrops, resDeals] = await Promise.all([
-      fetch(`${API_BASE_URL}/products/most-clicked`, { next: { revalidate: 10 }, credentials: "include" }),
-      fetch(`${API_BASE_URL}/products/popular`, { next: { revalidate: 10 }, credentials: "include" }),
-      fetch(`${API_BASE_URL}/products/price-drops`, { next: { revalidate: 10 }, credentials: "include" }),
-      fetch(`${API_BASE_URL}/products/deals`, { next: { revalidate: 10 }, credentials: "include" })
+      fetch(`${API_BASE_URL}/products/most-clicked`, { next: { revalidate: 10 } }),
+      fetch(`${API_BASE_URL}/products/popular`, { next: { revalidate: 10 } }),
+      fetch(`${API_BASE_URL}/products/price-drops`, { next: { revalidate: 10 } }),
+      fetch(`${API_BASE_URL}/products/deals`, { next: { revalidate: 10 } })
     ]);
     const [rawProducts, popularProducts, priceDropProducts, dealProducts] = await Promise.all([
       resProducts.ok ? resProducts.json() : null,

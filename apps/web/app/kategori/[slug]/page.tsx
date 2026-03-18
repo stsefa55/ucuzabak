@@ -41,9 +41,9 @@ async function fetchCategoryPageData(
   if (query.maxPrice) searchParams.set("maxPrice", query.maxPrice);
 
   const [productsRes, brandsRes, categoriesWithCountRes] = await Promise.all([
-    fetch(`${API_BASE_URL}/products?${searchParams.toString()}`, { next: { revalidate: 10 }, credentials: "include" }),
-    fetch(`${API_BASE_URL}/brands`, { next: { revalidate: 300 }, credentials: "include" }),
-    fetch(`${API_BASE_URL}/categories/with-counts/list`, { next: { revalidate: 300 }, credentials: "include" })
+    fetch(`${API_BASE_URL}/products?${searchParams.toString()}`, { next: { revalidate: 10 } }),
+    fetch(`${API_BASE_URL}/brands`, { next: { revalidate: 300 } }),
+    fetch(`${API_BASE_URL}/categories/with-counts/list`, { next: { revalidate: 300 } })
   ]);
 
   const productsData = await productsRes.json();

@@ -80,12 +80,7 @@ export class AuthController {
       return { accessToken };
     } catch {
       // expired/invalid refresh token: clear cookie
-      const isProd = process.env.NODE_ENV === "production";
-      res.clearCookie("refresh_token", {
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
-        path: "/"
-      });
+      res.clearCookie("refresh_token", this.getRefreshCookieOptions());
       return { accessToken: null };
     }
   }
@@ -94,12 +89,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Throttle(20, 60)
   async logout(@Res({ passthrough: true }) res: Response) {
-    const isProd = process.env.NODE_ENV === "production";
-    res.clearCookie("refresh_token", {
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      path: "/"
-    });
+    res.clearCookie("refresh_token", this.getRefreshCookieOptions());
     return { success: true };
   }
 
@@ -132,14 +122,19 @@ export class AuthController {
     return { user: safeUser };
   }
 
-  private setRefreshCookie(res: Response, token: string) {
-    const maxAge = Number(process.env.API_JWT_REFRESH_TOKEN_TTL || 60 * 60 * 24 * 7) * 1000;
+  private getRefreshCookieOptions() {
     const isProd = process.env.NODE_ENV === "production";
-    res.cookie("refresh_token", token, {
+    return {
       httpOnly: true,
       secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      path: "/",
+      sameSite: (isProd ? "none" : "lax") as "none" | "lax",
+    };
+  }
+
+  private setRefreshCookie(res: Response, token: string) {
+    const maxAge = Number(process.env.API_JWT_REFRESH_TOKEN_TTL || 60 * 60 * 24 * 7) * 1000;
+    res.cookie("refresh_token", token, {
+      ...this.getRefreshCookieOptions(),
       maxAge
     });
   }
