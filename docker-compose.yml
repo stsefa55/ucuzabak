@@ -83,9 +83,7 @@ services:
     depends_on:
       - api
     environment:
-      NODE_ENV: development
       PORT: ${WEB_PORT:-3000}
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:${API_PORT:-4000}/api/v1
     ports:
       - "${WEB_PORT:-3000}:3000"
 
@@ -98,7 +96,6 @@ services:
       - redis
       - postgres
     environment:
-      NODE_ENV: development
       WORKER_NAME: ${WORKER_NAME:-ucuzabak-worker}
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
@@ -113,4 +110,3 @@ volumes:
   postgres_data:
   minio_data:
   es_data:
-

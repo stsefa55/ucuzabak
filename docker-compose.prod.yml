@@ -1,0 +1,13 @@
+services:
+  api:
+    environment:
+      NODE_ENV: production
+
+  web:
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: https://api.ucuzabak.com/api/v1
+
+  worker:
+    environment:
+      NODE_ENV: production
