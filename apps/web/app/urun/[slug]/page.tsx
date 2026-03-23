@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { API_BASE_URL } from "../../../src/lib/api-client";
+import { categoryHrefFromSlugs, categoryPageBasePathFromSlugs } from "../../../src/lib/categoryPaths";
 import { Header } from "../../../src/components/layout/Header";
 import { ProductFavoriteSection } from "../../../src/components/products/ProductFavoriteSection";
 import { ProductPriceAlertSection } from "../../../src/components/products/ProductPriceAlertSection";
@@ -70,7 +71,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <Link href="/" className="text-muted">
               Anasayfa
             </Link>
-            {product.category && (
+            {product.categoryPathSlugs && product.categoryPathSlugs.length > 0 ? (
+              product.categoryPathSlugs.map((slug: string, i: number) => {
+                const name = product.categoryPathNames?.[i] ?? slug;
+                const href = categoryPageBasePathFromSlugs(product.categoryPathSlugs!.slice(0, i + 1));
+                const isLast = i === product.categoryPathSlugs!.length - 1;
+                return (
+                  <span key={`${slug}-${i}`}>
+                    {" "}
+                    /{" "}
+                    {isLast ? (
+                      <span className="text-muted">{name}</span>
+                    ) : (
+                      <Link href={href} className="text-muted">
+                        {name}
+                      </Link>
+                    )}
+                  </span>
+                );
+              })
+            ) : product.category ? (
               <>
                 {" "}
                 /{" "}
@@ -78,7 +98,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   {product.category.name}
                 </Link>
               </>
-            )}{" "}
+            ) : null}{" "}
             / <span>{product.name}</span>
           </nav>
 
@@ -107,7 +127,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     {product.category && (
                       <>
                         {product.brand?.name && " • "}
-                        <Link href={`/kategori/${product.category.slug}`} className="text-muted">
+                        <Link
+                          href={categoryHrefFromSlugs(product.categoryPathSlugs, product.category.slug)}
+                          className="text-muted"
+                        >
                           {product.category.name}
                         </Link>
                       </>

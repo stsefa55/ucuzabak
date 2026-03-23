@@ -54,10 +54,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api/v1/docs", app, document);
 
-  const port = process.env.PORT || 4000;
-  await app.listen(port);
+  const port = Number(process.env.PORT) || 4000;
+  /** LAN’dan (Expo / telefon) erişim için; yalnızca 127.0.0.1 dinlenirse mobil cihaz bağlanamaz */
+  const listenHost = process.env.LISTEN_HOST?.trim() || "0.0.0.0";
+  await app.listen(port, listenHost);
   // eslint-disable-next-line no-console
-  console.log(`API listening on port ${port}`);
+  console.log(`API listening on http://${listenHost}:${port}`);
 }
 
 bootstrap().catch((err) => {

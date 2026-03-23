@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useRef, useState, useEffect } from "react";
+import Image from "next/image";
+import { Suspense, useId, useRef, useState, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, Heart, Bell, User, LogOut, LogIn, UserPlus, Shield, Trash2, X } from "lucide-react";
 import { useAuthStore } from "../../stores/auth-store";
@@ -24,7 +25,15 @@ function HeaderFallback() {
                 <span style={{ fontWeight: 700, fontSize: "1.1rem" }}>UcuzaBak</span>
               </>
             ) : (
-              <img src="/logo.png" alt="UcuzaBak.com - İndirimleri Yakala" style={{ height: 52, width: "auto", display: "block" }} onError={() => setLogoError(true)} />
+              <Image
+                src="/logo.png"
+                alt="UcuzaBak.com - İndirimleri Yakala"
+                width={200}
+                height={52}
+                style={{ height: 52, width: "auto", maxWidth: "100%", display: "block" }}
+                onError={() => setLogoError(true)}
+                priority
+              />
             )}
           </Link>
           <CategoriesMenu />
@@ -44,6 +53,7 @@ function HeaderInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, clearSession } = useAuthStore();
+  const searchPanelId = useId();
 
   const isActive = (href: string) => pathname === href;
 
@@ -153,7 +163,15 @@ function HeaderInner() {
                 <span style={{ fontWeight: 700, fontSize: "1.1rem" }}>UcuzaBak</span>
               </>
             ) : (
-              <img src="/logo.png" alt="UcuzaBak.com - İndirimleri Yakala" style={{ height: 52, width: "auto", display: "block" }} onError={() => setLogoError(true)} />
+              <Image
+                src="/logo.png"
+                alt="UcuzaBak.com - İndirimleri Yakala"
+                width={200}
+                height={52}
+                style={{ height: 52, width: "auto", maxWidth: "100%", display: "block" }}
+                onError={() => setLogoError(true)}
+                priority
+              />
             )}
           </Link>
 
@@ -179,8 +197,8 @@ function HeaderInner() {
               onFocus={() => setSearchOpen(true)}
               placeholder="En uygun fiyatı bul, karşılaştır"
               className="header-search-input"
-              aria-expanded={searchOpen}
               aria-label="Ara"
+              aria-controls={searchOpen ? searchPanelId : undefined}
               autoComplete="off"
             />
             {panelQuery.trim() && (
@@ -197,7 +215,7 @@ function HeaderInner() {
           </form>
 
           {searchOpen && (
-            <div className="header-search-panel" role="dialog" aria-label="Arama menüsü">
+            <div id={searchPanelId} className="header-search-panel" role="dialog" aria-label="Arama menüsü">
               <div className="header-search-panel-inner">
                 {prefix ? (
                   <div>

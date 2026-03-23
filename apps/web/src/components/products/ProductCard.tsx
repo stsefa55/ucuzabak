@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Tag, ShoppingBag, Scale } from "lucide-react";
+import { categoryHrefFromSlugs } from "../../lib/categoryPaths";
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { useCompareStore } from "../../stores/compare-store";
@@ -16,6 +17,9 @@ interface ProductCardProps {
     offerCountCache?: number;
     brand?: { name: string | null } | null;
     category?: { name: string | null; slug: string } | null;
+    /** API: kökten yaprağa slug zinciri (hiyerarşik /kategori/... URL için) */
+    categoryPathSlugs?: string[];
+    categoryPathNames?: string[];
     ean?: string | null;
     modelNumber?: string | null;
     specsJson?: Record<string, unknown> | null;
@@ -46,15 +50,30 @@ export function ProductCard({ product }: ProductCardProps) {
         <Link href={`/urun/${product.slug}`}>
           <h3 className="product-card__title">{product.name}</h3>
         </Link>
-        <p className="product-card__meta text-muted">
-          {product.brand?.name && <span>{product.brand.name}</span>}
-          {product.category && (
-            <>
-              {product.brand?.name && " • "}
-              <Link href={`/kategori/${product.category.slug}`}>{product.category.name}</Link>
-            </>
-          )}
-        </p>
+        {(product.brand?.name || product.category) && (
+          <div className="product-card__meta text-muted" style={{ display: "grid", gap: 6 }}>
+            {product.brand?.name ? <span>{product.brand.name}</span> : null}
+            {product.category ? (
+              <div>
+                <Link
+                  href={categoryHrefFromSlugs(product.categoryPathSlugs, product.category.slug)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 999,
+                    padding: "2px 8px",
+                    fontSize: 12,
+                    color: "#4b5563",
+                    background: "#f9fafb"
+                  }}
+                >
+                  {product.category.name}
+                </Link>
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
       <div className="product-card__footer">
         <div className="product-card__prices">

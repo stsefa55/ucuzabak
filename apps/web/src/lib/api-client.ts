@@ -1,8 +1,13 @@
 const PRODUCTION_API_BASE_URL = "https://api.ucuzabak.com/api/v1";
+const DEVELOPMENT_API_BASE_URL = "http://localhost:4000/api/v1";
+
+const envBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+const isDevelopment = process.env.NODE_ENV !== "production";
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  (process.env.NODE_ENV === "production" ? PRODUCTION_API_BASE_URL : "http://localhost:4000/api/v1");
+  isDevelopment
+    ? DEVELOPMENT_API_BASE_URL
+    : envBaseUrl || PRODUCTION_API_BASE_URL;
 
 export type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
@@ -25,7 +30,13 @@ export async function apiFetch<T>(
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+  const requestUrl = `${API_BASE_URL}${path}`;
+  if (isDevelopment && path.startsWith("/products")) {
+    // Temporary debug log for product list calls.
+    console.log("[web apiFetch debug] requestUrl=", requestUrl);
+  }
+
+  const res = await fetch(requestUrl, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,

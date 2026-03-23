@@ -23,12 +23,28 @@ model User {
   favorites     Favorite[]
   priceAlerts   PriceAlert[]
   reviews       Review[]
+  refreshTokens RefreshToken[]
   createdReviews UnmatchedProductReview[] @relation("UnmatchedCreatedBy")
   resolvedReviews UnmatchedProductReview[] @relation("UnmatchedResolvedBy")
   moderatedReviews Review[] @relation("ReviewModeratedBy")
   affiliateClicks AffiliateClick[]
 
   @@index([role])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jti       String   @unique
+  tokenHash String
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([revoked])
 }
 
 enum UserRole {
@@ -48,6 +64,13 @@ model Category {
   parentId  Int?
   parent    Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
   children  Category[] @relation("CategoryToCategory")
+  // Canonical storefront fields (manually managed)
+  iconName   String?
+  imageUrl   String?
+  sortOrder  Int?      // optional because older rows may not have it yet
+  isActive   Boolean   @default(true)
+
+  // Backward-compatible fields (existing data / older clients)
   icon      String?
   position  Int        @default(0)
   createdAt DateTime   @default(now())

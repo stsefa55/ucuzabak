@@ -37,6 +37,17 @@ import { UpdateStoreFeedDto } from "./dto/update-store-feed.dto";
 import { parse } from "csv-parse/sync";
 import { Queue } from "bullmq";
 
+type CanonicalCategoryRow = {
+  id: number;
+  name: string;
+  slug: string;
+  parentId: number | null;
+  iconName: string | null;
+  imageUrl: string | null;
+  sortOrder: number | null;
+  isActive: boolean;
+};
+
 @ApiTags("admin")
 @ApiBearerAuth("access-token")
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -560,9 +571,148 @@ export class AdminController {
   @Get("categories")
   @ApiOkResponse({ description: "Kategori listesi" })
   async getCategories() {
-    return this.prisma.category.findMany({
-      orderBy: { name: "asc" }
-    });
+    // Prisma client eski şemada kaldıysa (isActive/sortOrder/iconName alanları tanınmıyorsa) hata veriyor.
+    // Admin ekranı için canonical alanları DB'den raw SQL ile çekiyoruz.
+    return this.prisma.$queryRaw<CanonicalCategoryRow[]>(Prisma.sql`
+      SELECT
+        id,
+        name,
+        slug,
+        "parentId",
+        "iconName",
+        "imageUrl",
+        "sortOrder",
+        "isActive"
+      FROM "Category"
+      ORDER BY
+        "sortOrder" ASC NULLS LAST,
+        "position" ASC,
+        "name" ASC;
+    `);
+  }
+
+  @Post("categories")
+  @ApiOkResponse({ description: "Yeni kategori oluşturma" })
+  async createCategory(
+    @Body()
+    body: {
+      name: string;
+      slug: string;
+      parentId?: number | null;
+      iconName?: string | null;
+      imageUrl?: string | null;
+      sortOrder?: number | null;
+      isActive?: boolean;
+    }
+  ) {
+    const slug = (body.slug ?? "").trim();
+    if (!slug) throw new BadRequestException("slug zorunludur.");
+    const name = (body.name ?? "").trim();
+    if (!name) throw new BadRequestException("name zorunludur.");
+
+    try {
+      const parentId =
+        body.parentId === null || body.parentId === undefined ? null : Number(body.parentId);
+      const sortOrder =
+        body.sortOrder === null || body.sortOrder === undefined ? null : Number(body.sortOrder);
+
+      return await this.prisma.$queryRaw<CanonicalCategoryRow[]>(Prisma.sql`
+        INSERT INTO "Category" ("name", "slug", "parentId", "iconName", "imageUrl", "sortOrder", "isActive", "position")
+        VALUES (
+          ${name},
+          ${slug},
+          ${parentId},
+          ${body.iconName ?? null},
+          ${body.imageUrl ?? null},
+          ${sortOrder},
+          ${body.isActive ?? true},
+          0
+        )
+        RETURNING
+          id,
+          name,
+          slug,
+          "parentId",
+          "iconName",
+          "imageUrl",
+          "sortOrder",
+          "isActive";
+      `);
+    } catch (err) {
+      throw new BadRequestException(`Kategori oluşturulamadı: ${(err as Error).message ?? String(err)}`);
+    }
+  }
+
+  @Patch("categories/:id")
+  @ApiOkResponse({ description: "Kategori güncelleme" })
+  async updateCategory(
+    @Param("id") id: string,
+    @Body()
+    body: {
+      name?: string;
+      slug?: string;
+      parentId?: number | null;
+      iconName?: string | null;
+      imageUrl?: string | null;
+      sortOrder?: number | null;
+      isActive?: boolean;
+    }
+  ) {
+    const categoryId = Number(id);
+    if (!Number.isFinite(categoryId)) throw new BadRequestException("Geçersiz id.");
+
+    try {
+      const setFragments: Prisma.Sql[] = [];
+
+      if (body.name !== undefined) setFragments.push(Prisma.sql`"name" = ${body.name.trim()}`);
+      if (body.slug !== undefined) setFragments.push(Prisma.sql`"slug" = ${body.slug.trim()}`);
+      if (body.parentId !== undefined) {
+        const v = body.parentId === null ? null : Number(body.parentId);
+        setFragments.push(Prisma.sql`"parentId" = ${v}`);
+      }
+      if (body.iconName !== undefined) setFragments.push(Prisma.sql`"iconName" = ${body.iconName}`);
+      if (body.imageUrl !== undefined) setFragments.push(Prisma.sql`"imageUrl" = ${body.imageUrl}`);
+      if (body.sortOrder !== undefined) {
+        const v = body.sortOrder === null ? null : Number(body.sortOrder);
+        setFragments.push(Prisma.sql`"sortOrder" = ${v}`);
+      }
+      if (body.isActive !== undefined) setFragments.push(Prisma.sql`"isActive" = ${body.isActive}`);
+
+      if (setFragments.length === 0) {
+        return await this.prisma.$queryRaw<CanonicalCategoryRow[]>(Prisma.sql`
+          SELECT
+            id,
+            name,
+            slug,
+            "parentId",
+            "iconName",
+            "imageUrl",
+            "sortOrder",
+            "isActive"
+          FROM "Category"
+          WHERE id = ${categoryId}
+          LIMIT 1;
+        `);
+      }
+
+      return await this.prisma.$queryRaw<CanonicalCategoryRow[]>(Prisma.sql`
+        UPDATE "Category"
+        SET ${Prisma.join(setFragments, ", ")}
+        WHERE id = ${categoryId}
+        RETURNING
+          id,
+          name,
+          slug,
+          "parentId",
+          "iconName",
+          "imageUrl",
+          "sortOrder",
+          "isActive";
+      `);
+    } catch (err) {
+      const msg = (err as Error).message ?? String(err);
+      throw new BadRequestException(`Kategori güncellenemedi: ${msg}`);
+    }
   }
 
   @Get("brands")

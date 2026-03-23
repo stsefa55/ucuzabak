@@ -1,11 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma, ProductStatus } from "@prisma/client";
+import { CategoriesService } from "../categories/categories.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProductListQueryDto, ProductSortField } from "../products/dto/product-list.query.dto";
 
 @Injectable()
 export class SearchService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly categoriesService: CategoriesService
+  ) {}
 
   async searchProducts(query: ProductListQueryDto) {
     const { page = 1, pageSize = 20 } = query;
@@ -83,8 +87,10 @@ export class SearchService {
       this.recordSearchQuery(query.q).catch(() => {});
     }
 
+    const enrichedItems = await this.categoriesService.attachCategoryPathToProducts(items);
+
     return {
-      items,
+      items: enrichedItems,
       total,
       page,
       pageSize

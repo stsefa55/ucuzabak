@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Patch,
@@ -11,12 +12,13 @@ import {
   Res,
   UseGuards
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Response, Request } from "express";
 import { UsersService } from "../users/users.service";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
+import { RefreshDto } from "./dto/refresh.dto";
+import { LogoutDto } from "./dto/logout.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { JwtAuthGuard } from "./jwt-auth.guard";
@@ -27,7 +29,6 @@ import { Throttle } from "@nestjs/throttler";
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -40,8 +41,18 @@ export class AuthController {
 
   @Post("register")
   @Throttle({ default: { limit: 5, ttl: 60 } })
-  async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
+  async register(
+    @Headers("x-client-type") clientType: string | undefined,
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const ct = (clientType || "web").toLowerCase();
     const { user, accessToken, refreshToken } = await this.authService.register(dto);
+
+    if (ct === "mobile") {
+      return { accessToken, refreshToken };
+    }
+
     this.setRefreshCookie(res, refreshToken);
     return { user, accessToken };
   }
@@ -49,8 +60,18 @@ export class AuthController {
   @Post("login")
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 10, ttl: 60 } })
-  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Headers("x-client-type") clientType: string | undefined,
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const ct = (clientType || "web").toLowerCase();
     const { user, accessToken, refreshToken } = await this.authService.login(dto);
+
+    if (ct === "mobile") {
+      return { accessToken, refreshToken };
+    }
+
     this.setRefreshCookie(res, refreshToken);
     return { user, accessToken };
   }
@@ -58,29 +79,33 @@ export class AuthController {
   @Post("refresh")
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 20, ttl: 60 } })
-  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const refreshToken = req.cookies?.refresh_token;
+  async refresh(
+    @Headers("x-client-type") clientType: string | undefined,
+    @Req() req: Request,
+    @Body() body: RefreshDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const ct = (clientType || "web").toLowerCase();
+    const refreshToken = ct === "mobile" ? body?.refreshToken : req.cookies?.refresh_token;
     if (!refreshToken) {
       return { accessToken: null };
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const payload: any = await this.jwtService.verifyAsync(refreshToken, {
-        secret: process.env.API_JWT_SECRET || "change-me-in-dev"
-      });
+      const { accessToken, refreshToken: newRefresh } = await this.authService.rotateRefreshToken(refreshToken);
 
-      const { accessToken, refreshToken: newRefresh } = this.authService.refresh(
-        payload.sub,
-        payload.role,
-        payload.email,
-      );
+      if (ct === "mobile") {
+        return { accessToken, refreshToken: newRefresh };
+      }
+
       this.setRefreshCookie(res, newRefresh);
 
       return { accessToken };
     } catch {
       // expired/invalid refresh token: clear cookie
-      res.clearCookie("refresh_token", this.getRefreshCookieOptions());
+      if (ct !== "mobile") {
+        res.clearCookie("refresh_token", this.getRefreshCookieOptions());
+      }
       return { accessToken: null };
     }
   }
@@ -88,7 +113,25 @@ export class AuthController {
   @Post("logout")
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 20, ttl: 60 } })
-  async logout(@Res({ passthrough: true }) res: Response) {
+  async logout(
+    @Headers("x-client-type") clientType: string | undefined,
+    @Body() body: LogoutDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const ct = (clientType || "web").toLowerCase();
+
+    if (ct === "mobile") {
+      if (body?.refreshToken) {
+        await this.authService.revokeRefreshToken(body.refreshToken);
+      }
+      return { success: true };
+    }
+
+    const refreshToken = req.cookies?.refresh_token;
+    if (refreshToken) {
+      await this.authService.revokeRefreshToken(refreshToken);
+    }
     res.clearCookie("refresh_token", this.getRefreshCookieOptions());
     return { success: true };
   }
@@ -124,10 +167,13 @@ export class AuthController {
 
   private getRefreshCookieOptions() {
     const isProd = process.env.NODE_ENV === "production";
+    const domain = process.env.COOKIE_DOMAIN || undefined;
     return {
       httpOnly: true,
       secure: isProd,
       sameSite: (isProd ? "none" : "lax") as "none" | "lax",
+      domain,
+      path: "/",
     };
   }
 

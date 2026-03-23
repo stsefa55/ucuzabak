@@ -1,10 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { ProductStatus } from "@prisma/client";
+import { CategoriesService } from "../categories/categories.service";
 import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class ProductsSimilarService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly categoriesService: CategoriesService
+  ) {}
 
   async getSimilarBySlug(slug: string) {
     const product = await this.prisma.product.findUnique({
@@ -41,7 +45,7 @@ export class ProductsSimilarService {
       }
     });
 
-    return similar;
+    return this.categoriesService.attachCategoryPathToProducts(similar);
   }
 }
 

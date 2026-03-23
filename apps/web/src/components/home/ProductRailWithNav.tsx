@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 interface ProductRailWithNavProps {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ interface ProductRailWithNavProps {
 const BAR_HEIGHT = 8;
 
 export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: ProductRailWithNavProps) {
+  const scrollRegionId = useId();
   const scrollRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [trackWidth, setTrackWidth] = useState(100);
@@ -41,7 +42,7 @@ export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: P
     const ro = new ResizeObserver(updateUI);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [children]);
+  }, [children, updateUI]);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -97,7 +98,7 @@ export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: P
       window.addEventListener("mouseup", onUp, true);
       window.addEventListener("blur", onUp);
     },
-    []
+    [updateUI]
   );
 
   const handleRailClick = useCallback((e: React.MouseEvent) => {
@@ -129,10 +130,12 @@ export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: P
   );
 
   const trackOffset = (100 - trackWidth) * scrollProgress;
+  const sliderValue = Math.round(scrollProgress * 100);
 
   return (
     <div style={{ position: "relative" }}>
       <div
+        id={scrollRegionId}
         ref={scrollRef}
         onScroll={updateUI}
         onMouseDownCapture={handleMouseDown}
@@ -154,8 +157,13 @@ export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: P
       </div>
       <div
         ref={trackRef}
-        role="scrollbar"
-        aria-label="Kaydırma çubuğu"
+        role="slider"
+        aria-label="Yatay kaydırma"
+        aria-orientation="horizontal"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={sliderValue}
+        aria-controls={scrollRegionId}
         tabIndex={0}
         onClick={handleBarClick}
         style={{

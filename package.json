@@ -2,6 +2,12 @@
   "name": "ucuzabakcom",
   "version": "0.1.0",
   "private": true,
+  "pnpm": {
+    "overrides": {
+      "@types/react": "18.3.28",
+      "@types/react-dom": "18.3.7"
+    }
+  },
   "scripts": {
     "dev:web": "pnpm -C apps/web dev",
     "dev:api": "pnpm -C apps/api dev",
@@ -16,7 +22,8 @@
     "seed": "pnpm -C apps/api prisma:seed",
     "test:api": "pnpm -C apps/api test",
     "test:web:e2e": "pnpm -C apps/web test:e2e",
-    "test": "pnpm test:api && pnpm test:web:e2e"
+    "test": "pnpm test:api && pnpm test:web:e2e",
+    "import:normalized": "pnpm -C apps/worker import:normalized-json --base-dir imports"
   },
   "engines": {
     "node": ">=18.18.0",

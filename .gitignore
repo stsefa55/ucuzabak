@@ -23,3 +23,11 @@ backup_*.sql
 
 # system
 .DS_Store
+
+/apps/worker/imports/pending/**
+/apps/worker/imports/processed/**
+/apps/worker/imports/failed/**
+
+!/apps/worker/imports/pending/.gitkeep
+!/apps/worker/imports/processed/.gitkeep
+!/apps/worker/imports/failed/.gitkeep

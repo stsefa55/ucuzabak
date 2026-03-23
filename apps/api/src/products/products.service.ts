@@ -1,13 +1,41 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { OfferStatus, ProductStatus } from "@prisma/client";
+import { CategoriesService } from "../categories/categories.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProductListQueryDto, ProductSortField } from "./dto/product-list.query.dto";
 import { PriceHistoryQueryDto, PriceHistoryRange } from "./dto/price-history-range.dto";
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly categoriesService: CategoriesService
+  ) {}
+
+  private async getCategorySelfAndDescendantIdsBySlug(slug: string): Promise<number[]> {
+    const root = await this.prisma.category.findUnique({
+      where: { slug },
+      select: { id: true }
+    });
+
+    if (!root) return [];
+
+    const ids: number[] = [root.id];
+    let frontier: number[] = [root.id];
+
+    while (frontier.length > 0) {
+      const children = await this.prisma.category.findMany({
+        where: { parentId: { in: frontier } },
+        select: { id: true }
+      });
+      if (children.length === 0) break;
+      frontier = children.map((c) => c.id);
+      ids.push(...frontier);
+    }
+
+    return ids;
+  }
 
   async list(query: ProductListQueryDto) {
     const { page = 1, pageSize = 20 } = query;
@@ -19,7 +47,16 @@ export class ProductsService {
     }
 
     if (query.categorySlug) {
-      where.category = { slug: query.categorySlug };
+      const categoryIds = await this.getCategorySelfAndDescendantIdsBySlug(query.categorySlug);
+      if (categoryIds.length === 0) {
+        return {
+          items: [],
+          total: 0,
+          page,
+          pageSize
+        };
+      }
+      where.categoryId = { in: categoryIds };
     }
 
     if (query.brandSlug) {
@@ -74,8 +111,10 @@ export class ProductsService {
       this.prisma.product.count({ where })
     ]);
 
+    const enrichedItems = await this.categoriesService.attachCategoryPathToProducts(items);
+
     return {
-      items,
+      items: enrichedItems,
       total,
       page,
       pageSize
@@ -96,7 +135,8 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException("Ürün bulunamadı.");
     }
-    return product;
+    const [enriched] = await this.categoriesService.attachCategoryPathToProducts([product]);
+    return enriched;
   }
 
   async findBySlugs(slugs: string[]): Promise<any[]> {
@@ -107,7 +147,8 @@ export class ProductsService {
       include: { brand: true, category: true }
     });
     const bySlug = new Map(products.map((p) => [p.slug, p]));
-    return uniq.map((slug) => bySlug.get(slug)).filter(Boolean);
+    const ordered = uniq.map((slug) => bySlug.get(slug)).filter(Boolean) as typeof products;
+    return this.categoriesService.attachCategoryPathToProducts(ordered);
   }
 
   async getOffersBySlug(slug: string) {
@@ -257,7 +298,7 @@ export class ProductsService {
       }
     });
 
-    return items;
+    return this.categoriesService.attachCategoryPathToProducts(items);
   }
 
   async getPriceDroppedProducts() {
@@ -334,7 +375,8 @@ export class ProductsService {
 
     // Aynı sırayı koru
     const productsById = new Map(products.map((p) => [p.id, p]));
-    return productIds.map((id) => productsById.get(id)).filter(Boolean);
+    const ordered = productIds.map((id) => productsById.get(id)).filter(Boolean) as typeof products;
+    return this.categoriesService.attachCategoryPathToProducts(ordered);
   }
 
   async getDealProducts() {
@@ -396,7 +438,8 @@ export class ProductsService {
     });
 
     const productsById = new Map(products.map((p) => [p.id, p]));
-    return productIds.map((id) => productsById.get(id)).filter(Boolean);
+    const ordered = productIds.map((id) => productsById.get(id)).filter(Boolean) as typeof products;
+    return this.categoriesService.attachCategoryPathToProducts(ordered);
   }
 
   async getMostClickedProducts(limit = 12) {
@@ -413,7 +456,8 @@ export class ProductsService {
       include: { brand: true, category: true }
     });
     const byId = new Map(products.map((p) => [p.id, p]));
-    return productIds.map((id) => byId.get(id)).filter(Boolean);
+    const ordered = productIds.map((id) => byId.get(id)).filter(Boolean) as typeof products;
+    return this.categoriesService.attachCategoryPathToProducts(ordered);
   }
 }
 
