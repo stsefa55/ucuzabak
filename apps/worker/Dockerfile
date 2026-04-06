@@ -23,6 +23,9 @@ COPY packages ./packages
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/worker/node_modules ./apps/worker/node_modules
 
+# @ucuzabak/shared workspace paketi dist + .d.ts üretmeden worker tsc başarısız olur (temiz CI/Docker).
+RUN pnpm --filter @ucuzabak/shared build
+
 WORKDIR /app/apps/worker
 
 RUN pnpm install --offline --frozen-lockfile
@@ -42,6 +45,7 @@ COPY packages ./packages
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/worker/node_modules ./apps/worker/node_modules
+COPY --from=build /app/packages/shared/dist ./packages/shared/dist
 COPY --from=build /app/apps/worker/dist ./apps/worker/dist
 
 WORKDIR /app/apps/worker

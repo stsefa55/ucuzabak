@@ -866,7 +866,7 @@ export async function tryFindExistingProductForFeedItem(
 
   const titleWords = normalizeProductTitle(item.title)
     .split(/\s+/)
-    .filter((w) => w.length > 2)
+    .filter((w: string) => w.length > 2)
     .slice(0, 3)
     .join(" ");
   if (titleWords.length < 3) return null;

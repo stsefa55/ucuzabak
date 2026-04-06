@@ -23,6 +23,9 @@ COPY packages ./packages
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
 
+# @ucuzabak/shared workspace paketi dist + .d.ts üretmeden api tsc başarısız olur (temiz CI/Docker).
+RUN pnpm --filter @ucuzabak/shared build
+
 WORKDIR /app/apps/api
 
 RUN pnpm install --offline --frozen-lockfile
@@ -46,6 +49,7 @@ COPY packages ./packages
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=build /app/packages/shared/dist ./packages/shared/dist
 COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/apps/api/prisma ./apps/api/prisma
 
