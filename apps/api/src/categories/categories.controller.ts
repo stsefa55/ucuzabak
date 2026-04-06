@@ -21,8 +21,12 @@ export class CategoriesController {
 
   @Get(":slug/path")
   @ApiOkResponse({ description: "Kökten yaprağa kategori yolu (slug + isim)" })
-  getPath(@Param("slug") slug: string) {
-    return this.categoriesService.getPathByLeafSlug(slug);
+  async getPath(@Param("slug") slug: string) {
+    const t0 = Date.now();
+    const out = await this.categoriesService.getPathByLeafSlug(slug);
+    // temporary performance telemetry for slow category navigation UX
+    console.log(`[perf] GET /categories/${slug}/path ${Date.now() - t0}ms`);
+    return out;
   }
 
   @Get(":slug/navigation-panel")
@@ -30,17 +34,22 @@ export class CategoriesController {
     description:
       "Kategori sayfası sol panel: kökte bu kökün doğrudan çocukları; alt seviyede üst + kardeşler; filtreyle uyumlu sayılar"
   })
-  getNavigationPanel(
+  async getNavigationPanel(
     @Param("slug") slug: string,
     @Query("brandSlug") brandSlug?: string,
+    @Query("brandSlugs") brandSlugs?: string,
     @Query("minPrice") minPrice?: string,
     @Query("maxPrice") maxPrice?: string
   ) {
-    return this.categoriesService.getNavigationPanelForLeaf(slug, {
+    const t0 = Date.now();
+    const out = await this.categoriesService.getNavigationPanelForLeaf(slug, {
       brandSlug: brandSlug?.trim() || undefined,
+      brandSlugs: brandSlugs?.trim() || undefined,
       minPrice: minPrice != null && minPrice !== "" ? Number(minPrice) : undefined,
       maxPrice: maxPrice != null && maxPrice !== "" ? Number(maxPrice) : undefined
     });
+    console.log(`[perf] GET /categories/${slug}/navigation-panel ${Date.now() - t0}ms`);
+    return out;
   }
 
   @Get(":slug/facets")
@@ -48,21 +57,27 @@ export class CategoriesController {
     description:
       "Kategori sayfası filtreleri: alt ağaçtaki markalar ve fiyat aralığı (ürün listesi ile aynı kategori kapsamı)"
   })
-  getFacets(
+  async getFacets(
     @Param("slug") slug: string,
     @Query("minPrice") minPrice?: string,
     @Query("maxPrice") maxPrice?: string
   ) {
-    return this.categoriesService.getFacetsForCategoryLeaf(slug, {
+    const t0 = Date.now();
+    const out = await this.categoriesService.getFacetsForCategoryLeaf(slug, {
       minPrice: minPrice != null && minPrice !== "" ? Number(minPrice) : undefined,
       maxPrice: maxPrice != null && maxPrice !== "" ? Number(maxPrice) : undefined
     });
+    console.log(`[perf] GET /categories/${slug}/facets ${Date.now() - t0}ms`);
+    return out;
   }
 
   @Get(":slug")
   @ApiOkResponse({ description: "Kategori detayı" })
-  getBySlug(@Param("slug") slug: string) {
-    return this.categoriesService.findBySlug(slug);
+  async getBySlug(@Param("slug") slug: string) {
+    const t0 = Date.now();
+    const out = await this.categoriesService.findBySlug(slug);
+    console.log(`[perf] GET /categories/${slug} ${Date.now() - t0}ms`);
+    return out;
   }
 
   @Get(":slug/children")

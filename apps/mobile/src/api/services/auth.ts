@@ -9,6 +9,7 @@ export type AuthUser = {
   role?: string;
   status?: string;
   lastLoginAt?: string | null;
+  emailVerified?: boolean;
 };
 
 export type AuthTokens = { accessToken: string; refreshToken: string };
@@ -17,7 +18,11 @@ function extractErrorMessage(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err ?? "");
   const status = (err as { status?: number } | null)?.status;
 
-  if (status === 401 || status === 403) return "E-posta veya şifre hatalı.";
+  if (status === 401) return "E-posta veya şifre hatalı.";
+  if (status === 403) {
+    if (raw && raw !== "Forbidden" && !raw.startsWith("API error")) return raw;
+    return "Bu işlem için e-postanızı doğrulamanız gerekir.";
+  }
   if (status === 409) return "Bu e-posta ile kayıtlı bir hesap zaten var.";
   if (status === 400) return "Gönderilen bilgiler geçersiz. Lütfen alanları kontrol edin.";
   if (status === 500) return "Sunucu hatası oluştu. Lütfen tekrar deneyin.";
@@ -91,6 +96,17 @@ export async function me(accessTok: string): Promise<{ user: AuthUser | null }> 
   try {
     return await apiFetchJson<{ user: AuthUser | null }>("/auth/me", {
       method: "GET",
+      headers: { Authorization: `Bearer ${accessTok}` }
+    });
+  } catch (err) {
+    throw toAuthError(err);
+  }
+}
+
+export async function resendVerificationEmailForMe(accessTok: string): Promise<{ message: string }> {
+  try {
+    return await apiFetchJson<{ message: string }>("/auth/me/resend-verification-email", {
+      method: "POST",
       headers: { Authorization: `Bearer ${accessTok}` }
     });
   } catch (err) {

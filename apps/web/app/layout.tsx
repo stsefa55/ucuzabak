@@ -1,14 +1,24 @@
 import React from "react";
+import type { Metadata } from "next";
+import { resolveStorefrontBaseUrlForWeb } from "@ucuzabak/shared";
 import { ReactQueryProvider } from "../src/lib/query-client";
 import { AuthBootstrap } from "../src/components/auth/AuthBootstrap";
+import { EmailVerificationBanner } from "../src/components/layout/EmailVerificationBanner";
 import { CompareBar } from "../src/components/compare/CompareBar";
+import { ProductQuickPreviewModal } from "../src/components/products/ProductQuickPreviewModal";
 import { Footer } from "../src/components/layout/Footer";
 import { MenuBackdropProvider } from "../src/components/layout/MenuBackdrop";
 import "./globals.css";
 
-export const metadata = {
+const storefrontBase = resolveStorefrontBaseUrlForWeb();
+
+export const metadata: Metadata = {
+  metadataBase: new URL(`${storefrontBase}/`),
   title: "UcuzaBak.com",
-  description: "Türkiye için fiyat karşılaştırma platformu - UcuzaBak.com"
+  description: "Türkiye için fiyat karşılaştırma platformu - UcuzaBak.com",
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }]
+  }
 };
 
 export default function RootLayout({
@@ -23,8 +33,10 @@ export default function RootLayout({
           <MenuBackdropProvider>
             <div className="layout-wrap">
               <AuthBootstrap />
+              <EmailVerificationBanner />
               <div className="layout-main">{children}</div>
               <CompareBar />
+              <ProductQuickPreviewModal />
               <Footer />
             </div>
           </MenuBackdropProvider>

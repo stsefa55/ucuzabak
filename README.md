@@ -64,6 +64,10 @@ Bu komut sonrasında:
 
 > Not: Elasticsearch şu an arama için zorunlu değildir; arama Postgres üzerinden çalışır. Elasticsearch ileriki fazlarda devreye alınabilir.
 
+Tek tanım: `docker-compose.yml`. Ortam değişkenleri kök `.env` ile verilir; varsayılanlar yerel geliştirme içindir (`NODE_ENV` ve `NEXT_PUBLIC_API_BASE_URL` için `docker-compose.yml` içindeki `${...:-...}` ifadelerine bakın). Prod sunucuda `NODE_ENV=production` ve gerçek `NEXT_PUBLIC_API_BASE_URL` değerlerini `.env` üzerinden ayarlayıp `docker compose up --build` kullanın.
+
+Next.js istemci paketinde `NEXT_PUBLIC_*` değerleri **build** anında gömülür; web imajı `docker-compose.yml` içindeki `build.args` ile bu değeri alır.
+
 ## Lokal Geliştirme (Docker ile DB + Redis, uygulamalar lokal)
 
 Önce Docker ile PostgreSQL ve Redis'i başlatın:

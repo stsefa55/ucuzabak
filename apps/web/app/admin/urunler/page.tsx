@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
+import { AdminPageHeader } from "../../../src/components/admin/AdminPageHeader";
 import { apiFetch } from "../../../src/lib/api-client";
 import { useAuthStore } from "../../../src/stores/auth-store";
 
@@ -37,67 +38,61 @@ export default function AdminProductsPage() {
   if (!accessToken) return null;
 
   return (
-    <div className="card">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "0.75rem",
-          gap: "0.75rem"
-        }}
-      >
-        <h2 style={{ fontSize: "1.1rem", fontWeight: 600 }}>Ürünler</h2>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <input
-            className="form-control"
-            placeholder="Ad veya slug ile ara..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ minWidth: 180 }}
-          />
-          <select
-            className="form-control"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as typeof status)}
-            style={{ width: 140 }}
-          >
-            <option value="ALL">Tüm durumlar</option>
-            <option value="ACTIVE">Aktif</option>
-            <option value="INACTIVE">Pasif</option>
-          </select>
-        </div>
-      </div>
+    <div className="card admin-page">
+      <AdminPageHeader
+        title="Ürünler"
+        description="Katalog ürünlerini arayın ve duruma göre filtreleyin."
+        actions={
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
+            <input
+              className="form-control"
+              placeholder="Ad veya slug ile ara…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ minWidth: 180 }}
+            />
+            <select
+              className="form-control"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as typeof status)}
+              style={{ width: 140 }}
+            >
+              <option value="ALL">Tüm durumlar</option>
+              <option value="ACTIVE">Aktif</option>
+              <option value="INACTIVE">Pasif</option>
+            </select>
+          </div>
+        }
+      />
 
-      {isLoading && <p>Yükleniyor...</p>}
+      {isLoading && <p className="admin-loading" style={{ padding: "1rem 0" }}>Yükleniyor…</p>}
       {error && <p className="text-danger">Ürünler yüklenirken bir hata oluştu.</p>}
       {data && (
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
-          <thead>
-            <tr>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>ID</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Ad</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Slug</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Marka</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Kategori</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Durum</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Oluşturulma</th>
-              <th style={{ textAlign: "right", padding: "0.5rem" }}>İşlemler</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.items.map((p) => (
-              <tr key={p.id} style={{ borderTop: "1px solid #e5e7eb" }}>
-                <td style={{ padding: "0.5rem" }}>{p.id}</td>
-                <td style={{ padding: "0.5rem" }}>{p.name}</td>
-                <td style={{ padding: "0.5rem" }}>{p.slug}</td>
-                <td style={{ padding: "0.5rem" }}>{p.brand?.name ?? "-"}</td>
-                <td style={{ padding: "0.5rem" }}>{p.category?.name ?? "-"}</td>
-                <td style={{ padding: "0.5rem" }}>{p.status === "ACTIVE" ? "Aktif" : "Pasif"}</td>
-                <td style={{ padding: "0.5rem" }}>
-                  {p.createdAt ? new Date(p.createdAt).toLocaleDateString("tr-TR") : "-"}
-                </td>
-                <td style={{ padding: "0.5rem", textAlign: "right" }}>
+        <div className="admin-data-table-wrap">
+          <table className="admin-data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Ad</th>
+                <th>Slug</th>
+                <th>Marka</th>
+                <th>Kategori</th>
+                <th>Durum</th>
+                <th>Oluşturulma</th>
+                <th style={{ textAlign: "right" }}>İşlemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.items.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.id}</td>
+                  <td>{p.name}</td>
+                  <td>{p.slug}</td>
+                  <td>{p.brand?.name ?? "—"}</td>
+                  <td>{p.category?.name ?? "—"}</td>
+                  <td>{p.status === "ACTIVE" ? "Aktif" : "Pasif"}</td>
+                  <td>{p.createdAt ? new Date(p.createdAt).toLocaleDateString("tr-TR") : "—"}</td>
+                  <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                   <Link
                     href={`/admin/urunler/${p.id}`}
                     className="btn-ghost btn-sm"
@@ -113,11 +108,12 @@ export default function AdminProductsPage() {
                   >
                     Storefront’ta gör
                   </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Req, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { ImportFavoriteSlugsDto } from "./dto/import-favorite-slugs.dto";
 import { FavoritesService } from "./favorites.service";
 
 @ApiTags("favorites")
@@ -23,6 +24,14 @@ export class FavoritesController {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = (req as any).user;
     return this.favoritesService.addFavorite(user.sub, productId);
+  }
+
+  @Post("import-slugs")
+  @ApiBody({ type: ImportFavoriteSlugsDto })
+  importSlugs(@Req() req: Request, @Body() body: ImportFavoriteSlugsDto) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const user = (req as any).user;
+    return this.favoritesService.importFromSlugs(user.sub, body.slugs ?? []);
   }
 
   @Delete(":productId")

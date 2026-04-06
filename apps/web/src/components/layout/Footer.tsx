@@ -30,6 +30,7 @@ export function Footer() {
           <nav className="footer-col">
             <h4 className="footer-col-title">Keşfet</h4>
             <ul>
+              <li><Link href="/one-cikan-urunler">Öne Çıkan Ürünler</Link></li>
               <li><Link href="/fiyati-dusen-urunler">Fiyatı Düşenler</Link></li>
               <li><Link href="/firsat-urunleri">Fırsat Ürünleri</Link></li>
               <li><Link href="/populer-urunler">Popüler Ürünler</Link></li>

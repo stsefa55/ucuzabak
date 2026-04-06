@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "../../lib/api-client";
+import { getApiBaseUrl } from "../../lib/api-client";
 
 export function PopularSearches() {
   const [queries, setQueries] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/search/popular-queries?limit=12`, { credentials: "include" })
+    fetch(`${getApiBaseUrl()}/search/popular-queries?limit=12`, { credentials: "include" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => setQueries(Array.isArray(data) ? data : []))
       .catch(() => setQueries([]));

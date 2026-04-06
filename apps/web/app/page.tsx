@@ -1,7 +1,8 @@
-import Link from "next/link";
-import { API_BASE_URL } from "../src/lib/api-client";
+import { getApiBaseUrl } from "../src/lib/api-client";
 import { Header } from "../src/components/layout/Header";
 import { HomeBannerCarousel } from "../src/components/home/HomeBannerCarousel";
+import { HomeCategoryShortcuts, type HomeCategoryItem } from "../src/components/home/HomeCategoryShortcuts";
+import { HomeSectionHeader } from "../src/components/home/HomeSectionHeader";
 import { ProductRailWithNav } from "../src/components/home/ProductRailWithNav";
 import { RecentlyViewedRail } from "../src/components/home/RecentlyViewedRail";
 import { ProductCard } from "../src/components/products/ProductCard";
@@ -9,39 +10,49 @@ import { ProductCard } from "../src/components/products/ProductCard";
 export const dynamic = "force-dynamic";
 
 const EMPTY_HOME_DATA = {
-  productsData: { items: [], total: 0 },
+  featuredProducts: [] as any[],
   popularProducts: [] as any[],
   priceDropProducts: [] as any[],
-  dealProducts: [] as any[]
+  dealProducts: [] as any[],
+  homeCategories: [] as HomeCategoryItem[]
 };
 
 async function fetchHomeData() {
+  const base = getApiBaseUrl();
   try {
-    const [resProducts, resPopular, resPriceDrops, resDeals] = await Promise.all([
-      fetch(`${API_BASE_URL}/products/most-clicked`, { next: { revalidate: 10 } }),
-      fetch(`${API_BASE_URL}/products/popular`, { next: { revalidate: 10 } }),
-      fetch(`${API_BASE_URL}/products/price-drops`, { next: { revalidate: 10 } }),
-      fetch(`${API_BASE_URL}/products/deals`, { next: { revalidate: 10 } })
+    const [resFeatured, resPopular, resPriceDrops, resDeals, resCategories] = await Promise.all([
+      fetch(`${base}/products/featured`, { next: { revalidate: 10 } }),
+      fetch(`${base}/products/popular`, { next: { revalidate: 10 } }),
+      fetch(`${base}/products/price-drops`, { next: { revalidate: 10 } }),
+      fetch(`${base}/products/deals`, { next: { revalidate: 10 } }),
+      fetch(`${base}/categories`, { next: { revalidate: 120 } })
     ]);
-    const [rawProducts, popularProducts, priceDropProducts, dealProducts] = await Promise.all([
-      resProducts.ok ? resProducts.json() : null,
+    const [featuredProducts, popularProducts, priceDropProducts, dealProducts, rawCategories] = await Promise.all([
+      resFeatured.ok ? resFeatured.json() : [],
       resPopular.ok ? resPopular.json() : [],
       resPriceDrops.ok ? resPriceDrops.json() : [],
-      resDeals.ok ? resDeals.json() : []
+      resDeals.ok ? resDeals.json() : [],
+      resCategories.ok ? resCategories.json() : []
     ]);
-    const mostClicked = Array.isArray(rawProducts) ? rawProducts : [];
-    const productsData =
-      mostClicked.length > 0
-        ? { items: mostClicked, total: mostClicked.length }
-        : { items: popularProducts, total: popularProducts.length };
-    return { productsData, popularProducts, priceDropProducts, dealProducts };
+    const homeCategories: HomeCategoryItem[] = Array.isArray(rawCategories)
+      ? rawCategories
+          .filter((c: any) => c && typeof c.slug === "string" && typeof c.name === "string" && c.id != null)
+          .map((c: any) => ({ id: Number(c.id), name: String(c.name), slug: String(c.slug) }))
+      : [];
+    return {
+      featuredProducts: Array.isArray(featuredProducts) ? featuredProducts : [],
+      popularProducts: Array.isArray(popularProducts) ? popularProducts : [],
+      priceDropProducts: Array.isArray(priceDropProducts) ? priceDropProducts : [],
+      dealProducts: Array.isArray(dealProducts) ? dealProducts : [],
+      homeCategories
+    };
   } catch {
     return EMPTY_HOME_DATA;
   }
 }
 
 export default async function HomePage() {
-  const { productsData, popularProducts, priceDropProducts, dealProducts } = await fetchHomeData();
+  const { featuredProducts, popularProducts, priceDropProducts, dealProducts, homeCategories } = await fetchHomeData();
 
   return (
     <>
@@ -49,29 +60,18 @@ export default async function HomePage() {
       <main className="main">
         <div className="container">
           <HomeBannerCarousel />
+          <HomeCategoryShortcuts categories={homeCategories} />
 
           <section style={{ marginBottom: "2rem" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "0.75rem"
-              }}
-            >
-              <Link href="/arama" style={{ color: "inherit" }}>
-                <h2 style={{ fontSize: "1.1rem", fontWeight: 600 }}>Öne çıkan ürünler</h2>
-              </Link>
-              <Link href="/arama" className="text-muted" style={{ fontSize: "0.85rem" }}>
-                Tümünü gör
-              </Link>
-            </div>
-            {productsData.items.length === 0 ? (
-              <p className="text-muted">Henüz ürün bulunamadı.</p>
+            <HomeSectionHeader title="Öne çıkan ürünler" href="/one-cikan-urunler" />
+            {featuredProducts.length === 0 ? (
+              <p className="home-section__empty">
+                Henüz öne çıkan ürün yok. Yönetim panelinden ürün işaretleyebilirsiniz.
+              </p>
             ) : (
               <div className="grid grid-3">
-                {productsData.items.slice(0, 6).map((p: any) => (
-                  <ProductCard key={p.id} product={p} />
+                {featuredProducts.slice(0, 10).map((p: any) => (
+                  <ProductCard key={p.id} product={p} showFeaturedBadge />
                 ))}
               </div>
             )}
@@ -80,23 +80,9 @@ export default async function HomePage() {
           <RecentlyViewedRail />
 
           <section style={{ marginTop: "2rem" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                marginBottom: "0.5rem"
-              }}
-            >
-              <Link href="/populer-urunler" style={{ color: "inherit" }}>
-                <h2 style={{ fontSize: "1.1rem", fontWeight: 600 }}>Popüler ürünler</h2>
-              </Link>
-              <Link href="/populer-urunler" className="text-muted" style={{ fontSize: "0.85rem" }}>
-                Tümünü gör
-              </Link>
-            </div>
+            <HomeSectionHeader title="Popüler ürünler" href="/populer-urunler" />
             {popularProducts.length === 0 ? (
-              <p className="text-muted">Henüz popüler ürün bulunamadı.</p>
+              <p className="home-section__empty">Henüz popüler ürün bulunamadı.</p>
             ) : (
               <ProductRailWithNav ariaLabel="Popüler ürünler">
                 {popularProducts.slice(0, 12).map((p: any) => (
@@ -109,23 +95,9 @@ export default async function HomePage() {
           </section>
 
           <section style={{ marginTop: "2rem" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                marginBottom: "0.5rem"
-              }}
-            >
-              <Link href="/fiyati-dusen-urunler" style={{ color: "inherit" }}>
-                <h2 style={{ fontSize: "1.1rem", fontWeight: 600 }}>Fiyatı düşen ürünler</h2>
-              </Link>
-              <Link href="/fiyati-dusen-urunler" className="text-muted" style={{ fontSize: "0.85rem" }}>
-                Tümünü gör
-              </Link>
-            </div>
+            <HomeSectionHeader title="Fiyatı düşen ürünler" href="/fiyati-dusen-urunler" />
             {priceDropProducts.length === 0 ? (
-              <p className="text-muted">Henüz fiyatı düşen ürün bulunamadı.</p>
+              <p className="home-section__empty">Henüz fiyatı düşen ürün bulunamadı.</p>
             ) : (
               <ProductRailWithNav ariaLabel="Fiyatı düşen ürünler">
                 {priceDropProducts.slice(0, 12).map((p: any) => (
@@ -138,23 +110,9 @@ export default async function HomePage() {
           </section>
 
           <section style={{ marginTop: "2rem", marginBottom: "1rem" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                marginBottom: "0.5rem"
-              }}
-            >
-              <Link href="/firsat-urunleri" style={{ color: "inherit" }}>
-                <h2 style={{ fontSize: "1.1rem", fontWeight: 600 }}>Fırsat ürünleri</h2>
-              </Link>
-              <Link href="/firsat-urunleri" className="text-muted" style={{ fontSize: "0.85rem" }}>
-                Tümünü gör
-              </Link>
-            </div>
+            <HomeSectionHeader title="Fırsat ürünleri" href="/firsat-urunleri" />
             {dealProducts.length === 0 ? (
-              <p className="text-muted">Henüz fırsat ürünü bulunamadı.</p>
+              <p className="home-section__empty">Henüz fırsat ürünü bulunamadı.</p>
             ) : (
               <ProductRailWithNav ariaLabel="Fırsat ürünleri">
                 {dealProducts.slice(0, 12).map((p: any) => (

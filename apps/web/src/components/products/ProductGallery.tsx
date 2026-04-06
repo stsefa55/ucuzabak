@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useCallback, useEffect } from "react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 export interface ProductImageItem {
   id?: number;
@@ -26,6 +26,7 @@ function buildImageUrls(mainImageUrl: string | null | undefined, images: Product
 export function ProductGallery({ productName, mainImageUrl, images }: ProductGalleryProps) {
   const urls = buildImageUrls(mainImageUrl, images);
   const [index, setIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const go = useCallback(
     (delta: number) => {
@@ -34,6 +35,22 @@ export function ProductGallery({ productName, mainImageUrl, images }: ProductGal
     },
     [urls.length]
   );
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [lightboxOpen, go]);
 
   if (urls.length === 0) {
     return (
@@ -53,10 +70,16 @@ export function ProductGallery({ productName, mainImageUrl, images }: ProductGal
         maxWidth: "100%"
       }}
     >
-      <div className="product-detail-image" style={{ maxWidth: "100%", position: "relative" }}>
+      <button
+        type="button"
+        className="product-detail-image product-detail-image--button"
+        style={{ maxWidth: "100%", position: "relative" }}
+        onClick={() => setLightboxOpen(true)}
+        aria-label="Gorseli buyut"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={currentUrl} alt={productName} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
-      </div>
+      </button>
 
       {urls.length > 1 && (
         <>
@@ -146,6 +169,78 @@ export function ProductGallery({ productName, mainImageUrl, images }: ProductGal
           ))}
         </div>
       )}
+
+      {lightboxOpen ? (
+        <div
+          className="product-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${productName} gorselleri`}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setLightboxOpen(false);
+          }}
+        >
+          <div className="product-lightbox__surface" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className="product-lightbox__close"
+            aria-label="Kapat"
+            onClick={() => setLightboxOpen(false)}
+          >
+            <X size={20} />
+          </button>
+
+          <div className="product-lightbox__layout">
+            <div className="product-lightbox__canvas-wrap">
+              <div className="product-lightbox__counter" aria-live="polite">
+                {index + 1}/{urls.length}
+              </div>
+              {urls.length > 1 ? (
+                <>
+                  <button
+                    type="button"
+                    className="product-lightbox__nav product-lightbox__nav--prev"
+                    aria-label="Onceki gorsel"
+                    onClick={() => go(-1)}
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    type="button"
+                    className="product-lightbox__nav product-lightbox__nav--next"
+                    aria-label="Sonraki gorsel"
+                    onClick={() => go(1)}
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              ) : null}
+              <div className="product-lightbox__canvas">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={currentUrl} alt={productName} className="product-lightbox__image" />
+              </div>
+            </div>
+
+            {urls.length > 1 ? (
+              <div className="product-lightbox__thumbs" aria-label="Diger gorseller">
+                {urls.map((url, i) => (
+                  <button
+                    key={`${i}-${url}`}
+                    type="button"
+                    className={`product-lightbox__thumb ${i === index ? "product-lightbox__thumb--active" : ""}`}
+                    aria-label={`Gorsel ${i + 1}`}
+                    onClick={() => setIndex(i)}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt="" />
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

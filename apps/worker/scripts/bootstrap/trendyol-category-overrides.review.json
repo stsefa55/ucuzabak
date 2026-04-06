@@ -1,0 +1,82 @@
+{
+  "source": "trendyol",
+  "generatedFrom": "imports/pending/trendyol_2026-03-23_17-27-47.json",
+  "notes": "Bu listedeki kayıtlar zorla map edilmemeli; manuel doğrulama sonrası override'a alınmalı.",
+  "riskyCandidates": [
+    {
+      "categoryText": "Kar Botu",
+      "normalizedKey": "kar botu",
+      "count": 250,
+      "suggestedCategorySlug": "ayakkabi-canta-bot-ve-cizme-bot",
+      "reason": "Bot altına gidebilir ama kış/spor ayrımı olabilir."
+    },
+    {
+      "categoryText": "Sınav Hazırlık",
+      "normalizedKey": "sinav hazirlik",
+      "count": 121,
+      "reason": "Aynı isimde birden fazla kategori var."
+    },
+    {
+      "categoryText": "Yabancı Dil Eğitimi",
+      "normalizedKey": "yabanci dil egitimi",
+      "count": 121,
+      "reason": "Yabancı Dil vs Eğitim dalları arasında belirsiz."
+    },
+    {
+      "categoryText": "Bebek Bakım Çantası",
+      "normalizedKey": "bebek bakim cantasi",
+      "count": 105,
+      "reason": "Genel Çanta eşleşmesi yanlış pozitif riski taşır."
+    },
+    {
+      "categoryText": "Oyuncu Masaüstü Bilgisayarı",
+      "normalizedKey": "oyuncu masaustu bilgisayari",
+      "count": 104,
+      "reason": "Bilgisayar vs Masaüstü Bilgisayar ayrımı netleştirilmeli."
+    },
+    {
+      "categoryText": "Araç İçi Telefon Tutucu",
+      "normalizedKey": "arac ici telefon tutucu",
+      "count": 104,
+      "reason": "Otomotiv aksesuar ağacında hedef yaprak doğrulanmalı."
+    },
+    {
+      "categoryText": "Dijital Fotoğraf Makinesi",
+      "normalizedKey": "dijital fotograf makinesi",
+      "count": 102,
+      "reason": "Fotoğraf ağacında daha doğru yaprak doğrulanmalı."
+    },
+    {
+      "categoryText": "Dudak Kalemi",
+      "normalizedKey": "dudak kalemi",
+      "count": 101,
+      "reason": "Ofis Kalem ile karışma riski var."
+    },
+    {
+      "categoryText": "Sağlıklı Atıştırmalık",
+      "normalizedKey": "saglikli atistirmalik",
+      "count": 101,
+      "reason": "Atıştırmalık vs Sağlık takviye ayrımı belirsiz."
+    },
+    {
+      "categoryText": "Oto Kokusu",
+      "normalizedKey": "oto kokusu",
+      "count": 100,
+      "reason": "Yanlış benzerlik nedeniyle hatalı aday görüldü, manuel karar şart."
+    }
+  ],
+  "highFrequencyUnresolved": [
+    { "categoryText": "Panduf", "normalizedKey": "panduf", "count": 276 },
+    { "categoryText": "Cüzdan", "normalizedKey": "cuzdan", "count": 229 },
+    { "categoryText": "Loafer Ayakkabı", "normalizedKey": "loafer ayakkabi", "count": 208 },
+    { "categoryText": "Casual Ayakkabı", "normalizedKey": "casual ayakkabi", "count": 174 },
+    { "categoryText": "Krampon", "normalizedKey": "krampon", "count": 167 },
+    { "categoryText": "Dolap ve Gardırop", "normalizedKey": "dolap ve gardirop", "count": 139 },
+    { "categoryText": "Kartlık", "normalizedKey": "kartlik", "count": 123 },
+    { "categoryText": "Gümüş Kolye", "normalizedKey": "gumus kolye", "count": 122 },
+    { "categoryText": "Diğer Baharat", "normalizedKey": "diger baharat", "count": 120 },
+    { "categoryText": "Oto Paspas", "normalizedKey": "oto paspas", "count": 109 },
+    { "categoryText": "Playstation 5", "normalizedKey": "playstation 5", "count": 107 },
+    { "categoryText": "SH Kaydı Gerektirmeyen Drone", "normalizedKey": "sh kaydi gerektirmeyen drone", "count": 106 }
+  ]
+}

@@ -5,12 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Header } from "../../src/components/layout/Header";
 import { apiFetch } from "../../src/lib/api-client";
+import { getErrorStatus, parseNestErrorMessage } from "../../src/lib/nest-error";
 import { useAuthStore } from "../../src/stores/auth-store";
 
 export default function AlertsPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { accessToken } = useAuthStore();
+  const { accessToken, user } = useAuthStore();
+  const needsEmailVerification = !!accessToken && user?.emailVerified === false;
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["price-alerts"],
@@ -61,6 +63,11 @@ export default function AlertsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["price-alerts"] });
+    },
+    onError: (err: unknown) => {
+      if (getErrorStatus(err) === 403) {
+        window.alert(parseNestErrorMessage(err));
+      }
     }
   });
 
@@ -85,6 +92,27 @@ export default function AlertsPage() {
               <button type="button" className="btn-primary" onClick={handleRequireLogin}>
                 Giriş yap
               </button>
+            </div>
+          )}
+
+          {accessToken && needsEmailVerification && (
+            <div
+              className="card"
+              style={{
+                marginBottom: "1rem",
+                borderColor: "#fde68a",
+                background: "linear-gradient(180deg, #fffbeb 0%, #fefce8 100%)"
+              }}
+            >
+              <p style={{ fontSize: "0.9rem", fontWeight: 700, color: "#92400e", margin: "0 0 0.35rem" }}>
+                E-posta doğrulaması gerekli
+              </p>
+              <p style={{ fontSize: "0.85rem", color: "#78350f", margin: 0, lineHeight: 1.5 }}>
+                Alarm hedefini değiştirmek veya durumu güncellemek için önce e-postanızı doğrulayın.{" "}
+                <Link href="/profil" style={{ fontWeight: 700, color: "#b45309" }}>
+                  Hesabım
+                </Link>
+              </p>
             </div>
           )}
 
@@ -129,8 +157,15 @@ export default function AlertsPage() {
                           type="button"
                           className="btn-secondary"
                           style={{ fontSize: "0.8rem" }}
-                          disabled={updateMutation.isPending}
+                          disabled={updateMutation.isPending || needsEmailVerification}
+                          title={needsEmailVerification ? "Önce e-postanızı doğrulayın" : undefined}
                           onClick={() => {
+                            if (needsEmailVerification) {
+                              window.alert(
+                                "Alarmı güncellemek için önce e-postanızı doğrulayın. Hesabım sayfasından devam edebilirsiniz.",
+                              );
+                              return;
+                            }
                             const next = window.prompt(
                               "Yeni hedef fiyat (TL)",
                               String(alert.targetPrice),
@@ -147,13 +182,20 @@ export default function AlertsPage() {
                           type="button"
                           className="btn-ghost"
                           style={{ fontSize: "0.8rem" }}
-                          disabled={updateMutation.isPending}
-                          onClick={() =>
+                          disabled={updateMutation.isPending || needsEmailVerification}
+                          title={needsEmailVerification ? "Önce e-postanızı doğrulayın" : undefined}
+                          onClick={() => {
+                            if (needsEmailVerification) {
+                              window.alert(
+                                "Alarmı güncellemek için önce e-postanızı doğrulayın. Hesabım sayfasından devam edebilirsiniz.",
+                              );
+                              return;
+                            }
                             updateMutation.mutate({
                               id: alert.id,
                               isActive: !alert.isActive
-                            })
-                          }
+                            });
+                          }}
                         >
                           {alert.isActive ? "Pasifleştir" : "Aktifleştir"}
                         </button>

@@ -47,12 +47,15 @@ function toSpecsRecord(specsJson: unknown): Product["specs"] | undefined {
   const obj = specsJson as Record<string, unknown>;
   const entries = Object.entries(obj).filter(([_, v]) => typeof v !== "undefined");
   if (entries.length === 0) return undefined;
-  return entries.reduce<Product["specs"]>((acc, [k, v]) => {
-    if (typeof v === "string" || typeof v === "number" || typeof v === "boolean" || v === null) {
-      acc[k] = v;
-    }
-    return acc;
-  }, {} as Record<string, string | number | boolean | null | undefined>);
+  return entries.reduce(
+    (acc: NonNullable<Product["specs"]>, [k, v]) => {
+      if (typeof v === "string" || typeof v === "number" || typeof v === "boolean" || v === null) {
+        acc[k] = v;
+      }
+      return acc;
+    },
+    {} as NonNullable<Product["specs"]>,
+  );
 }
 
 type BackendProduct = {
@@ -80,6 +83,12 @@ type BackendOffer = {
   originalPrice?: unknown | null;
   currency: string;
   affiliateUrl?: string | null;
+  lastSeenAt?: string | null;
+  updatedAt?: string;
+  inStock?: boolean;
+  status?: string;
+  listDiscountPercent?: number | null;
+  storefrontListDiscountEligible?: boolean;
   store: {
     name: string;
   };
@@ -144,7 +153,14 @@ function computeOldPriceFromOffers(offers: BackendOffer[]): {
   const currentPrice = bestCurrent.current;
 
   const oldVal = bestCurrent.o.originalPrice == null ? null : toNumber(bestCurrent.o.originalPrice);
-  if (oldVal == null || oldVal <= 0 || currentPrice >= oldVal) {
+  const eligible = bestCurrent.o.storefrontListDiscountEligible === true;
+  if (
+    !eligible ||
+    oldVal == null ||
+    oldVal <= 0 ||
+    currentPrice >= oldVal ||
+    bestCurrent.o.status != null && bestCurrent.o.status !== "ACTIVE"
+  ) {
     return { oldPrice: null, priceDropPercent: null, bestOffer, bestCurrentPrice: currentPrice, bestCurrency };
   }
 
@@ -279,7 +295,7 @@ export async function fetchProductsList({
         }
       }
 
-      return mapped;
+      return mapped as Product[];
     }
 
     // deals (price-drop) için karttaki eski fiyat + yüzdeyi hesapla.
@@ -305,7 +321,7 @@ export async function fetchProductsList({
             priceDropPercent: null,
             storeCount: offers.length || p.offerCountCache || 0,
             specs: toSpecsRecord(p.specsJson),
-            dataSource: "backend",
+            dataSource: "backend" as const
           });
         } else {
           const reason = !oldPrice?.amount ? "missing originalPrice/oldPrice" : "missing required values";

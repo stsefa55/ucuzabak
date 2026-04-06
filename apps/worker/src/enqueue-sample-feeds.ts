@@ -1,13 +1,11 @@
+import { bullmqConnectionProducer } from "@ucuzabak/shared";
 import { Queue } from "bullmq";
 import { FeedStatus, FeedType } from "@prisma/client";
 import { prisma } from "./prisma";
 
 async function main() {
-  const redisHost = process.env.REDIS_HOST || "localhost";
-  const redisPort = Number(process.env.REDIS_PORT || 6379);
-
   const queue = new Queue("feed-import", {
-    connection: { host: redisHost, port: redisPort }
+    connection: bullmqConnectionProducer()
   });
 
   // Ensure stores exist or create simple ones

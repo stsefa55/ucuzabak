@@ -2,17 +2,37 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { Heart } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { apiFetch } from "../../lib/api-client";
+import {
+  GUEST_FAVORITES_UPDATED_EVENT,
+  isGuestFavoriteSlug,
+  toggleGuestFavoriteSlug
+} from "../../lib/guest-favorites";
 import { useAuthStore } from "../../stores/auth-store";
 
 interface Props {
   productId: number;
+  /** Giriş yokken yerel favori için canonical ürün slug (detay sayfası) */
+  productSlug?: string;
+  /** Ürün kartı sağ üst: sadece buton */
+  compact?: boolean;
 }
 
-export function ProductFavoriteSection({ productId }: Props) {
+export function ProductFavoriteSection({ productId, productSlug, compact = false }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { accessToken } = useAuthStore();
+  const [guestRev, setGuestRev] = useState(0);
+
+  useEffect(() => {
+    const on = () => setGuestRev((n) => n + 1);
+    window.addEventListener(GUEST_FAVORITES_UPDATED_EVENT, on);
+    return () => window.removeEventListener(GUEST_FAVORITES_UPDATED_EVENT, on);
+  }, []);
+
+  const guestIsFavorite = !accessToken && productSlug ? isGuestFavoriteSlug(productSlug) : false;
 
   const favoritesQuery = useQuery({
     queryKey: ["favorites"],
@@ -23,12 +43,13 @@ export function ProductFavoriteSection({ productId }: Props) {
     }
   });
 
-  const isFavorite = !!favoritesQuery.data?.some((f) => f.productId === productId);
+  const serverFavorite = !!favoritesQuery.data?.some((f) => f.productId === productId);
+  const isFavorite = accessToken ? serverFavorite : guestIsFavorite;
 
   const mutation = useMutation({
     mutationFn: async () => {
       if (!accessToken) throw new Error("UNAUTHENTICATED");
-      if (isFavorite) {
+      if (serverFavorite) {
         return apiFetch(`/me/favorites/${productId}`, {
           method: "DELETE",
           accessToken
@@ -49,7 +70,7 @@ export function ProductFavoriteSection({ productId }: Props) {
         return { previous };
       }
 
-      const next = isFavorite
+      const next = serverFavorite
         ? previous.filter((f) => f.productId !== productId)
         : [...previous, { productId }];
 
@@ -67,13 +88,58 @@ export function ProductFavoriteSection({ productId }: Props) {
     }
   });
 
+  const handleGuestToggle = useCallback(() => {
+    if (!productSlug) {
+      router.push("/giris");
+      return;
+    }
+    toggleGuestFavoriteSlug(productSlug);
+    setGuestRev((n) => n + 1);
+  }, [productSlug, router]);
+
   const handleClick = () => {
     if (!accessToken) {
-      router.push("/giris");
+      handleGuestToggle();
       return;
     }
     mutation.mutate();
   };
+
+  if (compact) {
+    return (
+      <button
+        type="button"
+        className={
+          isFavorite
+            ? "product-detail-hero__fav-icon-btn product-detail-hero__fav-icon-btn--active"
+            : "product-detail-hero__fav-icon-btn"
+        }
+        onClick={handleClick}
+        disabled={mutation.isPending}
+        title={
+          !accessToken && !productSlug
+            ? "Favoriler için giriş yapın"
+            : isFavorite
+              ? "Favorilerden kaldır"
+              : "Favorilere ekle"
+        }
+        aria-label={
+          !accessToken && !productSlug
+            ? "Favoriler için giriş yapın"
+            : isFavorite
+              ? "Favorilerden kaldır"
+              : "Favorilere ekle"
+        }
+      >
+        <Heart
+          size={20}
+          strokeWidth={2}
+          fill={isFavorite ? "currentColor" : "none"}
+          aria-hidden
+        />
+      </button>
+    );
+  }
 
   return (
     <div>
@@ -90,10 +156,9 @@ export function ProductFavoriteSection({ productId }: Props) {
         {mutation.isPending
           ? "Güncelleniyor..."
           : isFavorite
-          ? "Favorilerden kaldır"
-          : "Favorilere ekle"}
+            ? "Favorilerden kaldır"
+            : "Favorilere ekle"}
       </button>
     </div>
   );
 }
-

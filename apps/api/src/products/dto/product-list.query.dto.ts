@@ -23,10 +23,24 @@ export class ProductListQueryDto extends PaginationQueryDto {
   @IsString()
   categorySlug?: string;
 
+  @ApiPropertyOptional({
+    description: "Çoklu kategori slug (CSV). Örn: tisort,pantolon"
+  })
+  @IsOptional()
+  @IsString()
+  categorySlugs?: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   brandSlug?: string;
+
+  @ApiPropertyOptional({
+    description: "Çoklu marka slug (CSV). Örn: nike,adidas"
+  })
+  @IsOptional()
+  @IsString()
+  brandSlugs?: string;
 
   @ApiPropertyOptional()
   @Type(() => Number)

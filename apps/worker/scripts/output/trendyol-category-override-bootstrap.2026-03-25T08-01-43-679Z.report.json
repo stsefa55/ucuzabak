@@ -1,0 +1,2996 @@
+{
+  "source": "trendyol",
+  "file": "C:\\Users\\DELL\\Desktop\\ucuzabakcom\\apps\\worker\\imports\\pending\\trendyol_2026-03-23_17-27-47.json",
+  "totalItems": 63492,
+  "unmappableUnique": 1117,
+  "consideredMinCount": 100,
+  "consideredTop": 220,
+  "safeCount": 8,
+  "riskyCount": 49,
+  "unresolvedCount": 139,
+  "safe": [
+    {
+      "key": "kedi ödülü",
+      "categoryText": "Kedi Ödülü",
+      "count": 100,
+      "normalizedKey": "kedi odulu",
+      "topCandidates": [
+        {
+          "categoryId": 619,
+          "categoryName": "Kedi",
+          "categorySlug": "pet-shop-kedi",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 619,
+      "selectedCategorySlug": "pet-shop-kedi",
+      "selectedCategoryName": "Kedi",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    },
+    {
+      "key": "köpek ödülü",
+      "categoryText": "Köpek Ödülü",
+      "count": 100,
+      "normalizedKey": "kopek odulu",
+      "topCandidates": [
+        {
+          "categoryId": 622,
+          "categoryName": "Köpek",
+          "categorySlug": "pet-shop-kopek",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 622,
+      "selectedCategorySlug": "pet-shop-kopek",
+      "selectedCategoryName": "Köpek",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    },
+    {
+      "key": "yemek odası takımı",
+      "categoryText": "Yemek Odası Takımı",
+      "count": 100,
+      "normalizedKey": "yemek odasi takimi",
+      "topCandidates": [
+        {
+          "categoryId": 79,
+          "categoryName": "Yemek Odası",
+          "categorySlug": "mobilya-yemek-odasi",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 79,
+      "selectedCategorySlug": "mobilya-yemek-odasi",
+      "selectedCategoryName": "Yemek Odası",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    },
+    {
+      "key": "kedi tuvaleti",
+      "categoryText": "Kedi Tuvaleti",
+      "count": 100,
+      "normalizedKey": "kedi tuvaleti",
+      "topCandidates": [
+        {
+          "categoryId": 619,
+          "categoryName": "Kedi",
+          "categorySlug": "pet-shop-kedi",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 619,
+      "selectedCategorySlug": "pet-shop-kedi",
+      "selectedCategoryName": "Kedi",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    },
+    {
+      "key": "bisiklet aksesuarı",
+      "categoryText": "Bisiklet Aksesuarı",
+      "count": 100,
+      "normalizedKey": "bisiklet aksesuari",
+      "topCandidates": [
+        {
+          "categoryId": 45,
+          "categoryName": "Bisiklet",
+          "categorySlug": "bisiklet",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 45,
+      "selectedCategorySlug": "bisiklet",
+      "selectedCategoryName": "Bisiklet",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    },
+    {
+      "key": "bilgisayar oyunu",
+      "categoryText": "Bilgisayar Oyunu",
+      "count": 100,
+      "normalizedKey": "bilgisayar oyunu",
+      "topCandidates": [
+        {
+          "categoryId": 466,
+          "categoryName": "Bilgisayar",
+          "categorySlug": "elektronik-bilgisayar",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 466,
+      "selectedCategorySlug": "elektronik-bilgisayar",
+      "selectedCategoryName": "Bilgisayar",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    },
+    {
+      "key": "blender seti",
+      "categoryText": "Blender Seti",
+      "count": 100,
+      "normalizedKey": "blender seti",
+      "topCandidates": [
+        {
+          "categoryId": 521,
+          "categoryName": "Blender",
+          "categorySlug": "ev-yasam-mutfak-aletleri-blender",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 521,
+      "selectedCategorySlug": "ev-yasam-mutfak-aletleri-blender",
+      "selectedCategoryName": "Blender",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    },
+    {
+      "key": "biberon ısıtıcı ve sterilizatör",
+      "categoryText": "Biberon Isıtıcı ve Sterilizatör",
+      "count": 100,
+      "normalizedKey": "biberon isitici ve sterilizator",
+      "topCandidates": [
+        {
+          "categoryId": 566,
+          "categoryName": "Biberon",
+          "categorySlug": "anne-bebek-biberon-ve-emzik-biberon",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 566,
+      "selectedCategorySlug": "anne-bebek-biberon-ve-emzik-biberon",
+      "selectedCategoryName": "Biberon",
+      "confidence": 0.9,
+      "reason": "safe_auto"
+    }
+  ],
+  "risky": [
+    {
+      "key": "kar botu",
+      "categoryText": "Kar Botu",
+      "count": 250,
+      "normalizedKey": "kar botu",
+      "topCandidates": [
+        {
+          "categoryId": 124,
+          "categoryName": "Bot",
+          "categorySlug": "ayakkabi-canta-bot-ve-cizme-bot",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 124,
+      "selectedCategorySlug": "ayakkabi-canta-bot-ve-cizme-bot",
+      "selectedCategoryName": "Bot",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "sınav hazırlık",
+      "categoryText": "Sınav Hazırlık",
+      "count": 121,
+      "normalizedKey": "sinav hazirlik",
+      "topCandidates": [
+        {
+          "categoryId": 408,
+          "categoryName": "Sınav Hazırlık",
+          "categorySlug": "kitap-muzik-film-yabanci-dil-sinav-hazirlik",
+          "score": 1
+        },
+        {
+          "categoryId": 673,
+          "categoryName": "Sınav Hazırlık",
+          "categorySlug": "kitap-muzik-film-egitim-sinav-hazirlik",
+          "score": 1
+        }
+      ],
+      "selectedCategoryId": 408,
+      "selectedCategorySlug": "kitap-muzik-film-yabanci-dil-sinav-hazirlik",
+      "selectedCategoryName": "Sınav Hazırlık",
+      "confidence": 1,
+      "reason": "needs_review"
+    },
+    {
+      "key": "yabancı dil eğitimi",
+      "categoryText": "Yabancı Dil Eğitimi",
+      "count": 121,
+      "normalizedKey": "yabanci dil egitimi",
+      "topCandidates": [
+        {
+          "categoryId": 406,
+          "categoryName": "Yabancı Dil",
+          "categorySlug": "kitap-muzik-film-yabanci-dil",
+          "score": 0.9
+        },
+        {
+          "categoryId": 672,
+          "categoryName": "Eğitim",
+          "categorySlug": "kitap-muzik-film-egitim",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 406,
+      "selectedCategorySlug": "kitap-muzik-film-yabanci-dil",
+      "selectedCategoryName": "Yabancı Dil",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "bebek bakım çantası",
+      "categoryText": "Bebek Bakım Çantası",
+      "count": 105,
+      "normalizedKey": "bebek bakim cantasi",
+      "topCandidates": [
+        {
+          "categoryId": 126,
+          "categoryName": "Çanta",
+          "categorySlug": "ayakkabi-canta-canta",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 126,
+      "selectedCategorySlug": "ayakkabi-canta-canta",
+      "selectedCategoryName": "Çanta",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "oyuncu masaüstü bilgisayarı",
+      "categoryText": "Oyuncu Masaüstü Bilgisayarı",
+      "count": 104,
+      "normalizedKey": "oyuncu masaustu bilgisayari",
+      "topCandidates": [
+        {
+          "categoryId": 466,
+          "categoryName": "Bilgisayar",
+          "categorySlug": "elektronik-bilgisayar",
+          "score": 0.85
+        },
+        {
+          "categoryId": 467,
+          "categoryName": "Masaüstü Bilgisayar",
+          "categorySlug": "elektronik-bilgisayar-masaustu-bilgisayar",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 466,
+      "selectedCategorySlug": "elektronik-bilgisayar",
+      "selectedCategoryName": "Bilgisayar",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "araç içi telefon tutucu",
+      "categoryText": "Araç İçi Telefon Tutucu",
+      "count": 104,
+      "normalizedKey": "arac ici telefon tutucu",
+      "topCandidates": [
+        {
+          "categoryId": 451,
+          "categoryName": "Ütü",
+          "categorySlug": "ev-yasam-utu",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 451,
+      "selectedCategorySlug": "ev-yasam-utu",
+      "selectedCategoryName": "Ütü",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "dijital fotoğraf makinesi",
+      "categoryText": "Dijital Fotoğraf Makinesi",
+      "count": 102,
+      "normalizedKey": "dijital fotograf makinesi",
+      "topCandidates": [
+        {
+          "categoryId": 488,
+          "categoryName": "Fotoğraf Makinesi",
+          "categorySlug": "elektronik-kamera-ve-fotograf-fotograf-makinesi",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 488,
+      "selectedCategorySlug": "elektronik-kamera-ve-fotograf-fotograf-makinesi",
+      "selectedCategoryName": "Fotoğraf Makinesi",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "dudak kalemi",
+      "categoryText": "Dudak Kalemi",
+      "count": 101,
+      "normalizedKey": "dudak kalemi",
+      "topCandidates": [
+        {
+          "categoryId": 57,
+          "categoryName": "Kalem",
+          "categorySlug": "kalem",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 57,
+      "selectedCategorySlug": "kalem",
+      "selectedCategoryName": "Kalem",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "sağlıklı atıştırmalık",
+      "categoryText": "Sağlıklı Atıştırmalık",
+      "count": 101,
+      "normalizedKey": "saglikli atistirmalik",
+      "topCandidates": [
+        {
+          "categoryId": 70,
+          "categoryName": "Atıştırmalık",
+          "categorySlug": "atistirmalik",
+          "score": 0.85
+        },
+        {
+          "categoryId": 186,
+          "categoryName": "Sağlık",
+          "categorySlug": "saglik",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 70,
+      "selectedCategorySlug": "atistirmalik",
+      "selectedCategoryName": "Atıştırmalık",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "sporcu saç bandı",
+      "categoryText": "Sporcu Saç Bandı",
+      "count": 100,
+      "normalizedKey": "sporcu sac bandi",
+      "topCandidates": [
+        {
+          "categoryId": 223,
+          "categoryName": "Saç Bandı",
+          "categorySlug": "taki-aksesuar-sac-aksesuarlari-sac-bandi",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 223,
+      "selectedCategorySlug": "taki-aksesuar-sac-aksesuarlari-sac-bandi",
+      "selectedCategoryName": "Saç Bandı",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "dambıl & ağırlık plakası",
+      "categoryText": "Dambıl & Ağırlık Plakası",
+      "count": 100,
+      "normalizedKey": "dambil ve agirlik plakasi",
+      "topCandidates": [
+        {
+          "categoryId": 334,
+          "categoryName": "Dambıl & Ağırlık",
+          "categorySlug": "fitness-aksesuarlar-dambil-ve-agirlik",
+          "score": 0.9
+        },
+        {
+          "categoryId": 676,
+          "categoryName": "Plak",
+          "categorySlug": "kitap-muzik-film-muzik-plak",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 334,
+      "selectedCategorySlug": "fitness-aksesuarlar-dambil-ve-agirlik",
+      "selectedCategoryName": "Dambıl & Ağırlık",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "oto kokusu",
+      "categoryText": "Oto Kokusu",
+      "count": 100,
+      "normalizedKey": "oto kokusu",
+      "topCandidates": [
+        {
+          "categoryId": 260,
+          "categoryName": "Kuş",
+          "categorySlug": "pet-shop-kus",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 260,
+      "selectedCategorySlug": "pet-shop-kus",
+      "selectedCategoryName": "Kuş",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "çadır uyku tulumu",
+      "categoryText": "Çadır Uyku Tulumu",
+      "count": 100,
+      "normalizedKey": "cadir uyku tulumu",
+      "topCandidates": [
+        {
+          "categoryId": 573,
+          "categoryName": "Tulum",
+          "categorySlug": "anne-bebek-bebek-giyim-tulum",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 573,
+      "selectedCategorySlug": "anne-bebek-bebek-giyim-tulum",
+      "selectedCategoryName": "Tulum",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "org",
+      "categoryText": "Org",
+      "count": 100,
+      "normalizedKey": "org",
+      "topCandidates": [
+        {
+          "categoryId": 85,
+          "categoryName": "Depolama & Organizasyon",
+          "categorySlug": "mobilya-depolama-ve-organizasyon",
+          "score": 0.85
+        },
+        {
+          "categoryId": 165,
+          "categoryName": "Makrome & Örgü Seti",
+          "categorySlug": "oyun-hobi-el-sanatlari-makrome-ve-orgu-seti",
+          "score": 0.85
+        },
+        {
+          "categoryId": 305,
+          "categoryName": "Yastık & Yorgan",
+          "categorySlug": "ev-tekstili-yastik-ve-yorgan",
+          "score": 0.85
+        },
+        {
+          "categoryId": 333,
+          "categoryName": "Oda Tekstili & Organizer",
+          "categorySlug": "bebek-odasi-oda-tekstili-ve-organizer",
+          "score": 0.85
+        },
+        {
+          "categoryId": 346,
+          "categoryName": "Araç İçi Organizer",
+          "categorySlug": "oto-aksesuarlar-arac-i-ci-organizer",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 85,
+      "selectedCategorySlug": "mobilya-depolama-ve-organizasyon",
+      "selectedCategoryName": "Depolama & Organizasyon",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "akvaryum balık yemi",
+      "categoryText": "Akvaryum Balık Yemi",
+      "count": 100,
+      "normalizedKey": "akvaryum balik yemi",
+      "topCandidates": [
+        {
+          "categoryId": 628,
+          "categoryName": "Balık Yemi",
+          "categorySlug": "pet-shop-balik-ve-akvaryum-balik-yemi",
+          "score": 0.96
+        },
+        {
+          "categoryId": 261,
+          "categoryName": "Akvaryum",
+          "categorySlug": "pet-shop-akvaryum",
+          "score": 0.9
+        },
+        {
+          "categoryId": 627,
+          "categoryName": "Akvaryum",
+          "categorySlug": "pet-shop-balik-ve-akvaryum-akvaryum",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 628,
+      "selectedCategorySlug": "pet-shop-balik-ve-akvaryum-balik-yemi",
+      "selectedCategoryName": "Balık Yemi",
+      "confidence": 0.96,
+      "reason": "needs_review"
+    },
+    {
+      "key": "suluk & matara",
+      "categoryText": "Suluk & Matara",
+      "count": 100,
+      "normalizedKey": "suluk ve matara",
+      "topCandidates": [
+        {
+          "categoryId": 606,
+          "categoryName": "Matara",
+          "categorySlug": "spor-outdoor-outdoor-ekipman-matara",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 606,
+      "selectedCategorySlug": "spor-outdoor-outdoor-ekipman-matara",
+      "selectedCategoryName": "Matara",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "motosiklet ayakkabı & bot",
+      "categoryText": "Motosiklet Ayakkabı & Bot",
+      "count": 100,
+      "normalizedKey": "motosiklet ayakkabi ve bot",
+      "topCandidates": [
+        {
+          "categoryId": 445,
+          "categoryName": "Motosiklet",
+          "categorySlug": "otomotiv-motosiklet",
+          "score": 0.9
+        },
+        {
+          "categoryId": 124,
+          "categoryName": "Bot",
+          "categorySlug": "ayakkabi-canta-bot-ve-cizme-bot",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 445,
+      "selectedCategorySlug": "otomotiv-motosiklet",
+      "selectedCategoryName": "Motosiklet",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "paspas ve mop",
+      "categoryText": "Paspas ve Mop",
+      "count": 100,
+      "normalizedKey": "paspas ve mop",
+      "topCandidates": [
+        {
+          "categoryId": 461,
+          "categoryName": "Mop",
+          "categorySlug": "ev-yasam-temizlik-gerecleri-mop",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 461,
+      "selectedCategorySlug": "ev-yasam-temizlik-gerecleri-mop",
+      "selectedCategoryName": "Mop",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kuru şampuan",
+      "categoryText": "Kuru Şampuan",
+      "count": 100,
+      "normalizedKey": "kuru sampuan",
+      "topCandidates": [
+        {
+          "categoryId": 380,
+          "categoryName": "Şampuan",
+          "categorySlug": "pet-bakim-sampuan",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 380,
+      "selectedCategorySlug": "pet-bakim-sampuan",
+      "selectedCategoryName": "Şampuan",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "yüz temizleyici",
+      "categoryText": "Yüz Temizleyici",
+      "count": 100,
+      "normalizedKey": "yuz temizleyici",
+      "topCandidates": [
+        {
+          "categoryId": 312,
+          "categoryName": "Temizleyici",
+          "categorySlug": "cilt-bakimi-temizleyici",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 312,
+      "selectedCategorySlug": "cilt-bakimi-temizleyici",
+      "selectedCategoryName": "Temizleyici",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kumandalı oyuncak",
+      "categoryText": "Kumandalı Oyuncak",
+      "count": 100,
+      "normalizedKey": "kumandali oyuncak",
+      "topCandidates": [
+        {
+          "categoryId": 574,
+          "categoryName": "Oyuncak",
+          "categorySlug": "anne-bebek-oyuncak",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 574,
+      "selectedCategorySlug": "anne-bebek-oyuncak",
+      "selectedCategoryName": "Oyuncak",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "göz kalemi",
+      "categoryText": "Göz Kalemi",
+      "count": 100,
+      "normalizedKey": "goz kalemi",
+      "topCandidates": [
+        {
+          "categoryId": 57,
+          "categoryName": "Kalem",
+          "categorySlug": "kalem",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 57,
+      "selectedCategorySlug": "kalem",
+      "selectedCategoryName": "Kalem",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kek",
+      "categoryText": "Kek",
+      "count": 100,
+      "normalizedKey": "kek",
+      "topCandidates": [
+        {
+          "categoryId": 95,
+          "categoryName": "Erkek Giyim",
+          "categorySlug": "moda-erkek-giyim",
+          "score": 0.85
+        },
+        {
+          "categoryId": 114,
+          "categoryName": "Erkek Ayakkabı",
+          "categorySlug": "ayakkabi-canta-erkek-ayakkabi",
+          "score": 0.85
+        },
+        {
+          "categoryId": 418,
+          "categoryName": "Erkek Aksesuar",
+          "categorySlug": "taki-aksesuar-erkek-aksesuar",
+          "score": 0.85
+        },
+        {
+          "categoryId": 423,
+          "categoryName": "Erkek Güneş Gözlüğü",
+          "categorySlug": "taki-aksesuar-gunes-gozlugu-erkek-gunes-gozlugu",
+          "score": 0.85
+        },
+        {
+          "categoryId": 550,
+          "categoryName": "Tıraş & Erkek Bakım",
+          "categorySlug": "kisisel-bakim-tiras-ve-erkek-bakim",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 95,
+      "selectedCategorySlug": "moda-erkek-giyim",
+      "selectedCategoryName": "Erkek Giyim",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "biberon emzik temizleyici",
+      "categoryText": "Biberon Emzik Temizleyici",
+      "count": 100,
+      "normalizedKey": "biberon emzik temizleyici",
+      "topCandidates": [
+        {
+          "categoryId": 566,
+          "categoryName": "Biberon",
+          "categorySlug": "anne-bebek-biberon-ve-emzik-biberon",
+          "score": 0.9
+        },
+        {
+          "categoryId": 312,
+          "categoryName": "Temizleyici",
+          "categorySlug": "cilt-bakimi-temizleyici",
+          "score": 0.85
+        },
+        {
+          "categoryId": 567,
+          "categoryName": "Emzik",
+          "categorySlug": "anne-bebek-biberon-ve-emzik-emzik",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 566,
+      "selectedCategorySlug": "anne-bebek-biberon-ve-emzik-biberon",
+      "selectedCategoryName": "Biberon",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kedi konserve maması",
+      "categoryText": "Kedi Konserve Maması",
+      "count": 100,
+      "normalizedKey": "kedi konserve mamasi",
+      "topCandidates": [
+        {
+          "categoryId": 619,
+          "categoryName": "Kedi",
+          "categorySlug": "pet-shop-kedi",
+          "score": 0.9
+        },
+        {
+          "categoryId": 635,
+          "categoryName": "Mama",
+          "categorySlug": "pet-shop-mama",
+          "score": 0.85
+        },
+        {
+          "categoryId": 60,
+          "categoryName": "Kedi Maması",
+          "categorySlug": "kedi-mamasi",
+          "score": 0.6133333333333333
+        },
+        {
+          "categoryId": 620,
+          "categoryName": "Kedi Maması",
+          "categorySlug": "pet-shop-kedi-kedi-mamasi",
+          "score": 0.6133333333333333
+        }
+      ],
+      "selectedCategoryId": 619,
+      "selectedCategorySlug": "pet-shop-kedi",
+      "selectedCategoryName": "Kedi",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "e-kitap okuyucu",
+      "categoryText": "E-Kitap Okuyucu",
+      "count": 100,
+      "normalizedKey": "e kitap okuyucu",
+      "topCandidates": [
+        {
+          "categoryId": 403,
+          "categoryName": "Kitap",
+          "categorySlug": "kitap-muzik-film-kitap",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 403,
+      "selectedCategorySlug": "kitap-muzik-film-kitap",
+      "selectedCategoryName": "Kitap",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "süt arttırıcı içecek",
+      "categoryText": "Süt Arttırıcı İçecek",
+      "count": 100,
+      "normalizedKey": "sut arttirici icecek",
+      "topCandidates": [
+        {
+          "categoryId": 67,
+          "categoryName": "İçecek",
+          "categorySlug": "icecek",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 67,
+      "selectedCategorySlug": "icecek",
+      "selectedCategoryName": "İçecek",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "bebek şampuanı",
+      "categoryText": "Bebek Şampuanı",
+      "count": 100,
+      "normalizedKey": "bebek sampuani",
+      "topCandidates": [
+        {
+          "categoryId": 380,
+          "categoryName": "Şampuan",
+          "categorySlug": "pet-bakim-sampuan",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 380,
+      "selectedCategorySlug": "pet-bakim-sampuan",
+      "selectedCategoryName": "Şampuan",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "motosiklet çantası",
+      "categoryText": "Motosiklet Çantası",
+      "count": 100,
+      "normalizedKey": "motosiklet cantasi",
+      "topCandidates": [
+        {
+          "categoryId": 445,
+          "categoryName": "Motosiklet",
+          "categorySlug": "otomotiv-motosiklet",
+          "score": 0.9
+        },
+        {
+          "categoryId": 126,
+          "categoryName": "Çanta",
+          "categorySlug": "ayakkabi-canta-canta",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 445,
+      "selectedCategorySlug": "otomotiv-motosiklet",
+      "selectedCategoryName": "Motosiklet",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "spor matara",
+      "categoryText": "Spor Matara",
+      "count": 100,
+      "normalizedKey": "spor matara",
+      "topCandidates": [
+        {
+          "categoryId": 606,
+          "categoryName": "Matara",
+          "categorySlug": "spor-outdoor-outdoor-ekipman-matara",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 606,
+      "selectedCategorySlug": "spor-outdoor-outdoor-ekipman-matara",
+      "selectedCategoryName": "Matara",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "bebek diş macunu",
+      "categoryText": "Bebek Diş Macunu",
+      "count": 100,
+      "normalizedKey": "bebek dis macunu",
+      "topCandidates": [
+        {
+          "categoryId": 316,
+          "categoryName": "Diş Macunu",
+          "categorySlug": "dis-bakimi-dis-macunu",
+          "score": 0.85
+        },
+        {
+          "categoryId": 318,
+          "categoryName": "Diş Macunu",
+          "categorySlug": "agiz-bakimi-dis-macunu",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 316,
+      "selectedCategorySlug": "dis-bakimi-dis-macunu",
+      "selectedCategoryName": "Diş Macunu",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "park yatak & oyun parkı",
+      "categoryText": "Park Yatak & Oyun Parkı",
+      "count": 100,
+      "normalizedKey": "park yatak ve oyun parki",
+      "topCandidates": [
+        {
+          "categoryId": 258,
+          "categoryName": "Yatak",
+          "categorySlug": "pet-shop-yatak",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 258,
+      "selectedCategorySlug": "pet-shop-yatak",
+      "selectedCategoryName": "Yatak",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "video kamera",
+      "categoryText": "Video Kamera",
+      "count": 100,
+      "normalizedKey": "video kamera",
+      "topCandidates": [
+        {
+          "categoryId": 16,
+          "categoryName": "Kamera",
+          "categorySlug": "kamera",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 16,
+      "selectedCategorySlug": "kamera",
+      "selectedCategoryName": "Kamera",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "oje",
+      "categoryText": "Oje",
+      "count": 100,
+      "normalizedKey": "oje",
+      "topCandidates": [
+        {
+          "categoryId": 434,
+          "categoryName": "Projeksiyon",
+          "categorySlug": "ofis-kirtasiye-ofis-elektronigi-projeksiyon",
+          "score": 0.85
+        },
+        {
+          "categoryId": 483,
+          "categoryName": "Projeksiyon",
+          "categorySlug": "elektronik-tv-ve-goruntu-projeksiyon",
+          "score": 0.85
+        },
+        {
+          "categoryId": 497,
+          "categoryName": "Projeksiyon Cihazı",
+          "categorySlug": "elektronik-ofis-elektronigi-projeksiyon-cihazi",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 434,
+      "selectedCategorySlug": "ofis-kirtasiye-ofis-elektronigi-projeksiyon",
+      "selectedCategoryName": "Projeksiyon",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kedi ve köpek yatağı",
+      "categoryText": "Kedi ve Köpek Yatağı",
+      "count": 100,
+      "normalizedKey": "kedi ve kopek yatagi",
+      "topCandidates": [
+        {
+          "categoryId": 619,
+          "categoryName": "Kedi",
+          "categorySlug": "pet-shop-kedi",
+          "score": 0.9
+        },
+        {
+          "categoryId": 265,
+          "categoryName": "Köpek Yatağı",
+          "categorySlug": "pet-shop-yatak-kopek-yatagi",
+          "score": 0.85
+        },
+        {
+          "categoryId": 622,
+          "categoryName": "Köpek",
+          "categorySlug": "pet-shop-kopek",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 619,
+      "selectedCategorySlug": "pet-shop-kedi",
+      "selectedCategoryName": "Kedi",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "top",
+      "categoryText": "Top",
+      "count": 100,
+      "normalizedKey": "top",
+      "topCandidates": [
+        {
+          "categoryId": 12,
+          "categoryName": "Laptop",
+          "categorySlug": "laptop",
+          "score": 0.85
+        },
+        {
+          "categoryId": 112,
+          "categoryName": "Topuklu Ayakkabı",
+          "categorySlug": "ayakkabi-canta-kadin-ayakkabi-topuklu-ayakkabi",
+          "score": 0.85
+        },
+        {
+          "categoryId": 193,
+          "categoryName": "Ortopedik Ürünler",
+          "categorySlug": "saglik-ortopedik-urunler",
+          "score": 0.85
+        },
+        {
+          "categoryId": 274,
+          "categoryName": "Laptop Çantaları",
+          "categorySlug": "laptop-laptop-cantalari",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 12,
+      "selectedCategorySlug": "laptop",
+      "selectedCategoryName": "Laptop",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "elektrikli bisiklet",
+      "categoryText": "Elektrikli Bisiklet",
+      "count": 100,
+      "normalizedKey": "elektrikli bisiklet",
+      "topCandidates": [
+        {
+          "categoryId": 45,
+          "categoryName": "Bisiklet",
+          "categorySlug": "bisiklet",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 45,
+      "selectedCategorySlug": "bisiklet",
+      "selectedCategoryName": "Bisiklet",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "akülü vidalama",
+      "categoryText": "Akülü Vidalama",
+      "count": 100,
+      "normalizedKey": "akulu vidalama",
+      "topCandidates": [
+        {
+          "categoryId": 439,
+          "categoryName": "Akü",
+          "categorySlug": "otomotiv-aku",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 439,
+      "selectedCategorySlug": "otomotiv-aku",
+      "selectedCategoryName": "Akü",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kedi kumu",
+      "categoryText": "Kedi Kumu",
+      "count": 100,
+      "normalizedKey": "kedi kumu",
+      "topCandidates": [
+        {
+          "categoryId": 374,
+          "categoryName": "Kedi Kumu",
+          "categorySlug": "kum-hijyen-kedi-kumu",
+          "score": 1
+        },
+        {
+          "categoryId": 621,
+          "categoryName": "Kedi Kumu",
+          "categorySlug": "pet-shop-kedi-kedi-kumu",
+          "score": 1
+        },
+        {
+          "categoryId": 619,
+          "categoryName": "Kedi",
+          "categorySlug": "pet-shop-kedi",
+          "score": 0.9
+        }
+      ],
+      "selectedCategoryId": 374,
+      "selectedCategorySlug": "kum-hijyen-kedi-kumu",
+      "selectedCategoryName": "Kedi Kumu",
+      "confidence": 1,
+      "reason": "needs_review"
+    },
+    {
+      "key": "köpek kuru maması",
+      "categoryText": "Köpek Kuru Maması",
+      "count": 100,
+      "normalizedKey": "kopek kuru mamasi",
+      "topCandidates": [
+        {
+          "categoryId": 372,
+          "categoryName": "Kuru Köpek Maması",
+          "categorySlug": "kopek-mamasi-kuru-kopek-mamasi",
+          "score": 0.92
+        },
+        {
+          "categoryId": 622,
+          "categoryName": "Köpek",
+          "categorySlug": "pet-shop-kopek",
+          "score": 0.9
+        },
+        {
+          "categoryId": 370,
+          "categoryName": "Kuru Mama",
+          "categorySlug": "kedi-mamasi-kuru-mama",
+          "score": 0.85
+        },
+        {
+          "categoryId": 635,
+          "categoryName": "Mama",
+          "categorySlug": "pet-shop-mama",
+          "score": 0.85
+        },
+        {
+          "categoryId": 636,
+          "categoryName": "Kuru Mama",
+          "categorySlug": "pet-shop-mama-kuru-mama",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 372,
+      "selectedCategorySlug": "kopek-mamasi-kuru-kopek-mamasi",
+      "selectedCategoryName": "Kuru Köpek Maması",
+      "confidence": 0.92,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kaşık maması",
+      "categoryText": "Kaşık Maması",
+      "count": 100,
+      "normalizedKey": "kasik mamasi",
+      "topCandidates": [
+        {
+          "categoryId": 635,
+          "categoryName": "Mama",
+          "categorySlug": "pet-shop-mama",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 635,
+      "selectedCategorySlug": "pet-shop-mama",
+      "selectedCategoryName": "Mama",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kondisyon bisikleti",
+      "categoryText": "Kondisyon Bisikleti",
+      "count": 100,
+      "normalizedKey": "kondisyon bisikleti",
+      "topCandidates": [
+        {
+          "categoryId": 45,
+          "categoryName": "Bisiklet",
+          "categorySlug": "bisiklet",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 45,
+      "selectedCategorySlug": "bisiklet",
+      "selectedCategoryName": "Bisiklet",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "plaj çantası",
+      "categoryText": "Plaj Çantası",
+      "count": 100,
+      "normalizedKey": "plaj cantasi",
+      "topCandidates": [
+        {
+          "categoryId": 126,
+          "categoryName": "Çanta",
+          "categorySlug": "ayakkabi-canta-canta",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 126,
+      "selectedCategorySlug": "ayakkabi-canta-canta",
+      "selectedCategoryName": "Çanta",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "mini & midi fırın",
+      "categoryText": "Mini & Midi Fırın",
+      "count": 100,
+      "normalizedKey": "mini ve midi firin",
+      "topCandidates": [
+        {
+          "categoryId": 20,
+          "categoryName": "Fırın",
+          "categorySlug": "firin",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 20,
+      "selectedCategorySlug": "firin",
+      "selectedCategoryName": "Fırın",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "mikrodalga fırın",
+      "categoryText": "Mikrodalga Fırın",
+      "count": 100,
+      "normalizedKey": "mikrodalga firin",
+      "topCandidates": [
+        {
+          "categoryId": 499,
+          "categoryName": "Mikrodalga",
+          "categorySlug": "beyaz-esya-mikrodalga",
+          "score": 0.9
+        },
+        {
+          "categoryId": 20,
+          "categoryName": "Fırın",
+          "categorySlug": "firin",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 499,
+      "selectedCategorySlug": "beyaz-esya-mikrodalga",
+      "selectedCategoryName": "Mikrodalga",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "tv ekran koruyucu",
+      "categoryText": "TV Ekran Koruyucu",
+      "count": 100,
+      "normalizedKey": "tv ekran koruyucu",
+      "topCandidates": [
+        {
+          "categoryId": 465,
+          "categoryName": "Ekran Koruyucu",
+          "categorySlug": "elektronik-telefon-aksesuarlari-ekran-koruyucu",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 465,
+      "selectedCategorySlug": "elektronik-telefon-aksesuarlari-ekran-koruyucu",
+      "selectedCategoryName": "Ekran Koruyucu",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "termal çanta",
+      "categoryText": "Termal Çanta",
+      "count": 100,
+      "normalizedKey": "termal canta",
+      "topCandidates": [
+        {
+          "categoryId": 126,
+          "categoryName": "Çanta",
+          "categorySlug": "ayakkabi-canta-canta",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 126,
+      "selectedCategorySlug": "ayakkabi-canta-canta",
+      "selectedCategoryName": "Çanta",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    },
+    {
+      "key": "kedi şampuanı",
+      "categoryText": "Kedi Şampuanı",
+      "count": 100,
+      "normalizedKey": "kedi sampuani",
+      "topCandidates": [
+        {
+          "categoryId": 619,
+          "categoryName": "Kedi",
+          "categorySlug": "pet-shop-kedi",
+          "score": 0.9
+        },
+        {
+          "categoryId": 380,
+          "categoryName": "Şampuan",
+          "categorySlug": "pet-bakim-sampuan",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 619,
+      "selectedCategorySlug": "pet-shop-kedi",
+      "selectedCategoryName": "Kedi",
+      "confidence": 0.9,
+      "reason": "needs_review"
+    },
+    {
+      "key": "akülü araç",
+      "categoryText": "Akülü Araç",
+      "count": 100,
+      "normalizedKey": "akulu arac",
+      "topCandidates": [
+        {
+          "categoryId": 439,
+          "categoryName": "Akü",
+          "categorySlug": "otomotiv-aku",
+          "score": 0.85
+        }
+      ],
+      "selectedCategoryId": 439,
+      "selectedCategorySlug": "otomotiv-aku",
+      "selectedCategoryName": "Akü",
+      "confidence": 0.85,
+      "reason": "needs_review"
+    }
+  ],
+  "unresolved": [
+    {
+      "key": "panduf",
+      "categoryText": "Panduf",
+      "count": 276,
+      "normalizedKey": "panduf",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "cüzdan",
+      "categoryText": "Cüzdan",
+      "count": 229,
+      "normalizedKey": "cuzdan",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "loafer ayakkabı",
+      "categoryText": "Loafer Ayakkabı",
+      "count": 208,
+      "normalizedKey": "loafer ayakkabi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "casual ayakkabı",
+      "categoryText": "Casual Ayakkabı",
+      "count": 174,
+      "normalizedKey": "casual ayakkabi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "krampon",
+      "categoryText": "Krampon",
+      "count": 167,
+      "normalizedKey": "krampon",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "dolap ve gardırop",
+      "categoryText": "Dolap ve Gardırop",
+      "count": 139,
+      "normalizedKey": "dolap ve gardirop",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kartlık",
+      "categoryText": "Kartlık",
+      "count": 123,
+      "normalizedKey": "kartlik",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "gümüş kolye",
+      "categoryText": "Gümüş Kolye",
+      "count": 122,
+      "normalizedKey": "gumus kolye",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "diğer baharat",
+      "categoryText": "Diğer Baharat",
+      "count": 120,
+      "normalizedKey": "diger baharat",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "oto paspas",
+      "categoryText": "Oto Paspas",
+      "count": 109,
+      "normalizedKey": "oto paspas",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "playstation 5",
+      "categoryText": "Playstation 5",
+      "count": 107,
+      "normalizedKey": "playstation 5",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "sh kaydı gerektirmeyen drone",
+      "categoryText": "SH Kaydı Gerektirmeyen Drone",
+      "count": 106,
+      "normalizedKey": "sh kaydi gerektirmeyen drone",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bakım yağı",
+      "categoryText": "Bakım Yağı",
+      "count": 104,
+      "normalizedKey": "bakim yagi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "el kremi",
+      "categoryText": "El Kremi",
+      "count": 104,
+      "normalizedKey": "el kremi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "klasik çakmak",
+      "categoryText": "Klasik Çakmak",
+      "count": 104,
+      "normalizedKey": "klasik cakmak",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kumaş",
+      "categoryText": "Kumaş",
+      "count": 103,
+      "normalizedKey": "kumas",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "ağız çalkalama suyu",
+      "categoryText": "Ağız Çalkalama Suyu",
+      "count": 102,
+      "normalizedKey": "agiz calkalama suyu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "led ışık",
+      "categoryText": "Led Işık",
+      "count": 102,
+      "normalizedKey": "led isik",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "fondöten",
+      "categoryText": "Fondöten",
+      "count": 102,
+      "normalizedKey": "fondoten",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kaş makası",
+      "categoryText": "Kaş Makası",
+      "count": 102,
+      "normalizedKey": "kas makasi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "cımbız",
+      "categoryText": "Cımbız",
+      "count": 102,
+      "normalizedKey": "cimbiz",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "zigon",
+      "categoryText": "Zigon",
+      "count": 102,
+      "normalizedKey": "zigon",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "uydu alıcı",
+      "categoryText": "Uydu Alıcı",
+      "count": 101,
+      "normalizedKey": "uydu alici",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "hediye sepeti",
+      "categoryText": "Hediye Sepeti",
+      "count": 101,
+      "normalizedKey": "hediye sepeti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "yürüteç",
+      "categoryText": "Yürüteç",
+      "count": 101,
+      "normalizedKey": "yurutec",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "amino asit",
+      "categoryText": "Amino Asit",
+      "count": 101,
+      "normalizedKey": "amino asit",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "yüz maskesi",
+      "categoryText": "Yüz Maskesi",
+      "count": 101,
+      "normalizedKey": "yuz maskesi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kapatıcı",
+      "categoryText": "Kapatıcı",
+      "count": 101,
+      "normalizedKey": "kapatici",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "sakız",
+      "categoryText": "Sakız",
+      "count": 101,
+      "normalizedKey": "sakiz",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "iç çamaşırı takımı",
+      "categoryText": "İç Çamaşırı Takımı",
+      "count": 101,
+      "normalizedKey": "ic camasiri takimi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "tavla",
+      "categoryText": "Tavla",
+      "count": 101,
+      "normalizedKey": "tavla",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "tartı",
+      "categoryText": "Tartı",
+      "count": 101,
+      "normalizedKey": "tarti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "tenis ayakkabısı",
+      "categoryText": "Tenis Ayakkabısı",
+      "count": 100,
+      "normalizedKey": "tenis ayakkabisi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "xbox konsolu",
+      "categoryText": "Xbox Konsolu",
+      "count": 100,
+      "normalizedKey": "xbox konsolu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "mesane pedi",
+      "categoryText": "Mesane Pedi",
+      "count": 100,
+      "normalizedKey": "mesane pedi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek güneş kremi",
+      "categoryText": "Bebek Güneş Kremi",
+      "count": 100,
+      "normalizedKey": "bebek gunes kremi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç açıcı sprey",
+      "categoryText": "Saç Açıcı Sprey",
+      "count": 100,
+      "normalizedKey": "sac acici sprey",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "diş ipi ve kürdanı",
+      "categoryText": "Diş İpi ve Kürdanı",
+      "count": 100,
+      "normalizedKey": "dis ipi ve kurdani",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "yoga minderi",
+      "categoryText": "Yoga Minderi",
+      "count": 100,
+      "normalizedKey": "yoga minderi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "fitness ayakkabısı",
+      "categoryText": "Fitness Ayakkabısı",
+      "count": 100,
+      "normalizedKey": "fitness ayakkabisi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "boks eldiveni",
+      "categoryText": "Boks Eldiveni",
+      "count": 100,
+      "normalizedKey": "boks eldiveni",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "dağcılık malzemesi",
+      "categoryText": "Dağcılık Malzemesi",
+      "count": 100,
+      "normalizedKey": "dagcilik malzemesi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç toniği",
+      "categoryText": "Saç Toniği",
+      "count": 100,
+      "normalizedKey": "sac tonigi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "çocuk bakımı & ebeveynlik",
+      "categoryText": "Çocuk Bakımı & Ebeveynlik",
+      "count": 100,
+      "normalizedKey": "cocuk bakimi ve ebeveynlik",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "gecelik",
+      "categoryText": "Gecelik",
+      "count": 100,
+      "normalizedKey": "gecelik",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kreatin",
+      "categoryText": "Kreatin",
+      "count": 100,
+      "normalizedKey": "kreatin",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "hazır çorba",
+      "categoryText": "Hazır Çorba",
+      "count": 100,
+      "normalizedKey": "hazir corba",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "sıvı yağ",
+      "categoryText": "Sıvı Yağ",
+      "count": 100,
+      "normalizedKey": "sivi yag",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek bakım seti",
+      "categoryText": "Bebek Bakım Seti",
+      "count": 100,
+      "normalizedKey": "bebek bakim seti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "çalışma istasyonu",
+      "categoryText": "Çalışma İstasyonu",
+      "count": 100,
+      "normalizedKey": "calisma istasyonu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "toz şeker",
+      "categoryText": "Toz Şeker",
+      "count": 100,
+      "normalizedKey": "toz seker",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "meyve kurusu",
+      "categoryText": "Meyve Kurusu",
+      "count": 100,
+      "normalizedKey": "meyve kurusu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç kesim makası",
+      "categoryText": "Saç Kesim Makası",
+      "count": 100,
+      "normalizedKey": "sac kesim makasi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "deneme & inceleme",
+      "categoryText": "Deneme & İnceleme",
+      "count": 100,
+      "normalizedKey": "deneme ve inceleme",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "oyuncu mouse",
+      "categoryText": "Oyuncu Mouse",
+      "count": 100,
+      "normalizedKey": "oyuncu mouse",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "ayak törpüsü",
+      "categoryText": "Ayak Törpüsü",
+      "count": 100,
+      "normalizedKey": "ayak torpusu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "pasta süsü",
+      "categoryText": "Pasta Süsü",
+      "count": 100,
+      "normalizedKey": "pasta susu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "güç & performans ürünü",
+      "categoryText": "Güç & Performans Ürünü",
+      "count": 100,
+      "normalizedKey": "guc ve performans urunu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "l-karnitin & cla",
+      "categoryText": "L-Karnitin & CLA",
+      "count": 100,
+      "normalizedKey": "l karnitin ve cla",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "spor yelek",
+      "categoryText": "Spor Yelek",
+      "count": 100,
+      "normalizedKey": "spor yelek",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "nakış kiti",
+      "categoryText": "Nakış Kiti",
+      "count": 100,
+      "normalizedKey": "nakis kiti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "powerbank",
+      "categoryText": "Powerbank",
+      "count": 100,
+      "normalizedKey": "powerbank",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "türk edebiyatı",
+      "categoryText": "Türk Edebiyatı",
+      "count": 100,
+      "normalizedKey": "turk edebiyati",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "takma tırnak & aksesuarı",
+      "categoryText": "Takma Tırnak & Aksesuarı",
+      "count": 100,
+      "normalizedKey": "takma tirnak ve aksesuari",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "su ısıtıcı & kettle",
+      "categoryText": "Su Isıtıcı & Kettle",
+      "count": 100,
+      "normalizedKey": "su isitici ve kettle",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "pudra",
+      "categoryText": "Pudra",
+      "count": 100,
+      "normalizedKey": "pudra",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "beşik",
+      "categoryText": "Beşik",
+      "count": 100,
+      "normalizedKey": "besik",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "örgü kiti",
+      "categoryText": "Örgü Kiti",
+      "count": 100,
+      "normalizedKey": "orgu kiti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "boks bandajı",
+      "categoryText": "Boks Bandajı",
+      "count": 100,
+      "normalizedKey": "boks bandaji",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kombinezon",
+      "categoryText": "Kombinezon",
+      "count": 100,
+      "normalizedKey": "kombinezon",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "aspiratör",
+      "categoryText": "Aspiratör",
+      "count": 100,
+      "normalizedKey": "aspirator",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "keman",
+      "categoryText": "Keman",
+      "count": 100,
+      "normalizedKey": "keman",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç fırçası ve tarak",
+      "categoryText": "Saç Fırçası ve Tarak",
+      "count": 100,
+      "normalizedKey": "sac fircasi ve tarak",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "voleybol ayakkabısı",
+      "categoryText": "Voleybol Ayakkabısı",
+      "count": 100,
+      "normalizedKey": "voleybol ayakkabisi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "aydınlatıcı",
+      "categoryText": "Aydınlatıcı",
+      "count": 100,
+      "normalizedKey": "aydinlatici",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "alıştırma bardağı",
+      "categoryText": "Alıştırma Bardağı",
+      "count": 100,
+      "normalizedKey": "alistirma bardagi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "ssd (solid state drive)",
+      "categoryText": "SSD (Solid State Drive)",
+      "count": 100,
+      "normalizedKey": "ssd solid state drive",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "lambader",
+      "categoryText": "Lambader",
+      "count": 100,
+      "normalizedKey": "lambader",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "pilates minder & mat",
+      "categoryText": "Pilates Minder & Mat",
+      "count": 100,
+      "normalizedKey": "pilates minder ve mat",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "eyeliner",
+      "categoryText": "Eyeliner",
+      "count": 100,
+      "normalizedKey": "eyeliner",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kağıt havlu",
+      "categoryText": "Kağıt Havlu",
+      "count": 100,
+      "normalizedKey": "kagit havlu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "genç odası takımı",
+      "categoryText": "Genç Odası Takımı",
+      "count": 100,
+      "normalizedKey": "genc odasi takimi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "büstiyer",
+      "categoryText": "Büstiyer",
+      "count": 100,
+      "normalizedKey": "bustiyer",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek deterjanı",
+      "categoryText": "Bebek Deterjanı",
+      "count": 100,
+      "normalizedKey": "bebek deterjani",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bisküvi ve kraker",
+      "categoryText": "Bisküvi ve Kraker",
+      "count": 100,
+      "normalizedKey": "biskuvi ve kraker",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç vitamini",
+      "categoryText": "Saç Vitamini",
+      "count": 100,
+      "normalizedKey": "sac vitamini",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "sanal gerçeklik gözlüğü",
+      "categoryText": "Sanal Gerçeklik Gözlüğü",
+      "count": 100,
+      "normalizedKey": "sanal gerceklik gozlugu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç köpüğü",
+      "categoryText": "Saç Köpüğü",
+      "count": 100,
+      "normalizedKey": "sac kopugu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "yılbaşı süsü",
+      "categoryText": "Yılbaşı Süsü",
+      "count": 100,
+      "normalizedKey": "yilbasi susu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç boyası",
+      "categoryText": "Saç Boyası",
+      "count": 100,
+      "normalizedKey": "sac boyasi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "hediye kartı",
+      "categoryText": "Hediye Kartı",
+      "count": 100,
+      "normalizedKey": "hediye karti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "protein bar",
+      "categoryText": "Protein Bar",
+      "count": 100,
+      "normalizedKey": "protein bar",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "fotokopi & baskı kağıtları",
+      "categoryText": "Fotokopi & Baskı Kağıtları",
+      "count": 100,
+      "normalizedKey": "fotokopi ve baski kagitlari",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek & çocuk battaniyesi",
+      "categoryText": "Bebek & Çocuk Battaniyesi",
+      "count": 100,
+      "normalizedKey": "bebek ve cocuk battaniyesi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek kremi ve yağı",
+      "categoryText": "Bebek Kremi ve Yağı",
+      "count": 100,
+      "normalizedKey": "bebek kremi ve yagi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kravat",
+      "categoryText": "Kravat",
+      "count": 100,
+      "normalizedKey": "kravat",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "ıpl lazer epilasyon aleti",
+      "categoryText": "IPL Lazer Epilasyon Aleti",
+      "count": 100,
+      "normalizedKey": "ipl lazer epilasyon aleti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kaykay",
+      "categoryText": "Kaykay",
+      "count": 100,
+      "normalizedKey": "kaykay",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "örgü ipi",
+      "categoryText": "Örgü İpi",
+      "count": 100,
+      "normalizedKey": "orgu ipi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kombi",
+      "categoryText": "Kombi",
+      "count": 100,
+      "normalizedKey": "kombi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek diş fırçası",
+      "categoryText": "Bebek Diş Fırçası",
+      "count": 100,
+      "normalizedKey": "bebek dis fircasi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bellek (ram)",
+      "categoryText": "Bellek (RAM)",
+      "count": 100,
+      "normalizedKey": "bellek ram",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "protein shaker",
+      "categoryText": "Protein Shaker",
+      "count": 100,
+      "normalizedKey": "protein shaker",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "jartiyer",
+      "categoryText": "Jartiyer",
+      "count": 100,
+      "normalizedKey": "jartiyer",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "pikap & gramofon",
+      "categoryText": "Pikap & Gramofon",
+      "count": 100,
+      "normalizedKey": "pikap ve gramofon",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "vücut spreyi",
+      "categoryText": "Vücut Spreyi",
+      "count": 100,
+      "normalizedKey": "vucut spreyi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "çamaşır yumuşatıcısı",
+      "categoryText": "Çamaşır Yumuşatıcısı",
+      "count": 100,
+      "normalizedKey": "camasir yumusaticisi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "şiir",
+      "categoryText": "Şiir",
+      "count": 100,
+      "normalizedKey": "siir",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "barfiks & şınav barı",
+      "categoryText": "Barfiks & Şınav Barı",
+      "count": 100,
+      "normalizedKey": "barfiks ve sinav bari",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "tonik",
+      "categoryText": "Tonik",
+      "count": 100,
+      "normalizedKey": "tonik",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "yılbaşı ağacı",
+      "categoryText": "Yılbaşı Ağacı",
+      "count": 100,
+      "normalizedKey": "yilbasi agaci",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "okey takımı",
+      "categoryText": "Okey Takımı",
+      "count": 100,
+      "normalizedKey": "okey takimi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "spor pantolon",
+      "categoryText": "Spor Pantolon",
+      "count": 100,
+      "normalizedKey": "spor pantolon",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek & çocuk nevresim takımı",
+      "categoryText": "Bebek & Çocuk Nevresim Takımı",
+      "count": 100,
+      "normalizedKey": "bebek ve cocuk nevresim takimi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "mouse",
+      "categoryText": "Mouse",
+      "count": 100,
+      "normalizedKey": "mouse",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "pamuk",
+      "categoryText": "Pamuk",
+      "count": 100,
+      "normalizedKey": "pamuk",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "oyuncu koltuğu",
+      "categoryText": "Oyuncu Koltuğu",
+      "count": 100,
+      "normalizedKey": "oyuncu koltugu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "karbonhidrat (mass ve gainer)",
+      "categoryText": "Karbonhidrat (Mass ve Gainer)",
+      "count": 100,
+      "normalizedKey": "karbonhidrat mass ve gainer",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "saç jölesi",
+      "categoryText": "Saç Jölesi",
+      "count": 100,
+      "normalizedKey": "sac jolesi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek bakım örtüsü",
+      "categoryText": "Bebek Bakım Örtüsü",
+      "count": 100,
+      "normalizedKey": "bebek bakim ortusu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "emzirme yastığı",
+      "categoryText": "Emzirme Yastığı",
+      "count": 100,
+      "normalizedKey": "emzirme yastigi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kirpik kıvırıcı",
+      "categoryText": "Kirpik Kıvırıcı",
+      "count": 100,
+      "normalizedKey": "kirpik kivirici",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek temizleme pamuğu",
+      "categoryText": "Bebek Temizleme Pamuğu",
+      "count": 100,
+      "normalizedKey": "bebek temizleme pamugu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "dezenfektan",
+      "categoryText": "Dezenfektan",
+      "count": 100,
+      "normalizedKey": "dezenfektan",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "portbebe & kanguru",
+      "categoryText": "Portbebe & Kanguru",
+      "count": 100,
+      "normalizedKey": "portbebe ve kanguru",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek pudrası ve kolonyası",
+      "categoryText": "Bebek Pudrası ve Kolonyası",
+      "count": 100,
+      "normalizedKey": "bebek pudrasi ve kolonyasi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "fritöz",
+      "categoryText": "Fritöz",
+      "count": 100,
+      "normalizedKey": "fritoz",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "kraker",
+      "categoryText": "Kraker",
+      "count": 100,
+      "normalizedKey": "kraker",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "diş beyazlatma ürünü",
+      "categoryText": "Diş Beyazlatma Ürünü",
+      "count": 100,
+      "normalizedKey": "dis beyazlatma urunu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "selülit kremi",
+      "categoryText": "Selülit Kremi",
+      "count": 100,
+      "normalizedKey": "selulit kremi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "pilates topu",
+      "categoryText": "Pilates Topu",
+      "count": 100,
+      "normalizedKey": "pilates topu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "papyon",
+      "categoryText": "Papyon",
+      "count": 100,
+      "normalizedKey": "papyon",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "anı & günlük & seyahatname",
+      "categoryText": "Anı & Günlük & Seyahatname",
+      "count": 100,
+      "normalizedKey": "ani ve gunluk ve seyahatname",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "dünya edebiyatı",
+      "categoryText": "Dünya Edebiyatı",
+      "count": 100,
+      "normalizedKey": "dunya edebiyati",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "ana kucağı",
+      "categoryText": "Ana Kucağı",
+      "count": 100,
+      "normalizedKey": "ana kucagi",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "hijyenik ped",
+      "categoryText": "Hijyenik Ped",
+      "count": 100,
+      "normalizedKey": "hijyenik ped",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "bebek sabunu",
+      "categoryText": "Bebek Sabunu",
+      "count": 100,
+      "normalizedKey": "bebek sabunu",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "hafıza kartı",
+      "categoryText": "Hafıza Kartı",
+      "count": 100,
+      "normalizedKey": "hafiza karti",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    },
+    {
+      "key": "ıos cep telefonları",
+      "categoryText": "IOS Cep Telefonları",
+      "count": 100,
+      "normalizedKey": "ios cep telefonlari",
+      "topCandidates": [],
+      "selectedCategoryId": null,
+      "selectedCategorySlug": null,
+      "selectedCategoryName": null,
+      "confidence": 0,
+      "reason": "no_reliable_candidate"
+    }
+  ]
+}

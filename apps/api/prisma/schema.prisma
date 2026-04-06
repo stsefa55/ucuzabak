@@ -17,6 +17,10 @@ model User {
   role          UserRole  @default(USER)
   status        UserStatus @default(ACTIVE)
   lastLoginAt   DateTime?
+  emailVerified Boolean   @default(false)
+  /// Pazarlama / toplu e-posta (işlemsel e-postalar bundan etkilenmez).
+  marketingEmailOptIn    Boolean   @default(true)
+  marketingEmailOptOutAt DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -24,12 +28,17 @@ model User {
   priceAlerts   PriceAlert[]
   reviews       Review[]
   refreshTokens RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
   createdReviews UnmatchedProductReview[] @relation("UnmatchedCreatedBy")
   resolvedReviews UnmatchedProductReview[] @relation("UnmatchedResolvedBy")
   moderatedReviews Review[] @relation("ReviewModeratedBy")
   affiliateClicks AffiliateClick[]
+  reviewedStoreProducts StoreProduct[] @relation("StoreProductReviewedBy")
+  storeProductMatchAudits StoreProductMatchAuditLog[]
 
   @@index([role])
+  @@index([marketingEmailOptIn, status])
 }
 
 model RefreshToken {
@@ -45,6 +54,34 @@ model RefreshToken {
   @@index([userId])
   @@index([expiresAt])
   @@index([revoked])
+}
+
+/// Tek kullanımlık şifre sıfırlama jetonu (ham değer DB’de tutulmaz, yalnızca hash).
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+/// E-posta doğrulama jetonu (ham değer DB’de yok).
+model EmailVerificationToken {
+  id        String    @id @default(uuid())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 enum UserRole {
@@ -77,8 +114,34 @@ model Category {
   updatedAt DateTime   @updatedAt
 
   products  Product[]
+  mappingOverrides CategoryMappingOverride[]
 
   @@index([parentId])
+}
+
+/// Feed kaynağına göre kategori metni → canonical Category eşlemesi (manuel / veri tabanlı).
+enum CategoryMatchScope {
+  FULL
+  LAST_SEGMENT
+}
+
+model CategoryMappingOverride {
+  id            Int                @id @default(autoincrement())
+  /// Kaynak: trendyol, hepsiburada, amazon veya tüm kaynaklar için "*"
+  source        String
+  matchScope    CategoryMatchScope @default(FULL)
+  /// normalizeCategoryPhrase / normalizeCategoryText ile üretilmiş anahtar
+  normalizedKey String
+  categoryId    Int
+  category      Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  confidence    Float              @default(1)
+  isManual      Boolean            @default(true)
+  rawSourceText String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@unique([source, matchScope, normalizedKey])
+  @@index([categoryId])
 }
 
 model Brand {
@@ -112,6 +175,7 @@ model Store {
   offers                  Offer[]
   feedImports             FeedImport[]
   affiliateClicks         AffiliateClick[]
+  importSkippedRows       ImportSkippedRow[]
 }
 
 enum StoreStatus {
@@ -119,9 +183,12 @@ enum StoreStatus {
   INACTIVE
 }
 
+/// Mağaza önü (storefront) canonical ürün kaydı. Kimlik: `slug` (benzersiz, boş olmamalı).
+/// Teklifler `Offer` üzerinden bağlanır; ham mağaza satırları `StoreProduct` ile tutulur.
 model Product {
   id                   Int           @id @default(autoincrement())
   name                 String
+  /// Canonical URL: `/urun/[slug]` — sadece küçük harf, rakam ve tire; uygulama katmanında doğrulanır.
   slug                 String        @unique
   description          String?
   brandId              Int?
@@ -139,6 +206,10 @@ model Product {
   lastPriceUpdatedAt   DateTime?
   ratingAvg            Float         @default(0)
   ratingCount          Int           @default(0)
+  /// Ana sayfa «Öne çıkan» rayı — yalnızca admin işaretler; tıklama/teklif sayısından bağımsız.
+  isFeatured           Boolean       @default(false)
+  /// Vitrinte sıra (küçük önce). Yalnızca isFeatured=true iken anlamlı.
+  featuredSortOrder    Int           @default(0)
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
 
@@ -153,8 +224,12 @@ model Product {
 
   @@index([brandId])
   @@index([categoryId])
+  @@index([status, categoryId])
+  @@index([status, brandId])
+  @@index([status, lowestPriceCache])
   @@index([ean])
   @@index([modelNumber])
+  @@index([isFeatured, featuredSortOrder])
 }
 
 model ProductImage {
@@ -172,6 +247,7 @@ enum ProductStatus {
   INACTIVE
 }
 
+/// Mağaza / feed kaynaklı ham ürün satırı; storefront’ta doğrudan gösterilmez, `Product` ile eşlenir.
 model StoreProduct {
   id               Int        @id @default(autoincrement())
   storeId          Int
@@ -188,11 +264,17 @@ model StoreProduct {
   matchStatus      MatchStatus @default(UNMATCHED)
   matchScore       Int         @default(0)
   matchDetailsJson Json?
+  reviewFlag       StoreProductReviewFlag @default(NONE)
+  reviewNotes      String?
+  reviewedAt       DateTime?
+  reviewedByUserId Int?
+  reviewedBy       User?       @relation("StoreProductReviewedBy", fields: [reviewedByUserId], references: [id])
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
   offers           Offer[]
   unmatchedReviews UnmatchedProductReview[]
+  matchAuditLogs   StoreProductMatchAuditLog[]
 
   @@unique([storeId, externalId])
   @@index([storeId])
@@ -200,6 +282,7 @@ model StoreProduct {
   @@index([matchStatus, matchScore])
   @@index([ean])
   @@index([modelNumber])
+  @@index([reviewFlag])
 }
 
 enum MatchStatus {
@@ -209,6 +292,59 @@ enum MatchStatus {
   REJECTED
 }
 
+enum StoreProductMatchAuditAction {
+  MANUAL_ASSIGN_PRODUCT
+  CREATE_CANONICAL_PRODUCT
+}
+
+/// Admin panelinden manuel ürün eşlemesi / yeni canonical oluşturma denetim izi.
+model StoreProductMatchAuditLog {
+  id                  Int                         @id @default(autoincrement())
+  action              StoreProductMatchAuditAction
+  storeProductId      Int
+  storeProduct        StoreProduct                @relation(fields: [storeProductId], references: [id], onDelete: Restrict)
+  actorUserId         Int
+  actor               User                        @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+  previousProductId   Int?
+  newProductId        Int?
+  metadataJson        Json?
+  createdAt           DateTime                    @default(now())
+
+  @@index([storeProductId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([createdAt])
+}
+
+/// Operasyon: mağaza satırı inceleme bayrağı (storefront’u etkilemez).
+enum StoreProductReviewFlag {
+  NONE
+  FLAGGED
+  REVIEWED
+  IGNORED
+}
+
+/// Import sırasında DB’ye hiç yazılamayan satırlar (ör. çözülemeyen kategori) — operasyon listesi için.
+model ImportSkippedRow {
+  id                       Int      @id @default(autoincrement())
+  storeId                  Int
+  store                    Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  externalId               String?
+  feedSource               String?
+  categoryText             String?
+  normalizedCategoryKey    String?
+  title                    String?
+  brand                    String?
+  reason                   String
+  categoryResolutionMethod String?
+  rawPayload               Json?
+  createdAt                DateTime @default(now())
+
+  @@index([storeId, createdAt])
+  @@index([reason])
+  @@index([feedSource])
+}
+
+/// Belirli bir mağaza teklifi; her zaman bir `Product` ve bir `StoreProduct` ile ilişkilidir.
 model Offer {
   id              Int       @id @default(autoincrement())
   productId       Int
@@ -340,11 +476,17 @@ model FeedImport {
   status       FeedStatus @default(PENDING)
   startedAt    DateTime?
   finishedAt   DateTime?
+  /// Parse sonrası satır sayısı (ilerleme için; RUNNING iken artar)
+  totalItems   Int?
   processedCount Int      @default(0)
   createdCount Int       @default(0)
   updatedCount Int       @default(0)
+  matchedCount   Int      @default(0)
+  unmatchedCount Int      @default(0)
   errorCount   Int       @default(0)
   errorLog     String?
+  /// Worker: işlenen satır özeti, reasonCounts, örnek loglar (JSON)
+  importSummaryJson Json?
   sourceRef    String?
   checksum     String?
   createdAt    DateTime  @default(now())
@@ -410,5 +552,46 @@ model SearchQueryStat {
   updatedAt DateTime @updatedAt
 
   @@index([count])
+}
+
+enum EmailDeliveryStatus {
+  SENT
+  FAILED
+}
+
+/// Worker SMTP gönderimleri: başarı / hata + isteğe bağlı yeniden kuyruklama verisi.
+model EmailDeliveryLog {
+  id           Int                 @id @default(autoincrement())
+  jobName      String
+  toEmail      String
+  subject      String              @db.VarChar(500)
+  status       EmailDeliveryStatus
+  errorText    String?
+  bullJobId    String?             @db.VarChar(128)
+  retryPayload Json?
+  createdAt    DateTime            @default(now())
+
+  @@index([status, createdAt])
+  @@index([createdAt])
+  @@index([jobName])
+}
+
+/// psql restore denemeleri (başarılı / başarısız); geri yüklemeden önce alınan otomatik snapshot dosya adı.
+model BackupRestoreLog {
+  id                     Int      @id @default(autoincrement())
+  targetBackupFile       String
+  preRestoreSnapshotFile String?
+  initiatedByUserId      Int?
+  success                Boolean
+  errorText              String?
+  createdAt              DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+/// UTC günü başına kuyruğa eklenen toplu e-posta alıcı sayısı (günlük üst sınır için).
+model BulkEmailQuotaDay {
+  day         DateTime @id @db.Date
+  queuedCount Int      @default(0)
 }
 

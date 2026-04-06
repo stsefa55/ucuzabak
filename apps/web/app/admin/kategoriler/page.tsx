@@ -5,6 +5,7 @@ import { apiFetch } from "../../../src/lib/api-client";
 import { useAuthStore } from "../../../src/stores/auth-store";
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
+import { AdminPageHeader } from "../../../src/components/admin/AdminPageHeader";
 import { CATEGORY_ICON_NAME_OPTIONS } from "../../../src/lib/categoryIconMap";
 
 type AdminCategory = {
@@ -128,62 +129,73 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <div className="card">
-      <h2 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.75rem" }}>Kategoriler</h2>
-      {isLoading && <p>Yükleniyor...</p>}
+    <div className="card admin-page">
+      <AdminPageHeader
+        title="Kategoriler"
+        description="Listeden satıra tıklayarak düzenleyin veya alttaki formdan yeni kategori oluşturun."
+      />
+      {isLoading && <p className="admin-loading" style={{ padding: "0.5rem 0" }}>Yükleniyor…</p>}
       {error && <p className="text-danger">Kategoriler yüklenirken bir hata oluştu.</p>}
       {categories.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
-          <thead>
-            <tr>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>ID</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Kategori</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Slug</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Üst kategori</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Seviye</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>IconName</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Sıralama</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Aktif</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((c) => (
-              <tr
-                key={c.id}
-                style={{ borderTop: "1px solid #e5e7eb", cursor: "pointer" }}
-                onClick={() => handleEditClick(c)}
-                title="Düzenlemek için tıklayın"
-              >
-                <td style={{ padding: "0.5rem" }}>{c.id}</td>
-                <td style={{ padding: "0.5rem" }}>
-                  <span style={{ paddingLeft: `${Math.min(computeCategoryLevel(c, byId), 4) * 12}px`, display: "inline-block" }}>{c.name}</span>
-                </td>
-                <td style={{ padding: "0.5rem" }}>{c.slug}</td>
-                <td style={{ padding: "0.5rem" }}>{getParentNameForCategory(c, byId)}</td>
-                <td style={{ padding: "0.5rem" }}>{computeCategoryLevel(c, byId)}</td>
-                <td style={{ padding: "0.5rem" }}>{c.iconName ?? "-"}</td>
-                <td style={{ padding: "0.5rem" }}>{c.sortOrder ?? "-"}</td>
-                <td style={{ padding: "0.5rem" }}>{c.isActive ? "Evet" : "Hayır"}</td>
+        <div className="admin-data-table-wrap" style={{ marginBottom: "1rem" }}>
+          <table className="admin-data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Kategori</th>
+                <th>Slug</th>
+                <th>Üst kategori</th>
+                <th>Seviye</th>
+                <th>IconName</th>
+                <th>Sıralama</th>
+                <th>Aktif</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {categories.map((c) => (
+                <tr
+                  key={c.id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleEditClick(c)}
+                  title="Düzenlemek için tıklayın"
+                >
+                  <td>{c.id}</td>
+                  <td>
+                    <span
+                      style={{
+                        paddingLeft: `${Math.min(computeCategoryLevel(c, byId), 4) * 12}px`,
+                        display: "inline-block"
+                      }}
+                    >
+                      {c.name}
+                    </span>
+                  </td>
+                  <td>{c.slug}</td>
+                  <td>{getParentNameForCategory(c, byId)}</td>
+                  <td>{computeCategoryLevel(c, byId)}</td>
+                  <td>{c.iconName ?? "—"}</td>
+                  <td>{c.sortOrder ?? "—"}</td>
+                  <td>{c.isActive ? "Evet" : "Hayır"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <form
         onSubmit={handleSubmit}
+        className="admin-panel"
         style={{
-          marginTop: "1rem",
-          paddingTop: "1rem",
-          borderTop: "1px solid #e5e7eb",
+          marginBottom: 0,
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "0.75rem"
         }}
       >
-        <div style={{ gridColumn: "span 2", fontWeight: 700 }}>
+        <h2 className="admin-panel__title" style={{ gridColumn: "span 2", marginBottom: 0 }}>
           {mode === "create" ? "Yeni kategori ekle" : "Kategori düzenle"}
-        </div>
+        </h2>
 
         <div>
           <label className="form-label">Kategori adı</label>

@@ -10,8 +10,35 @@ export class SearchController {
 
   @Get("products")
   @ApiOkResponse({ description: "Ürün arama" })
-  searchProducts(@Query() query: ProductListQueryDto) {
-    return this.searchService.searchProducts(query);
+  async searchProducts(@Query() query: ProductListQueryDto) {
+    const t0 = Date.now();
+    const out = await this.searchService.searchProducts(query);
+    console.log(`[perf] GET /search/products ${Date.now() - t0}ms`);
+    return out;
+  }
+
+  @Get("category-facets")
+  @ApiOkResponse({
+    description:
+      "Arama sayfası kategori facet'leri (q + filtreler uygulanır; categorySlug facet hesaplamasına dahil edilmez)"
+  })
+  async categoryFacets(@Query() query: ProductListQueryDto) {
+    const t0 = Date.now();
+    const out = await this.searchService.getSearchCategoryFacets(query);
+    console.log(`[perf] GET /search/category-facets ${Date.now() - t0}ms`);
+    return out;
+  }
+
+  @Get("brand-facets")
+  @ApiOkResponse({
+    description:
+      "Arama sayfası marka facet'leri (q + kategori + fiyat; marka filtresi facet sayımına dahil edilmez)"
+  })
+  async brandFacets(@Query() query: ProductListQueryDto) {
+    const t0 = Date.now();
+    const out = await this.searchService.getSearchBrandFacets(query);
+    console.log(`[perf] GET /search/brand-facets ${Date.now() - t0}ms`);
+    return out;
   }
 
   @Get("suggest")

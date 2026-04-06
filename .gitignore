@@ -8,6 +8,8 @@ coverage
 .env
 .env.*
 !.env.example
+# apps/web: next dev için işlenen (repoya alınır) — local API varsayılanı
+!/apps/web/.env.development
 
 # logs
 *.log
@@ -20,6 +22,9 @@ apps/worker/src/**/*.js.map
 # backups
 backup.sql
 backup_*.sql
+ucuzabak-backup-*.sql
+apps/api/data/backups/
+apps/api/data/uploads/
 
 # system
 .DS_Store

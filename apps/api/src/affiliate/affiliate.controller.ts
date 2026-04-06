@@ -2,6 +2,7 @@ import { Controller, Get, Param, Req, Res } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response, Request } from "express";
 import * as crypto from "crypto";
+import { getAffiliateIpSalt, getJwtSecret } from "../auth/auth-secrets";
 import { PrismaService } from "../prisma/prisma.service";
 import { AffiliateService } from "./affiliate.service";
 import { Throttle } from "@nestjs/throttler";
@@ -15,7 +16,7 @@ export class AffiliateController {
   ) {}
 
   @Get(":offerId")
-  @Throttle({ default: { limit: 60, ttl: 60 } })
+  @Throttle({ default: { limit: 60, ttl: 60_000 } })
   async redirect(@Param("offerId") offerIdParam: string, @Req() req: Request, @Res() res: Response) {
     const offerId = Number(offerIdParam);
     if (!Number.isFinite(offerId)) {
@@ -42,7 +43,7 @@ export class AffiliateController {
     try {
       const rawIpHeader = (req.headers["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim();
       const rawIp = rawIpHeader || req.ip || req.socket.remoteAddress || "";
-      const salt = process.env.AFFILIATE_IP_SALT || process.env.API_JWT_SECRET || "affiliate-salt";
+      const salt = getAffiliateIpSalt();
       const ipHash = rawIp
         ? crypto.createHash("sha256").update(rawIp + salt).digest("hex")
         : "unknown";
@@ -54,7 +55,7 @@ export class AffiliateController {
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const payload: any = await this.jwtService.verifyAsync(token, {
-            secret: process.env.API_JWT_SECRET || "change-me-in-dev"
+            secret: getJwtSecret()
           });
           if (payload?.sub) {
             userId = Number(payload.sub);

@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Patch,
   Post,
-  Query,
   Req,
   Res,
   UseGuards
@@ -19,10 +18,29 @@ import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { RefreshDto } from "./dto/refresh.dto";
 import { LogoutDto } from "./dto/logout.dto";
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
+import { VerifyEmailDto } from "./dto/verify-email.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { Throttle } from "@nestjs/throttler";
+
+function getClientIp(req: Request): string {
+  const xff = req.headers["x-forwarded-for"];
+  if (typeof xff === "string" && xff.trim()) {
+    return xff.split(",")[0]!.trim();
+  }
+  if (Array.isArray(xff) && xff[0]) {
+    return String(xff[0]).split(",")[0]!.trim();
+  }
+  const raw = req.socket?.remoteAddress;
+  if (raw) {
+    return raw.replace(/^::ffff:/, "");
+  }
+  const maybeIp = (req as Request & { ip?: string }).ip;
+  return maybeIp && maybeIp.trim() ? maybeIp.trim() : "unknown";
+}
 
 @ApiTags("auth")
 @Controller("auth")
@@ -32,15 +50,37 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Get("check-email")
-  @Throttle({ default: { limit: 20, ttl: 60 } })
-  async checkEmail(@Query("email") email: string) {
-    const available = await this.authService.isEmailAvailable(email ?? "");
-    return { available };
+  @Post("forgot-password")
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 3_600_000 } })
+  async forgotPassword(@Body() body: ForgotPasswordDto) {
+    return this.authService.requestPasswordReset(body.email);
+  }
+
+  @Post("reset-password")
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 20, ttl: 3_600_000 } })
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    await this.authService.resetPasswordWithToken(body.token, body.newPassword);
+    return { success: true };
+  }
+
+  @Post("verify-email")
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 30, ttl: 3_600_000 } })
+  async verifyEmail(@Body() body: VerifyEmailDto) {
+    return this.authService.verifyEmailWithToken(body.token);
+  }
+
+  @Post("resend-verification-email")
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 3_600_000 } })
+  async resendVerificationEmail(@Body() body: ForgotPasswordDto) {
+    return this.authService.resendVerificationEmail(body.email);
   }
 
   @Post("register")
-  @Throttle({ default: { limit: 5, ttl: 60 } })
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   async register(
     @Headers("x-client-type") clientType: string | undefined,
     @Body() dto: RegisterDto,
@@ -59,14 +99,15 @@ export class AuthController {
 
   @Post("login")
   @HttpCode(HttpStatus.OK)
-  @Throttle({ default: { limit: 10, ttl: 60 } })
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   async login(
     @Headers("x-client-type") clientType: string | undefined,
     @Body() dto: LoginDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
     const ct = (clientType || "web").toLowerCase();
-    const { user, accessToken, refreshToken } = await this.authService.login(dto);
+    const { user, accessToken, refreshToken } = await this.authService.login(dto, getClientIp(req));
 
     if (ct === "mobile") {
       return { accessToken, refreshToken };
@@ -78,7 +119,7 @@ export class AuthController {
 
   @Post("refresh")
   @HttpCode(HttpStatus.OK)
-  @Throttle({ default: { limit: 20, ttl: 60 } })
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
   async refresh(
     @Headers("x-client-type") clientType: string | undefined,
     @Req() req: Request,
@@ -86,7 +127,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ) {
     const ct = (clientType || "web").toLowerCase();
-    const refreshToken = ct === "mobile" ? body?.refreshToken : req.cookies?.refresh_token;
+    const refreshToken =
+      ct === "mobile" ? body?.refreshToken?.trim() || undefined : req.cookies?.refresh_token;
     if (!refreshToken) {
       return { accessToken: null };
     }
@@ -112,7 +154,7 @@ export class AuthController {
 
   @Post("logout")
   @HttpCode(HttpStatus.OK)
-  @Throttle({ default: { limit: 20, ttl: 60 } })
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
   async logout(
     @Headers("x-client-type") clientType: string | undefined,
     @Body() body: LogoutDto,
@@ -163,6 +205,18 @@ export class AuthController {
     });
     const { passwordHash, ...safeUser } = updated;
     return { user: safeUser };
+  }
+
+  @Post("me/resend-verification-email")
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("access-token")
+  @Throttle({ default: { limit: 5, ttl: 3_600_000 } })
+  async resendVerificationEmailForMe(@Req() req: Request) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload = (req as any).user;
+    const row = await this.usersService.findById(payload.sub);
+    return this.authService.resendVerificationEmail(row?.email ?? "");
   }
 
   private getRefreshCookieOptions() {

@@ -1,6 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AppModule } from "../src/app.module";
+import { EmailQueueService } from "../src/email/email-queue.service";
 import request from "supertest";
 
 describe("Auth flow (e2e)", () => {
@@ -9,7 +10,19 @@ describe("Auth flow (e2e)", () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule]
-    }).compile();
+    })
+      .overrideProvider(EmailQueueService)
+      .useValue({
+        safeEnqueueWelcome: () => undefined,
+        safeEnqueueVerifyEmail: () => undefined,
+        enqueueWelcome: async () => undefined,
+        enqueueResetPassword: async () => undefined,
+        enqueueVerifyEmail: async () => undefined,
+        enqueuePriceAlert: async () => undefined,
+        enqueueTestEmail: async () => undefined,
+        onModuleDestroy: async () => undefined
+      })
+      .compile();
 
     app = moduleRef.createNestApplication();
     await app.init();
@@ -34,9 +47,11 @@ describe("Auth flow (e2e)", () => {
       .expect(201);
 
     expect(registerRes.body.user).toBeDefined();
+    expect(registerRes.body.user.emailVerified).toBe(false);
     expect(registerRes.body.accessToken).toBeDefined();
     const cookies = registerRes.get("set-cookie");
-    expect(cookies.join("")).toContain("refresh_token");
+    const cookieHeader = Array.isArray(cookies) ? cookies.join("") : String(cookies ?? "");
+    expect(cookieHeader).toContain("refresh_token");
 
     // login
     const loginRes = await request(server)
@@ -50,14 +65,17 @@ describe("Auth flow (e2e)", () => {
     expect(loginRes.body.user).toBeDefined();
     expect(loginRes.body.accessToken).toBeDefined();
     const loginCookies = loginRes.get("set-cookie");
-    expect(loginCookies.join("")).toContain("refresh_token");
+    const loginCookieArr = Array.isArray(loginCookies) ? loginCookies : loginCookies ? [loginCookies] : [];
+    expect(loginCookieArr.join("")).toContain("refresh_token");
 
-    const refreshCookie = loginCookies.find((c) => c.startsWith("refresh_token"))!;
+    const refreshCookie = loginCookieArr.find((c: string) => c.startsWith("refresh_token"));
+    expect(refreshCookie).toBeDefined();
+    const refreshCookieHeader = refreshCookie as string;
 
     // refresh
     const refreshRes = await request(server)
       .post("/api/v1/auth/refresh")
-      .set("Cookie", refreshCookie)
+      .set("Cookie", refreshCookieHeader)
       .expect(200);
 
     expect(refreshRes.body).toHaveProperty("accessToken");
@@ -65,13 +83,13 @@ describe("Auth flow (e2e)", () => {
     // logout
     await request(server)
       .post("/api/v1/auth/logout")
-      .set("Cookie", refreshCookie)
+      .set("Cookie", refreshCookieHeader)
       .expect(200);
 
     // refresh after logout should return null accessToken
     const refreshAfterLogoutRes = await request(server)
       .post("/api/v1/auth/refresh")
-      .set("Cookie", refreshCookie)
+      .set("Cookie", refreshCookieHeader)
       .expect(200);
 
     expect(refreshAfterLogoutRes.body.accessToken).toBeNull();

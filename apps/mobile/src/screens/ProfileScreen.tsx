@@ -1,13 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
+import type { ComponentProps } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+type IoniconName = ComponentProps<typeof Ionicons>["name"];
 import { colors, radius, type } from "../design/tokens";
 import { ScreenContainer } from "../components/ui/ScreenContainer";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/RootNavigator";
 import { clearAuthTokens, getAuthAccessToken, getAuthRefreshToken, setAuthTokens, subscribeAuthTokens, waitForAuthSessionReady } from "../lib/authSession";
-import { logout, me, refresh, type AuthUser } from "../api/services/auth";
+import { logout, me, refresh, resendVerificationEmailForMe, type AuthUser } from "../api/services/auth";
 
 export function ProfileScreen() {
   type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -15,6 +18,7 @@ export function ProfileScreen() {
 
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [resendBusy, setResendBusy] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -74,9 +78,25 @@ export function ProfileScreen() {
     return user.email;
   }, [user]);
 
+  const emailVerified = user ? user.emailVerified !== false : true;
+
+  const handleResendVerification = async () => {
+    const tok = getAuthAccessToken();
+    if (!tok) return;
+    setResendBusy(true);
+    try {
+      const res = await resendVerificationEmailForMe(tok);
+      Alert.alert("Bilgi", res.message);
+    } catch (e) {
+      Alert.alert("Hata", e instanceof Error ? e.message : "İstek gönderilemedi.");
+    } finally {
+      setResendBusy(false);
+    }
+  };
+
   const menuItem = (
     title: string,
-    icon: string,
+    icon: IoniconName,
     onPress: () => void
   ) => {
     return (
@@ -159,8 +179,38 @@ export function ProfileScreen() {
                 <Text style={styles.cardTitle}>{fullName}</Text>
                 <Text style={styles.cardSub}>{user.email}</Text>
                 {user.phone ? <Text style={styles.cardSub}>Telefon: {user.phone}</Text> : null}
+                <Text
+                  style={[
+                    styles.verifyBadge,
+                    emailVerified ? styles.verifyBadgeOk : styles.verifyBadgeWarn
+                  ]}
+                >
+                  {emailVerified ? "E-posta doğrulandı" : "E-posta doğrulanmadı"}
+                </Text>
               </View>
             </View>
+
+            {!emailVerified ? (
+              <View style={styles.verifyCard}>
+                <Text style={styles.verifyTitle}>E-postanızı doğrulayın</Text>
+                <Text style={styles.verifyText}>
+                  Fiyat alarmı gibi e-posta gerektiren özellikler için gelen kutunuzdaki bağlantıyı açın.
+                </Text>
+                <Pressable
+                  onPress={handleResendVerification}
+                  disabled={resendBusy}
+                  style={({ pressed }) => [
+                    styles.verifyBtn,
+                    pressed ? { opacity: 0.88 } : null,
+                    resendBusy ? { opacity: 0.6 } : null
+                  ]}
+                >
+                  <Text style={styles.verifyBtnTxt}>
+                    {resendBusy ? "Gönderiliyor…" : "Doğrulama e-postasını tekrar gönder"}
+                  </Text>
+                </Pressable>
+              </View>
+            ) : null}
 
             <View style={styles.menuGroup}>
               {menuItem("Ayarlar", "settings-outline", () => navigation.navigate("Settings"))}
@@ -262,6 +312,33 @@ const styles = StyleSheet.create({
     borderColor: "rgba(220,38,38,0.25)",
     backgroundColor: colors.bg
   },
-  logoutTxt: { color: colors.danger, fontWeight: "800" }
+  logoutTxt: { color: colors.danger, fontWeight: "800" },
+
+  verifyBadge: {
+    marginTop: 8,
+    fontSize: 12,
+    fontWeight: "800"
+  },
+  verifyBadgeOk: { color: "#15803d" },
+  verifyBadgeWarn: { color: "#b45309" },
+
+  verifyCard: {
+    marginTop: 14,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#fde68a",
+    backgroundColor: "#fffbeb"
+  },
+  verifyTitle: { fontSize: 14, fontWeight: "800", color: "#92400e", marginBottom: 6 },
+  verifyText: { fontSize: 13, fontWeight: "600", color: "#78350f", lineHeight: 19, marginBottom: 10 },
+  verifyBtn: {
+    alignSelf: "flex-start",
+    backgroundColor: colors.brand,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10
+  },
+  verifyBtnTxt: { color: "#fff", fontWeight: "800", fontSize: 13 }
 });
 

@@ -1,14 +1,16 @@
-import { API_BASE_URL } from "../../src/lib/api-client";
+import { getApiBaseUrl } from "../../src/lib/api-client";
+import { fetchJsonArray } from "../../src/lib/server-api-fetch";
 import { Header } from "../../src/components/layout/Header";
-import { ProductCard } from "../../src/components/products/ProductCard";
+import { ProductsInfiniteFromList } from "../../src/components/products/ProductsInfiniteFromList";
+import type { ProductCardProduct } from "../../src/components/products/ProductCard";
 
 export const dynamic = "force-dynamic";
 
-async function fetchPriceDroppedProducts() {
-  const res = await fetch(`${API_BASE_URL}/products/price-drops`, {
+async function fetchPriceDroppedProducts(): Promise<ProductCardProduct[]> {
+  const base = getApiBaseUrl();
+  return fetchJsonArray<ProductCardProduct>(`${base}/products/price-drops`, {
     next: { revalidate: 10 }
   });
-  return res.json();
 }
 
 export default async function PriceDroppedProductsPage() {
@@ -23,18 +25,13 @@ export default async function PriceDroppedProductsPage() {
             Fiyatı düşen ürünler
           </h1>
           <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "1.25rem" }}>
-            Son fiyatı önceki fiyatına göre düşmüş, indirimde olan ürünler.
+            Fiyat geçmişine göre: güncel kayıt, yakın geçmişteki en yüksek fiyatın altına düşmüş teklifler (ürün bazında en güçlü düşüş).
           </p>
-          {(!products || products.length === 0) && (
-            <p className="text-muted">Şu anda listelenecek fiyatı düşen ürün bulunamadı.</p>
-          )}
-          {products && products.length > 0 && (
-            <div className="grid grid-3">
-              {products.map((p: any) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          )}
+          <ProductsInfiniteFromList
+            items={products}
+            pageSize={20}
+            emptyMessage="Su anda listelenecek fiyati dusen urun bulunamadi."
+          />
         </div>
       </main>
     </>

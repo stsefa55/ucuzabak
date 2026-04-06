@@ -1,4 +1,9 @@
-const ICON_NAME_TO_IONICON: Record<string, string> = {
+import type { ComponentProps } from "react";
+import { Ionicons } from "@expo/vector-icons";
+
+export type CategoryIoniconName = ComponentProps<typeof Ionicons>["name"];
+
+const ICON_NAME_TO_IONICON: Record<string, CategoryIoniconName> = {
   electronics: "phone-portrait-outline",
   whitegoods: "construct-outline",
   home: "home-outline",
@@ -18,7 +23,7 @@ function normalizeTR(s: string) {
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function pickVariantForElectronics(context: string) {
+function pickVariantForElectronics(context: string): CategoryIoniconName | null {
   // Burada sadece varlığı çok muhtemel Ioniconları seçiyoruz; yoksa fallback otomatik gruba döner.
   if (context.includes("telefon") || context.includes("cep")) return "phone-portrait-outline";
   if (context.includes("laptop") || context.includes("bilgisayar")) return "laptop-outline";
@@ -37,7 +42,7 @@ function pickVariantForElectronics(context: string) {
   return null;
 }
 
-function pickVariantForPersonalCare(context: string) {
+function pickVariantForPersonalCare(context: string): CategoryIoniconName | null {
   // Bu grupta daha az ikon varyantı kullanıyoruz; yoksa yanlış ikon yüzünden "?" görünmesi riski artar.
   // Bilinen güvenli alternatif: heart-outline
   if (context.includes("parfum") || context.includes("dis") || context.includes("agiz") || context.includes("medikal")) return "heart-outline";
@@ -62,7 +67,7 @@ export function getCategoryIoniconName(iconName?: string | null, contextLabelOrS
   const key = normalized === "personalcare" ? "personal-care" : normalized;
 
   // Mapping'de varsa onu kullan, yoksa '?' yerine daha güvenli bir fallback ver.
-  const base = ICON_NAME_TO_IONICON[key] ?? "help-circle-outline";
+  const base: CategoryIoniconName = ICON_NAME_TO_IONICON[key] ?? "help-circle-outline";
 
   if (!contextLabelOrSlug) return base;
 

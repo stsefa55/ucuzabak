@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronUp, ChevronDown, Trash2 } from "lucide-react";
+import { AdminPageHeader } from "../../../../src/components/admin/AdminPageHeader";
 import { apiFetch } from "../../../../src/lib/api-client";
 import { useAuthStore } from "../../../../src/stores/auth-store";
 
@@ -25,6 +26,8 @@ interface Product {
   name: string;
   slug: string;
   status: string;
+  isFeatured?: boolean;
+  featuredSortOrder?: number;
   brandId?: number | null;
   categoryId?: number | null;
   ean?: string | null;
@@ -51,9 +54,14 @@ interface Offer {
   storeId: number;
   storeProductId: number;
   currentPrice: number | string;
+  originalPrice?: number | string | null;
   inStock: boolean;
   status?: OfferStatus;
   affiliateUrl?: string | null;
+  lastSeenAt?: string | null;
+  updatedAt?: string;
+  listDiscountPercent?: number | null;
+  storefrontListDiscountEligible?: boolean;
   store?: { id: number; name: string } | null;
 }
 
@@ -109,6 +117,8 @@ export default function AdminProductEditPage() {
     mainImageUrl: "",
     description: "",
     status: "ACTIVE",
+    isFeatured: false,
+    featuredSortOrder: "0",
     specsJsonText: ""
   });
   const [specRows, setSpecRows] = useState<Array<{ key: string; value: string }>>([{ key: "", value: "" }]);
@@ -130,6 +140,8 @@ export default function AdminProductEditPage() {
       mainImageUrl: product.mainImageUrl ?? "",
       description: product.description ?? "",
       status: product.status,
+      isFeatured: Boolean(product.isFeatured),
+      featuredSortOrder: String(product.featuredSortOrder ?? 0),
       specsJsonText: ""
     });
     const spec = product.specsJson && typeof product.specsJson === "object" ? product.specsJson : {};
@@ -236,6 +248,7 @@ export default function AdminProductEditPage() {
         return;
       }
     }
+    const sortOrder = Number(form.featuredSortOrder);
     saveProductMutation.mutate({
       name: form.name,
       slug: slugTrimmed,
@@ -246,14 +259,16 @@ export default function AdminProductEditPage() {
       mainImageUrl: form.mainImageUrl || undefined,
       description: form.description || undefined,
       specsJson: specs,
-      status: form.status
+      status: form.status,
+      isFeatured: form.isFeatured,
+      featuredSortOrder: Number.isFinite(sortOrder) && sortOrder >= 0 ? sortOrder : 0
     });
   }
 
   if (!accessToken) return null;
   if (Number.isNaN(id)) {
     return (
-      <div className="card">
+      <div className="card admin-page">
         <p className="text-danger">Geçersiz ürün ID.</p>
         <Link href="/admin/urunler">Ürün listesine dön</Link>
       </div>
@@ -262,39 +277,37 @@ export default function AdminProductEditPage() {
   const productMismatch = product != null && product.id !== id;
   if (productLoading || !product || productMismatch) {
     return (
-      <div className="card">
-        {productLoading || productMismatch ? <p>Yükleniyor...</p> : <p>Ürün bulunamadı.</p>}
+      <div className="card admin-page">
+        {productLoading || productMismatch ? <p>Yükleniyor…</p> : <p>Ürün bulunamadı.</p>}
         <Link href="/admin/urunler">Ürün listesine dön</Link>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto" }}>
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: "0 0 0.25rem 0", color: "#111827" }}>
-          {product.name}
-        </h1>
-        <p className="text-muted" style={{ fontSize: "0.9rem", margin: "0 0 1rem 0" }}>
-          Ürün bilgilerini düzenleyin, görselleri ve teklifleri yönetin.
-        </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
-          <Link href={`/urun/${product.slug}`} target="_blank" rel="noopener noreferrer" className="btn-ghost btn-sm">
-            Storefront&apos;ta gör
-          </Link>
-          <Link href="/admin/urunler" className="btn-secondary btn-sm">
-            Listeye dön
-          </Link>
-          <button
-            type="submit"
-            form="admin-product-edit-form"
-            className="btn-primary btn-sm"
-            disabled={saveProductMutation.isPending}
-          >
-            {saveProductMutation.isPending ? "Kaydediliyor..." : "Kaydet"}
-          </button>
-        </div>
-      </div>
+    <div className="card admin-page" style={{ maxWidth: 900, margin: "0 auto" }}>
+      <AdminPageHeader
+        title={product.name}
+        description="Ürün bilgilerini düzenleyin, görselleri ve teklifleri yönetin."
+        actions={
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
+            <Link href={`/urun/${product.slug}`} target="_blank" rel="noopener noreferrer" className="btn-ghost btn-sm">
+              Storefront&apos;ta gör
+            </Link>
+            <Link href="/admin/urunler" className="btn-secondary btn-sm">
+              Listeye dön
+            </Link>
+            <button
+              type="submit"
+              form="admin-product-edit-form"
+              className="btn-primary btn-sm"
+              disabled={saveProductMutation.isPending}
+            >
+              {saveProductMutation.isPending ? "Kaydediliyor…" : "Kaydet"}
+            </button>
+          </div>
+        }
+      />
 
       {message && (
         <div
@@ -373,6 +386,43 @@ export default function AdminProductEditPage() {
                 <option value="ACTIVE">Aktif</option>
                 <option value="INACTIVE">Pasif</option>
               </select>
+            </div>
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                padding: "1rem",
+                borderRadius: 10,
+                border: "1px solid #e0e7ff",
+                background: "linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%)",
+                display: "grid",
+                gap: "0.75rem"
+              }}
+            >
+              <span className="form-label-admin" style={{ marginBottom: 0, color: "#3730a3" }}>
+                Anasayfa vitrin (öne çıkan)
+              </span>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: "0.9rem" }}>
+                <input
+                  type="checkbox"
+                  checked={form.isFeatured}
+                  onChange={(e) => setForm((f) => ({ ...f, isFeatured: e.target.checked }))}
+                />
+                «Öne çıkan ürünler» rayında göster
+              </label>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.75rem" }}>
+                <label className="form-label-admin" style={{ marginBottom: 0 }}>
+                  Vitrin sırası (küçük önce)
+                </label>
+                <input
+                  className="form-control"
+                  type="number"
+                  min={0}
+                  step={1}
+                  style={{ width: 120 }}
+                  value={form.featuredSortOrder}
+                  onChange={(e) => setForm((f) => ({ ...f, featuredSortOrder: e.target.value }))}
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -534,19 +584,31 @@ export default function AdminProductEditPage() {
 
       <section className="admin-section">
         <h2 className="admin-section-title">Teklifler</h2>
+        <p className="text-muted" style={{ fontSize: "0.82rem", lineHeight: 1.55, marginBottom: "0.75rem" }}>
+          <strong>Liste indirimi</strong> (üstü çizili liste fiyatı + % rozeti), teklifin <code>originalPrice</code> ile{" "}
+          <code>currentPrice</code> karşılaştırmasıdır; <strong>fiyat düşüşü</strong> grafikteki{" "}
+          <code>PriceHistory</code> ile ölçülür. Vitrin rozeti yalnızca ACTIVE teklifte, liste fiyatı güncel fiyattan
+          büyükse ve kanıt tarihi tazeyse gösterilir: feed&apos;de <code>lastSeenAt</code> doluysa sadece o; yoksa{" "}
+          <code>updatedAt</code>. Süre: ortam değişkeni <code>OFFER_LIST_PRICE_FRESH_DAYS</code> (varsayılan 21 gün).
+        </p>
         {offersLoading ? (
           <p className="text-muted">Yükleniyor...</p>
         ) : (
           <>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.875rem", marginBottom: "1.25rem" }}>
+            <div className="admin-data-table-wrap" style={{ marginBottom: "1.25rem" }}>
+            <table className="admin-data-table" style={{ fontSize: "0.8125rem" }}>
               <thead>
-                <tr style={{ borderBottom: "2px solid #e5e7eb" }}>
-                  <th style={{ textAlign: "left", padding: "0.6rem 0.5rem", fontWeight: 600 }}>Mağaza</th>
-                  <th style={{ textAlign: "right", padding: "0.6rem 0.5rem", fontWeight: 600 }}>Fiyat</th>
-                  <th style={{ textAlign: "left", padding: "0.6rem 0.5rem", fontWeight: 600 }}>Stok</th>
-                  <th style={{ textAlign: "left", padding: "0.6rem 0.5rem", fontWeight: 600 }}>Durum</th>
-                  <th style={{ textAlign: "left", padding: "0.6rem 0.5rem", fontWeight: 600 }}>Affiliate URL</th>
-                  <th style={{ textAlign: "right", padding: "0.6rem 0.5rem", fontWeight: 600 }}>İşlem</th>
+                <tr>
+                  <th>Mağaza</th>
+                  <th style={{ textAlign: "right" }}>Güncel</th>
+                  <th style={{ textAlign: "right" }}>Liste (original)</th>
+                  <th style={{ textAlign: "right" }}>İndirim %</th>
+                  <th>Vitrin rozeti</th>
+                  <th>Durum</th>
+                  <th>Stok</th>
+                  <th>Son görülme</th>
+                  <th>Affiliate</th>
+                  <th style={{ textAlign: "right" }}>İşlem</th>
                 </tr>
               </thead>
               <tbody>
@@ -560,6 +622,7 @@ export default function AdminProductEditPage() {
                 ))}
               </tbody>
             </table>
+            </div>
             {offers.length === 0 && <p className="text-muted" style={{ marginBottom: "1rem", fontSize: "0.9rem" }}>Henüz teklif yok. Aşağıdan yeni teklif ekleyebilirsiniz.</p>}
 
             <div style={{ padding: "1rem", background: "#f9fafb", borderRadius: 8, border: "1px solid #e5e7eb" }}>
@@ -623,6 +686,20 @@ export default function AdminProductEditPage() {
   );
 }
 
+function formatAdminTry(value: number | string | null | undefined): string {
+  if (value == null || value === "") return "—";
+  const v = typeof value === "string" ? Number(value.replace(",", ".")) : Number(value);
+  if (!Number.isFinite(v)) return "—";
+  return `${v.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TL`;
+}
+
+function formatAdminDateTime(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleString("tr-TR");
+}
+
 function OfferRow({
   offer,
   onUpdate,
@@ -644,27 +721,31 @@ function OfferRow({
     status !== (offer.status ?? "ACTIVE") ||
     affiliateUrl !== (offer.affiliateUrl ?? "");
 
+  const listPct =
+    offer.listDiscountPercent != null && Number.isFinite(offer.listDiscountPercent)
+      ? `${offer.listDiscountPercent}%`
+      : "—";
+
   return (
-    <tr style={{ borderTop: "1px solid #e5e7eb", opacity: offer.status === "ACTIVE" ? 1 : 0.85 }}>
-      <td style={{ padding: "0.5rem" }}>{offer.store?.name ?? "-"}</td>
-      <td style={{ padding: "0.5rem", textAlign: "right" }}>
+    <tr style={{ opacity: offer.status === "ACTIVE" ? 1 : 0.88 }}>
+      <td>{offer.store?.name ?? "—"}</td>
+      <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
         {editing ? (
           <input className="form-control" type="text" value={price} onChange={(e) => setPrice(e.target.value)} style={{ width: 100, textAlign: "right" }} />
         ) : (
-          `${Number(offer.currentPrice).toLocaleString("tr-TR")} TL`
+          formatAdminTry(offer.currentPrice)
         )}
       </td>
-      <td style={{ padding: "0.5rem" }}>
-        {editing ? (
-          <select className="form-control" value={inStock ? "1" : "0"} onChange={(e) => setInStock(e.target.value === "1")} style={{ width: 100 }}>
-            <option value="1">Stokta</option>
-            <option value="0">Yok</option>
-          </select>
+      <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>{formatAdminTry(offer.originalPrice)}</td>
+      <td style={{ textAlign: "right" }}>{listPct}</td>
+      <td>
+        {offer.storefrontListDiscountEligible ? (
+          <span style={{ color: "#166534", fontWeight: 600, fontSize: "0.78rem" }}>Gösterilir</span>
         ) : (
-          offer.inStock ? "Stokta" : "Yok"
+          <span className="text-muted" style={{ fontSize: "0.78rem" }}>Gizlenir</span>
         )}
       </td>
-      <td style={{ padding: "0.5rem" }}>
+      <td>
         {editing ? (
           <select className="form-control" value={status} onChange={(e) => setStatus(e.target.value as OfferStatus)} style={{ width: 120 }}>
             <option value="ACTIVE">{OFFER_STATUS_LABELS.ACTIVE}</option>
@@ -675,17 +756,38 @@ function OfferRow({
           OFFER_STATUS_LABELS[offer.status ?? "ACTIVE"] ?? offer.status
         )}
       </td>
-      <td style={{ padding: "0.5rem", maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis" }}>
+      <td>
+        {editing ? (
+          <select className="form-control" value={inStock ? "1" : "0"} onChange={(e) => setInStock(e.target.value === "1")} style={{ width: 100 }}>
+            <option value="1">Stokta</option>
+            <option value="0">Yok</option>
+          </select>
+        ) : (
+          offer.inStock ? "Stokta" : "Yok"
+        )}
+      </td>
+      <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem" }} title={offer.lastSeenAt ? "lastSeenAt (feed)" : "lastSeenAt yok — vitrin tazeliği updatedAt ile"}>
+        {formatAdminDateTime(offer.lastSeenAt ?? undefined)}
+      </td>
+      <td style={{ maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis" }}>
         {editing ? (
           <input className="form-control" type="text" value={affiliateUrl} onChange={(e) => setAffiliateUrl(e.target.value)} placeholder="URL" />
         ) : (
-          offer.affiliateUrl ? <a href={offer.affiliateUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.8rem" }}>Link</a> : "-"
+          offer.affiliateUrl ? (
+            <a href={offer.affiliateUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem" }}>
+              Link
+            </a>
+          ) : (
+            "—"
+          )
         )}
       </td>
-      <td style={{ padding: "0.5rem", textAlign: "right" }}>
+      <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
         {editing ? (
           <>
-            <button type="button" className="btn-ghost btn-sm" onClick={() => setEditing(false)}>İptal</button>
+            <button type="button" className="btn-ghost btn-sm" onClick={() => setEditing(false)}>
+              İptal
+            </button>
             <button
               type="button"
               className="btn-primary btn-sm"
@@ -701,7 +803,9 @@ function OfferRow({
             </button>
           </>
         ) : (
-          <button type="button" className="btn-ghost btn-sm" onClick={() => setEditing(true)}>Düzenle</button>
+          <button type="button" className="btn-ghost btn-sm" onClick={() => setEditing(true)}>
+            Düzenle
+          </button>
         )}
       </td>
     </tr>

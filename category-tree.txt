@@ -1,0 +1,694 @@
+﻿# Ucuzabak kategori ağacı (export: 2026-03-31T22:36:03.993Z)
+# Toplam kayıt: 690
+# Satır formatı: [derinlik] Ad | slug: ... | id: ... | aktif: evet/hayır | sortOrder: ...
+
+■ Elektronik | slug: elektronik | id: 691 | aktif: evet | sortOrder: 10
+  └ Cep Telefonu | slug: cep-telefonu | id: 701 | aktif: evet | sortOrder: 10
+    └ Telefon Kılıfları & Kapaklar | slug: cep-telefonu-telefon-kiliflari-ve-kapaklar | id: 962 | aktif: evet | sortOrder: 10
+    └ Şarj Aletleri & Power Bank | slug: cep-telefonu-sarj-aletleri-ve-power-bank | id: 963 | aktif: evet | sortOrder: 20
+  └ Laptop | slug: laptop | id: 702 | aktif: evet | sortOrder: 20
+    └ Laptop Çantaları | slug: laptop-laptop-cantalari | id: 964 | aktif: evet | sortOrder: 10
+    └ Adaptör & Şarj Cihazları | slug: laptop-adaptor-ve-sarj-cihazlari | id: 965 | aktif: evet | sortOrder: 20
+  └ Televizyon | slug: televizyon | id: 703 | aktif: evet | sortOrder: 30
+    └ Televizyon Aksesuarları | slug: televizyon-televizyon-aksesuarlari | id: 966 | aktif: evet | sortOrder: 10
+    └ TV Duvar Askı Aparatları | slug: televizyon-tv-duvar-aski-aparatlari | id: 967 | aktif: evet | sortOrder: 20
+  └ Tablet | slug: tablet | id: 704 | aktif: evet | sortOrder: 40
+    └ Tablet Kılıfları | slug: tablet-tablet-kiliflari | id: 968 | aktif: evet | sortOrder: 10
+    └ Stylus & Klavye | slug: tablet-stylus-ve-klavye | id: 969 | aktif: evet | sortOrder: 20
+  └ Kulaklık | slug: kulaklik | id: 705 | aktif: evet | sortOrder: 50
+    └ Bluetooth Kulaklıklar | slug: kulaklik-bluetooth-kulakliklar | id: 970 | aktif: evet | sortOrder: 10
+    └ Kulaklık Kılıfları | slug: kulaklik-kulaklik-kiliflari | id: 971 | aktif: evet | sortOrder: 20
+  └ Kamera | slug: kamera | id: 706 | aktif: evet | sortOrder: 60
+    └ Kamera Çantaları | slug: kamera-kamera-cantalari | id: 972 | aktif: evet | sortOrder: 10
+    └ Tripod & Sabitleyiciler | slug: kamera-tripod-ve-sabitleyiciler | id: 973 | aktif: evet | sortOrder: 20
+  └ Telefon Aksesuarları | slug: elektronik-telefon-aksesuarlari | id: 1153 | aktif: evet | sortOrder: 70
+    └ Telefon Kılıfı | slug: elektronik-telefon-aksesuarlari-telefon-kilifi | id: 1154 | aktif: evet | sortOrder: 10
+    └ Ekran Koruyucu | slug: elektronik-telefon-aksesuarlari-ekran-koruyucu | id: 1155 | aktif: evet | sortOrder: 20
+  └ Bilgisayar | slug: elektronik-bilgisayar | id: 1156 | aktif: evet | sortOrder: 80
+    └ Masaüstü Bilgisayar | slug: elektronik-bilgisayar-masaustu-bilgisayar | id: 1157 | aktif: evet | sortOrder: 10
+    └ All-in-One Bilgisayar | slug: elektronik-bilgisayar-all-in-one-bilgisayar | id: 1158 | aktif: evet | sortOrder: 20
+  └ Bilgisayar Bileşenleri | slug: elektronik-bilgisayar-bilesenleri | id: 1159 | aktif: evet | sortOrder: 90
+    └ Ekran Kartı | slug: elektronik-bilgisayar-bilesenleri-ekran-karti | id: 1160 | aktif: evet | sortOrder: 10
+    └ Anakart | slug: elektronik-bilgisayar-bilesenleri-anakart | id: 1161 | aktif: evet | sortOrder: 20
+  └ Monitör | slug: elektronik-monitor | id: 1162 | aktif: evet | sortOrder: 100
+    └ Oyuncu Monitörü | slug: elektronik-monitor-oyuncu-monitoru | id: 1163 | aktif: evet | sortOrder: 10
+    └ Profesyonel Monitör | slug: elektronik-monitor-profesyonel-monitor | id: 1164 | aktif: evet | sortOrder: 20
+  └ Yazıcı & Tarayıcı | slug: elektronik-yazici-ve-tarayici | id: 1165 | aktif: evet | sortOrder: 110
+    └ Lazer Yazıcı | slug: elektronik-yazici-ve-tarayici-lazer-yazici | id: 1166 | aktif: evet | sortOrder: 10
+    └ Tarayıcı | slug: elektronik-yazici-ve-tarayici-tarayici | id: 1167 | aktif: evet | sortOrder: 20
+  └ Ağ Ürünleri | slug: elektronik-ag-urunleri | id: 1168 | aktif: evet | sortOrder: 120
+    └ Router | slug: elektronik-ag-urunleri-router | id: 1169 | aktif: evet | sortOrder: 10
+    └ Mesh Sistem | slug: elektronik-ag-urunleri-mesh-sistem | id: 1170 | aktif: evet | sortOrder: 20
+  └ TV & Görüntü | slug: elektronik-tv-ve-goruntu | id: 1171 | aktif: evet | sortOrder: 130
+    └ 4K Televizyon | slug: elektronik-tv-ve-goruntu-4k-televizyon | id: 1172 | aktif: evet | sortOrder: 10
+    └ Projeksiyon | slug: elektronik-tv-ve-goruntu-projeksiyon | id: 1173 | aktif: evet | sortOrder: 20
+  └ Ses Sistemleri | slug: elektronik-ses-sistemleri | id: 1174 | aktif: evet | sortOrder: 140
+    └ Soundbar | slug: elektronik-ses-sistemleri-soundbar | id: 1175 | aktif: evet | sortOrder: 10
+    └ Bluetooth Hoparlör | slug: elektronik-ses-sistemleri-bluetooth-hoparlor | id: 1176 | aktif: evet | sortOrder: 20
+  └ Kamera & Fotoğraf | slug: elektronik-kamera-ve-fotograf | id: 1177 | aktif: evet | sortOrder: 150
+    └ Fotoğraf Makinesi | slug: elektronik-kamera-ve-fotograf-fotograf-makinesi | id: 1178 | aktif: evet | sortOrder: 10
+    └ Aksiyon Kamera | slug: elektronik-kamera-ve-fotograf-aksiyon-kamera | id: 1179 | aktif: evet | sortOrder: 20
+  └ Giyilebilir Teknoloji | slug: elektronik-giyilebilir-teknoloji | id: 1180 | aktif: evet | sortOrder: 160
+    └ Akıllı Saat | slug: elektronik-giyilebilir-teknoloji-akilli-saat | id: 1181 | aktif: evet | sortOrder: 10
+    └ Akıllı Bileklik | slug: elektronik-giyilebilir-teknoloji-akilli-bileklik | id: 1182 | aktif: evet | sortOrder: 20
+  └ Oyun & Konsol | slug: elektronik-oyun-ve-konsol | id: 1183 | aktif: evet | sortOrder: 170
+    └ Oyun Konsolu | slug: elektronik-oyun-ve-konsol-oyun-konsolu | id: 1184 | aktif: evet | sortOrder: 10
+    └ Oyun Kolu | slug: elektronik-oyun-ve-konsol-oyun-kolu | id: 1185 | aktif: evet | sortOrder: 20
+  └ Ofis Elektroniği | slug: elektronik-ofis-elektronigi | id: 1186 | aktif: evet | sortOrder: 180
+    └ Projeksiyon Cihazı | slug: elektronik-ofis-elektronigi-projeksiyon-cihazi | id: 1187 | aktif: evet | sortOrder: 10
+    └ Evrak İmha Makinesi | slug: elektronik-ofis-elektronigi-evrak-i-mha-makinesi | id: 1188 | aktif: evet | sortOrder: 20
+■ Beyaz Eşya | slug: beyaz-esya | id: 692 | aktif: evet | sortOrder: 20
+  └ Buzdolabı | slug: buzdolabi | id: 707 | aktif: evet | sortOrder: 10
+    └ No-Frost Bölmeler | slug: buzdolabi-no-frost-bolmeler | id: 974 | aktif: evet | sortOrder: 10
+    └ Buzluk & Saklama Kapları | slug: buzdolabi-buzluk-ve-saklama-kaplari | id: 975 | aktif: evet | sortOrder: 20
+  └ Çamaşır Makinesi | slug: camsasir-makinesi | id: 708 | aktif: evet | sortOrder: 20
+    └ Tambur Temizleyici | slug: camsasir-makinesi-tambur-temizleyici | id: 976 | aktif: evet | sortOrder: 10
+    └ Makine Bakım Kimyasalları | slug: camsasir-makinesi-makine-bakim-kimyasallari | id: 977 | aktif: evet | sortOrder: 20
+  └ Bulaşık Makinesi | slug: bulasik-makinesi | id: 709 | aktif: evet | sortOrder: 30
+    └ Temizlik Tabletleri | slug: bulasik-makinesi-temizlik-tabletleri | id: 978 | aktif: evet | sortOrder: 10
+    └ Durulama & Parlatıcı | slug: bulasik-makinesi-durulama-ve-parlatici | id: 979 | aktif: evet | sortOrder: 20
+  └ Fırın | slug: firin | id: 710 | aktif: evet | sortOrder: 40
+    └ Fırın Tepsi & Aksesuarları | slug: firin-firin-tepsi-ve-aksesuarlari | id: 980 | aktif: evet | sortOrder: 10
+    └ Fırın Temizliği | slug: firin-firin-temizligi | id: 981 | aktif: evet | sortOrder: 20
+  └ Kurutma Makinesi | slug: kurutma-makinesi | id: 711 | aktif: evet | sortOrder: 50
+    └ Filtre & Aksesuarlar | slug: kurutma-makinesi-filtre-ve-aksesuarlar | id: 982 | aktif: evet | sortOrder: 10
+    └ Kurutma Bakım Ürünleri | slug: kurutma-makinesi-kurutma-bakim-urunleri | id: 983 | aktif: evet | sortOrder: 20
+  └ Derin Dondurucu | slug: derin-dondurucu | id: 712 | aktif: evet | sortOrder: 60
+    └ Dondurucu Saklama Kapları | slug: derin-dondurucu-dondurucu-saklama-kaplari | id: 984 | aktif: evet | sortOrder: 10
+    └ Dondurucu Aksesuarları | slug: derin-dondurucu-dondurucu-aksesuarlari | id: 985 | aktif: evet | sortOrder: 20
+  └ Mikrodalga | slug: beyaz-esya-mikrodalga | id: 1189 | aktif: evet | sortOrder: 70
+    └ Solo Mikrodalga | slug: beyaz-esya-mikrodalga-solo-mikrodalga | id: 1190 | aktif: evet | sortOrder: 10
+    └ Ankastre Mikrodalga | slug: beyaz-esya-mikrodalga-ankastre-mikrodalga | id: 1191 | aktif: evet | sortOrder: 20
+  └ Davlumbaz | slug: beyaz-esya-davlumbaz | id: 1192 | aktif: evet | sortOrder: 80
+    └ Eğimli Davlumbaz | slug: beyaz-esya-davlumbaz-egimli-davlumbaz | id: 1193 | aktif: evet | sortOrder: 10
+    └ Teleskopik Davlumbaz | slug: beyaz-esya-davlumbaz-teleskopik-davlumbaz | id: 1194 | aktif: evet | sortOrder: 20
+  └ Klima | slug: beyaz-esya-klima | id: 1195 | aktif: evet | sortOrder: 90
+    └ Split Klima | slug: beyaz-esya-klima-split-klima | id: 1196 | aktif: evet | sortOrder: 10
+    └ Mobil Klima | slug: beyaz-esya-klima-mobil-klima | id: 1197 | aktif: evet | sortOrder: 20
+  └ Ankastre | slug: beyaz-esya-ankastre | id: 1198 | aktif: evet | sortOrder: 100
+    └ Ankastre Set | slug: beyaz-esya-ankastre-ankastre-set | id: 1199 | aktif: evet | sortOrder: 10
+    └ Ankastre Ocak | slug: beyaz-esya-ankastre-ankastre-ocak | id: 1200 | aktif: evet | sortOrder: 20
+  └ Isıtıcılar | slug: beyaz-esya-isiticilar | id: 1201 | aktif: evet | sortOrder: 110
+    └ Fanlı Isıtıcı | slug: beyaz-esya-isiticilar-fanli-isitici | id: 1202 | aktif: evet | sortOrder: 10
+    └ Yağlı Radyatör | slug: beyaz-esya-isiticilar-yagli-radyator | id: 1203 | aktif: evet | sortOrder: 20
+  └ Su Isıtıcı Sistemleri | slug: beyaz-esya-su-isitici-sistemleri | id: 1204 | aktif: evet | sortOrder: 120
+    └ Şofben | slug: beyaz-esya-su-isitici-sistemleri-sofben | id: 1205 | aktif: evet | sortOrder: 10
+    └ Termosifon | slug: beyaz-esya-su-isitici-sistemleri-termosifon | id: 1206 | aktif: evet | sortOrder: 20
+■ Ev Yaşam | slug: ev-yasam | id: 693 | aktif: evet | sortOrder: 30
+  └ Elektrikli Süpürge | slug: elektrikli-supurge | id: 713 | aktif: evet | sortOrder: 10
+    └ Süpürge Filtresi & Torbaları | slug: elektrikli-supurge-supurge-filtresi-ve-torbalari | id: 986 | aktif: evet | sortOrder: 10
+    └ Aksesuar Başlıklar | slug: elektrikli-supurge-aksesuar-basliklar | id: 987 | aktif: evet | sortOrder: 20
+  └ Kahve Makinesi | slug: kahve-makinesi | id: 714 | aktif: evet | sortOrder: 20
+    └ Kahve Makinesi Temizliği | slug: kahve-makinesi-kahve-makinesi-temizligi | id: 988 | aktif: evet | sortOrder: 10
+    └ Kahve Öğütücü Aksesuarları | slug: kahve-makinesi-kahve-ogutucu-aksesuarlari | id: 989 | aktif: evet | sortOrder: 20
+  └ Tencere & Tava | slug: tencere-tava | id: 715 | aktif: evet | sortOrder: 30
+    └ Tencere Setleri | slug: tencere-tava-tencere-setleri | id: 990 | aktif: evet | sortOrder: 10
+    └ Tava & Kapaklar | slug: tencere-tava-tava-ve-kapaklar | id: 991 | aktif: evet | sortOrder: 20
+  └ Aydınlatma | slug: aydinlatma | id: 716 | aktif: evet | sortOrder: 40
+    └ Avize & Sarkıt | slug: aydinlatma-avize-ve-sarkit | id: 992 | aktif: evet | sortOrder: 10
+    └ Ampul & LED Aydınlatma | slug: aydinlatma-ampul-ve-led-aydinlatma | id: 993 | aktif: evet | sortOrder: 20
+  └ Ev Tekstili | slug: ev-tekstili | id: 717 | aktif: evet | sortOrder: 50
+    └ Nevresim Setleri | slug: ev-tekstili-nevresim-setleri | id: 994 | aktif: evet | sortOrder: 10
+    └ Yastık & Yorgan | slug: ev-tekstili-yastik-ve-yorgan | id: 995 | aktif: evet | sortOrder: 20
+  └ Isıtıcılar | slug: isiticilar | id: 718 | aktif: evet | sortOrder: 60
+    └ Fanlı Isıtıcılar | slug: isiticilar-fanli-isiticilar | id: 996 | aktif: evet | sortOrder: 10
+    └ Isıtıcı Bakım & Filtre | slug: isiticilar-isitici-bakim-ve-filtre | id: 997 | aktif: evet | sortOrder: 20
+  └ Ütü | slug: ev-yasam-utu | id: 1141 | aktif: evet | sortOrder: 70
+    └ Buharlı Ütü | slug: ev-yasam-utu-buharli-utu | id: 1142 | aktif: evet | sortOrder: 10
+    └ Kazanlı Ütü | slug: ev-yasam-utu-kazanli-utu | id: 1143 | aktif: evet | sortOrder: 20
+  └ Dekorasyon | slug: ev-yasam-dekorasyon | id: 1144 | aktif: evet | sortOrder: 80
+    └ Duvar Dekoru | slug: ev-yasam-dekorasyon-duvar-dekoru | id: 1145 | aktif: evet | sortOrder: 10
+    └ Masa Üstü Dekor | slug: ev-yasam-dekorasyon-masa-ustu-dekor | id: 1146 | aktif: evet | sortOrder: 20
+  └ Banyo | slug: ev-yasam-banyo | id: 1147 | aktif: evet | sortOrder: 90
+    └ Banyo Setleri | slug: ev-yasam-banyo-banyo-setleri | id: 1148 | aktif: evet | sortOrder: 10
+    └ Duş Aksesuarları | slug: ev-yasam-banyo-dus-aksesuarlari | id: 1149 | aktif: evet | sortOrder: 20
+  └ Temizlik Gereçleri | slug: ev-yasam-temizlik-gerecleri | id: 1150 | aktif: evet | sortOrder: 100
+    └ Mop | slug: ev-yasam-temizlik-gerecleri-mop | id: 1151 | aktif: evet | sortOrder: 10
+    └ Cam Temizlik Ürünleri | slug: ev-yasam-temizlik-gerecleri-cam-temizlik-urunleri | id: 1152 | aktif: evet | sortOrder: 20
+  └ Süpürge | slug: ev-yasam-supurge | id: 1207 | aktif: evet | sortOrder: 110
+    └ Robot Süpürge | slug: ev-yasam-supurge-robot-supurge | id: 1208 | aktif: evet | sortOrder: 10
+    └ Dikey Süpürge | slug: ev-yasam-supurge-dikey-supurge | id: 1209 | aktif: evet | sortOrder: 20
+  └ Mutfak Aletleri | slug: ev-yasam-mutfak-aletleri | id: 1210 | aktif: evet | sortOrder: 120
+    └ Blender | slug: ev-yasam-mutfak-aletleri-blender | id: 1211 | aktif: evet | sortOrder: 10
+    └ Mikser | slug: ev-yasam-mutfak-aletleri-mikser | id: 1212 | aktif: evet | sortOrder: 20
+  └ Kahve & İçecek Hazırlama | slug: ev-yasam-kahve-ve-i-cecek-hazirlama | id: 1213 | aktif: evet | sortOrder: 130
+    └ Espresso Makinesi | slug: ev-yasam-kahve-ve-i-cecek-hazirlama-espresso-makinesi | id: 1214 | aktif: evet | sortOrder: 10
+    └ Filtre Kahve Makinesi | slug: ev-yasam-kahve-ve-i-cecek-hazirlama-filtre-kahve-makinesi | id: 1215 | aktif: evet | sortOrder: 20
+  └ Pişirme Yardımcıları | slug: ev-yasam-pisirme-yardimcilari | id: 1216 | aktif: evet | sortOrder: 140
+    └ Airfryer | slug: ev-yasam-pisirme-yardimcilari-airfryer | id: 1217 | aktif: evet | sortOrder: 10
+    └ Tost Makinesi | slug: ev-yasam-pisirme-yardimcilari-tost-makinesi | id: 1218 | aktif: evet | sortOrder: 20
+  └ Isıtma & Soğutma | slug: ev-yasam-isitma-ve-sogutma | id: 1219 | aktif: evet | sortOrder: 150
+    └ Vantilatör | slug: ev-yasam-isitma-ve-sogutma-vantilator | id: 1220 | aktif: evet | sortOrder: 10
+    └ Hava Temizleyici | slug: ev-yasam-isitma-ve-sogutma-hava-temizleyici | id: 1221 | aktif: evet | sortOrder: 20
+  └ Düzenleme & Depolama | slug: ev-yasam-duzenleme-ve-depolama | id: 1222 | aktif: evet | sortOrder: 160
+    └ Saklama Kutusu | slug: ev-yasam-duzenleme-ve-depolama-saklama-kutusu | id: 1223 | aktif: evet | sortOrder: 10
+    └ Dolap Düzenleyici | slug: ev-yasam-duzenleme-ve-depolama-dolap-duzenleyici | id: 1224 | aktif: evet | sortOrder: 20
+■ Mobilya | slug: mobilya | id: 762 | aktif: evet | sortOrder: 40
+  └ Oturma Odası | slug: mobilya-oturma-odasi | id: 763 | aktif: evet | sortOrder: 10
+    └ Koltuk Takımları | slug: mobilya-oturma-odasi-koltuk-takimlari | id: 764 | aktif: evet | sortOrder: 10
+    └ Sehpa & Orta Sehpa | slug: mobilya-oturma-odasi-sehpa-ve-orta-sehpa | id: 765 | aktif: evet | sortOrder: 20
+  └ Yatak Odası | slug: mobilya-yatak-odasi | id: 766 | aktif: evet | sortOrder: 20
+    └ Yatak & Başlık | slug: mobilya-yatak-odasi-yatak-ve-baslik | id: 767 | aktif: evet | sortOrder: 10
+    └ Gardırop & Şifonyer | slug: mobilya-yatak-odasi-gardirop-ve-sifonyer | id: 768 | aktif: evet | sortOrder: 20
+  └ Yemek Odası | slug: mobilya-yemek-odasi | id: 769 | aktif: evet | sortOrder: 30
+    └ Masa & Sandalye | slug: mobilya-yemek-odasi-masa-ve-sandalye | id: 770 | aktif: evet | sortOrder: 10
+    └ Büfe & Konsol | slug: mobilya-yemek-odasi-bufe-ve-konsol | id: 771 | aktif: evet | sortOrder: 20
+  └ Çalışma & Ofis Mobilyaları | slug: mobilya-calisma-ve-ofis-mobilyalari | id: 772 | aktif: evet | sortOrder: 40
+    └ Çalışma Masaları | slug: mobilya-calisma-ve-ofis-mobilyalari-calisma-masalari | id: 773 | aktif: evet | sortOrder: 10
+    └ Ofis Koltukları | slug: mobilya-calisma-ve-ofis-mobilyalari-ofis-koltuklari | id: 774 | aktif: evet | sortOrder: 20
+  └ Depolama & Organizasyon | slug: mobilya-depolama-ve-organizasyon | id: 775 | aktif: evet | sortOrder: 50
+    └ Kitaplık & Raf | slug: mobilya-depolama-ve-organizasyon-kitaplik-ve-raf | id: 776 | aktif: evet | sortOrder: 10
+    └ Ayakkabılık & Portmanto | slug: mobilya-depolama-ve-organizasyon-ayakkabilik-ve-portmanto | id: 777 | aktif: evet | sortOrder: 20
+  └ Balkon & Bahçe Mobilyaları | slug: mobilya-balkon-ve-bahce-mobilyalari | id: 778 | aktif: evet | sortOrder: 60
+    └ Balkon Takımları | slug: mobilya-balkon-ve-bahce-mobilyalari-balkon-takimlari | id: 779 | aktif: evet | sortOrder: 10
+    └ Bahçe Oturma Grupları | slug: mobilya-balkon-ve-bahce-mobilyalari-bahce-oturma-gruplari | id: 780 | aktif: evet | sortOrder: 20
+  └ Çocuk Odası | slug: mobilya-cocuk-odasi | id: 1225 | aktif: evet | sortOrder: 90
+    └ Çocuk Yatağı | slug: mobilya-cocuk-odasi-cocuk-yatagi | id: 1226 | aktif: evet | sortOrder: 10
+    └ Çocuk Dolabı | slug: mobilya-cocuk-odasi-cocuk-dolabi | id: 1227 | aktif: evet | sortOrder: 20
+  └ Ofis Mobilyası | slug: mobilya-ofis-mobilyasi | id: 1228 | aktif: evet | sortOrder: 100
+    └ Çalışma Masası | slug: mobilya-ofis-mobilyasi-calisma-masasi | id: 1229 | aktif: evet | sortOrder: 10
+    └ Ergonomik Koltuk | slug: mobilya-ofis-mobilyasi-ergonomik-koltuk | id: 1230 | aktif: evet | sortOrder: 20
+  └ Bahçe Mobilyası | slug: mobilya-bahce-mobilyasi | id: 1231 | aktif: evet | sortOrder: 110
+    └ Bahçe Takımı | slug: mobilya-bahce-mobilyasi-bahce-takimi | id: 1232 | aktif: evet | sortOrder: 10
+    └ Şezlong | slug: mobilya-bahce-mobilyasi-sezlong | id: 1233 | aktif: evet | sortOrder: 20
+  └ TV Ünitesi | slug: mobilya-tv-unitesi | id: 1234 | aktif: evet | sortOrder: 120
+    └ TV Sehpası | slug: mobilya-tv-unitesi-tv-sehpasi | id: 1235 | aktif: evet | sortOrder: 10
+    └ Duvar TV Ünitesi | slug: mobilya-tv-unitesi-duvar-tv-unitesi | id: 1236 | aktif: evet | sortOrder: 20
+  └ Depolama Mobilyaları | slug: mobilya-depolama-mobilyalari | id: 1237 | aktif: evet | sortOrder: 130
+    └ Kitaplık | slug: mobilya-depolama-mobilyalari-kitaplik | id: 1238 | aktif: evet | sortOrder: 10
+    └ Çok Amaçlı Dolap | slug: mobilya-depolama-mobilyalari-cok-amacli-dolap | id: 1239 | aktif: evet | sortOrder: 20
+■ Kişisel Bakım | slug: kisisel-bakim | id: 694 | aktif: evet | sortOrder: 50
+  └ Kozmetik | slug: kozmetik | id: 719 | aktif: evet | sortOrder: 10
+    └ Makyaj | slug: kozmetik-makyaj | id: 998 | aktif: evet | sortOrder: 10
+    └ Güneş Koruyucu | slug: kozmetik-gunes-koruyucu | id: 999 | aktif: evet | sortOrder: 20
+  └ Saç Bakım | slug: sac-bakim | id: 720 | aktif: evet | sortOrder: 20
+    └ Şampuan & Saç Kremi | slug: sac-bakim-sampuan-ve-sac-kremi | id: 1000 | aktif: evet | sortOrder: 10
+    └ Saç Maskesi & Onarıcı | slug: sac-bakim-sac-maskesi-ve-onarici | id: 1001 | aktif: evet | sortOrder: 20
+  └ Cilt Bakımı | slug: cilt-bakimi | id: 721 | aktif: evet | sortOrder: 30
+    └ Temizleyici | slug: cilt-bakimi-temizleyici | id: 1002 | aktif: evet | sortOrder: 10
+    └ Nemlendirici | slug: cilt-bakimi-nemlendirici | id: 1003 | aktif: evet | sortOrder: 20
+  └ Tıraş | slug: tras | id: 722 | aktif: evet | sortOrder: 40
+    └ Tıraş Köpüğü & Jel | slug: tras-tiras-kopugu-ve-jel | id: 1004 | aktif: evet | sortOrder: 10
+    └ Tıraş Bıçağı & Fırça | slug: tras-tiras-bicagi-ve-firca | id: 1005 | aktif: evet | sortOrder: 20
+  └ Diş Bakımı | slug: dis-bakimi | id: 723 | aktif: evet | sortOrder: 50
+    └ Diş Macunu | slug: dis-bakimi-dis-macunu | id: 1006 | aktif: evet | sortOrder: 10
+    └ Ağız Bakım Gargarası | slug: dis-bakimi-agiz-bakim-gargarasi | id: 1007 | aktif: evet | sortOrder: 20
+  └ Ağız Bakımı | slug: agiz-bakimi | id: 724 | aktif: evet | sortOrder: 55
+    └ Diş Macunu | slug: agiz-bakimi-dis-macunu | id: 1008 | aktif: evet | sortOrder: 10
+    └ Ağız Bakım Gargarası | slug: agiz-bakimi-agiz-bakim-gargarasi | id: 1009 | aktif: evet | sortOrder: 20
+  └ Parfüm | slug: parfum | id: 725 | aktif: evet | sortOrder: 60
+    └ Parfüm | slug: parfum-parfum | id: 1010 | aktif: evet | sortOrder: 10
+    └ Deodorant & Sprey | slug: parfum-deodorant-ve-sprey | id: 1011 | aktif: evet | sortOrder: 20
+  └ Tıraş & Erkek Bakım | slug: kisisel-bakim-tiras-ve-erkek-bakim | id: 1240 | aktif: evet | sortOrder: 100
+    └ Tıraş Makinesi | slug: kisisel-bakim-tiras-ve-erkek-bakim-tiras-makinesi | id: 1241 | aktif: evet | sortOrder: 10
+    └ Sakal Bakım | slug: kisisel-bakim-tiras-ve-erkek-bakim-sakal-bakim | id: 1242 | aktif: evet | sortOrder: 20
+  └ Epilasyon & Kadın Bakım | slug: kisisel-bakim-epilasyon-ve-kadin-bakim | id: 1243 | aktif: evet | sortOrder: 110
+    └ Epilatör | slug: kisisel-bakim-epilasyon-ve-kadin-bakim-epilator | id: 1244 | aktif: evet | sortOrder: 10
+    └ Ağda Ürünleri | slug: kisisel-bakim-epilasyon-ve-kadin-bakim-agda-urunleri | id: 1245 | aktif: evet | sortOrder: 20
+  └ Kişisel Hijyen | slug: kisisel-bakim-kisisel-hijyen | id: 1246 | aktif: evet | sortOrder: 120
+    └ Duş Jeli | slug: kisisel-bakim-kisisel-hijyen-dus-jeli | id: 1247 | aktif: evet | sortOrder: 10
+    └ Hijyen Pedi | slug: kisisel-bakim-kisisel-hijyen-hijyen-pedi | id: 1248 | aktif: evet | sortOrder: 20
+  └ Medikal Kişisel Bakım | slug: kisisel-bakim-medikal-kisisel-bakim | id: 1249 | aktif: evet | sortOrder: 130
+    └ Nebülizatör | slug: kisisel-bakim-medikal-kisisel-bakim-nebulizator | id: 1250 | aktif: evet | sortOrder: 10
+    └ Ateş Ölçer | slug: kisisel-bakim-medikal-kisisel-bakim-ates-olcer | id: 1251 | aktif: evet | sortOrder: 20
+■ Anne & Bebek | slug: anne-bebek | id: 695 | aktif: evet | sortOrder: 60
+  └ Bebek Arabası | slug: bebek-arabasi | id: 726 | aktif: evet | sortOrder: 10
+    └ Puset & Taşıma | slug: bebek-arabasi-puset-ve-tasima | id: 1012 | aktif: evet | sortOrder: 10
+    └ Bebek Arabası Aksesuarları | slug: bebek-arabasi-bebek-arabasi-aksesuarlari | id: 1013 | aktif: evet | sortOrder: 20
+  └ Oto Koltuğu | slug: oto-koltugu | id: 727 | aktif: evet | sortOrder: 20
+    └ Oto Koltuğu | slug: oto-koltugu-oto-koltugu | id: 1014 | aktif: evet | sortOrder: 10
+    └ Emniyet Aksesuarları | slug: oto-koltugu-emniyet-aksesuarlari | id: 1015 | aktif: evet | sortOrder: 20
+  └ Emzik & Şişe | slug: emzik-sise | id: 728 | aktif: evet | sortOrder: 30
+    └ Biberon Ucu & Emzik | slug: emzik-sise-biberon-ucu-ve-emzik | id: 1016 | aktif: evet | sortOrder: 10
+    └ Sterilizasyon Ürünleri | slug: emzik-sise-sterilizasyon-urunleri | id: 1017 | aktif: evet | sortOrder: 20
+  └ Bez | slug: bez | id: 729 | aktif: evet | sortOrder: 40
+    └ Bebek Bezleri | slug: bez-bebek-bezleri | id: 1018 | aktif: evet | sortOrder: 10
+    └ Islak Mendil & Bakım Kremi | slug: bez-islak-mendil-ve-bakim-kremi | id: 1019 | aktif: evet | sortOrder: 20
+  └ Bebek Beslenme | slug: bebek-beslenme | id: 730 | aktif: evet | sortOrder: 50
+    └ Mama Hazırlık Ürünleri | slug: bebek-beslenme-mama-hazirlik-urunleri | id: 1020 | aktif: evet | sortOrder: 10
+    └ Bardak & Mama Setleri | slug: bebek-beslenme-bardak-ve-mama-setleri | id: 1021 | aktif: evet | sortOrder: 20
+  └ Bebek Odası | slug: bebek-odasi | id: 731 | aktif: evet | sortOrder: 60
+    └ Bebek Nevresimi | slug: bebek-odasi-bebek-nevresimi | id: 1022 | aktif: evet | sortOrder: 10
+    └ Oda Tekstili & Organizer | slug: bebek-odasi-oda-tekstili-ve-organizer | id: 1023 | aktif: evet | sortOrder: 20
+  └ Bebek Bezi | slug: anne-bebek-bebek-bezi | id: 1252 | aktif: evet | sortOrder: 110
+    └ Yenidoğan Bezi | slug: anne-bebek-bebek-bezi-yenidogan-bezi | id: 1253 | aktif: evet | sortOrder: 10
+    └ Külot Bez | slug: anne-bebek-bebek-bezi-kulot-bez | id: 1254 | aktif: evet | sortOrder: 20
+  └ Biberon & Emzik | slug: anne-bebek-biberon-ve-emzik | id: 1255 | aktif: evet | sortOrder: 120
+    └ Biberon | slug: anne-bebek-biberon-ve-emzik-biberon | id: 1256 | aktif: evet | sortOrder: 10
+    └ Emzik | slug: anne-bebek-biberon-ve-emzik-emzik | id: 1257 | aktif: evet | sortOrder: 20
+  └ Mama Sandalyesi | slug: anne-bebek-mama-sandalyesi | id: 1258 | aktif: evet | sortOrder: 130
+    └ Katlanır Mama Sandalyesi | slug: anne-bebek-mama-sandalyesi-katlanir-mama-sandalyesi | id: 1259 | aktif: evet | sortOrder: 10
+    └ Portatif Mama Sandalyesi | slug: anne-bebek-mama-sandalyesi-portatif-mama-sandalyesi | id: 1260 | aktif: evet | sortOrder: 20
+  └ Bebek Giyim | slug: anne-bebek-bebek-giyim | id: 1261 | aktif: evet | sortOrder: 140
+    └ Body | slug: anne-bebek-bebek-giyim-body | id: 1262 | aktif: evet | sortOrder: 10
+    └ Tulum | slug: anne-bebek-bebek-giyim-tulum | id: 1263 | aktif: evet | sortOrder: 20
+  └ Oyuncak | slug: anne-bebek-oyuncak | id: 1264 | aktif: evet | sortOrder: 150
+    └ Diş Kaşıyıcı | slug: anne-bebek-oyuncak-dis-kasiyici | id: 1265 | aktif: evet | sortOrder: 10
+    └ Eğitici Oyuncak | slug: anne-bebek-oyuncak-egitici-oyuncak | id: 1266 | aktif: evet | sortOrder: 20
+  └ Anne Bakım | slug: anne-bebek-anne-bakim | id: 1267 | aktif: evet | sortOrder: 160
+    └ Göğüs Pompası | slug: anne-bebek-anne-bakim-gogus-pompasi | id: 1268 | aktif: evet | sortOrder: 10
+    └ Anne Bakım Kremi | slug: anne-bebek-anne-bakim-anne-bakim-kremi | id: 1269 | aktif: evet | sortOrder: 20
+■ Moda | slug: moda | id: 781 | aktif: evet | sortOrder: 70
+  └ Kadın Giyim | slug: moda-kadin-giyim | id: 782 | aktif: evet | sortOrder: 10
+    └ Elbise & Abiye | slug: moda-kadin-giyim-elbise-ve-abiye | id: 783 | aktif: evet | sortOrder: 10
+    └ Bluz & Gömlek | slug: moda-kadin-giyim-bluz-ve-gomlek | id: 784 | aktif: evet | sortOrder: 20
+  └ Erkek Giyim | slug: moda-erkek-giyim | id: 785 | aktif: evet | sortOrder: 20
+    └ Tişört & Polo | slug: moda-erkek-giyim-tisort-ve-polo | id: 786 | aktif: evet | sortOrder: 10
+    └ Pantolon & Şort | slug: moda-erkek-giyim-pantolon-ve-sort | id: 787 | aktif: evet | sortOrder: 20
+  └ Çocuk Giyim | slug: moda-cocuk-giyim | id: 788 | aktif: evet | sortOrder: 30
+    └ Tulum & Set | slug: moda-cocuk-giyim-tulum-ve-set | id: 789 | aktif: evet | sortOrder: 10
+    └ Üst Giyim | slug: moda-cocuk-giyim-ust-giyim | id: 790 | aktif: evet | sortOrder: 20
+  └ İç Giyim | slug: moda-i-c-giyim | id: 791 | aktif: evet | sortOrder: 40
+    └ Sütyen & Takım | slug: moda-i-c-giyim-sutyen-ve-takim | id: 792 | aktif: evet | sortOrder: 10
+    └ Boxer & Külot | slug: moda-i-c-giyim-boxer-ve-kulot | id: 793 | aktif: evet | sortOrder: 20
+  └ Dış Giyim | slug: moda-dis-giyim | id: 794 | aktif: evet | sortOrder: 50
+    └ Mont & Kaban | slug: moda-dis-giyim-mont-ve-kaban | id: 795 | aktif: evet | sortOrder: 10
+    └ Yağmurluk & Rüzgarlık | slug: moda-dis-giyim-yagmurluk-ve-ruzgarlik | id: 796 | aktif: evet | sortOrder: 20
+  └ Spor Giyim | slug: moda-spor-giyim | id: 797 | aktif: evet | sortOrder: 60
+    └ Spor Tayt | slug: moda-spor-giyim-spor-tayt | id: 798 | aktif: evet | sortOrder: 10
+    └ Spor Üst | slug: moda-spor-giyim-spor-ust | id: 799 | aktif: evet | sortOrder: 20
+  └ Tesettür Giyim | slug: moda-tesettur-giyim | id: 914 | aktif: evet | sortOrder: 70
+    └ Tesettür Abiye | slug: moda-tesettur-giyim-tesettur-abiye | id: 915 | aktif: evet | sortOrder: 10
+    └ Tesettür Günlük | slug: moda-tesettur-giyim-tesettur-gunluk | id: 916 | aktif: evet | sortOrder: 20
+■ Ayakkabı & Çanta | slug: ayakkabi-canta | id: 800 | aktif: evet | sortOrder: 80
+  └ Kadın Ayakkabı | slug: ayakkabi-canta-kadin-ayakkabi | id: 801 | aktif: evet | sortOrder: 10
+    └ Topuklu Ayakkabı | slug: ayakkabi-canta-kadin-ayakkabi-topuklu-ayakkabi | id: 802 | aktif: evet | sortOrder: 10
+    └ Babet & Loafer | slug: ayakkabi-canta-kadin-ayakkabi-babet-ve-loafer | id: 803 | aktif: evet | sortOrder: 20
+  └ Erkek Ayakkabı | slug: ayakkabi-canta-erkek-ayakkabi | id: 804 | aktif: evet | sortOrder: 20
+    └ Deri Ayakkabı | slug: ayakkabi-canta-erkek-ayakkabi-deri-ayakkabi | id: 805 | aktif: evet | sortOrder: 10
+    └ Günlük Ayakkabı | slug: ayakkabi-canta-erkek-ayakkabi-gunluk-ayakkabi | id: 806 | aktif: evet | sortOrder: 20
+  └ Çocuk Ayakkabı | slug: ayakkabi-canta-cocuk-ayakkabi | id: 807 | aktif: evet | sortOrder: 30
+    └ İlk Adım Ayakkabı | slug: ayakkabi-canta-cocuk-ayakkabi-i-lk-adim-ayakkabi | id: 808 | aktif: evet | sortOrder: 10
+    └ Okul Ayakkabısı | slug: ayakkabi-canta-cocuk-ayakkabi-okul-ayakkabisi | id: 809 | aktif: evet | sortOrder: 20
+  └ Spor Ayakkabı | slug: ayakkabi-canta-spor-ayakkabi | id: 810 | aktif: evet | sortOrder: 40
+    └ Sneaker | slug: ayakkabi-canta-spor-ayakkabi-sneaker | id: 811 | aktif: evet | sortOrder: 10
+    └ Koşu Ayakkabısı | slug: ayakkabi-canta-spor-ayakkabi-kosu-ayakkabisi | id: 812 | aktif: evet | sortOrder: 20
+  └ Bot & Çizme | slug: ayakkabi-canta-bot-ve-cizme | id: 813 | aktif: evet | sortOrder: 50
+    └ Bot | slug: ayakkabi-canta-bot-ve-cizme-bot | id: 814 | aktif: evet | sortOrder: 10
+    └ Çizme | slug: ayakkabi-canta-bot-ve-cizme-cizme | id: 815 | aktif: evet | sortOrder: 20
+  └ Çanta | slug: ayakkabi-canta-canta | id: 816 | aktif: evet | sortOrder: 60
+    └ Omuz Çanta | slug: ayakkabi-canta-canta-omuz-canta | id: 817 | aktif: evet | sortOrder: 10
+    └ Sırt Çantası | slug: ayakkabi-canta-canta-sirt-cantasi | id: 818 | aktif: evet | sortOrder: 20
+  └ Valiz & Seyahat | slug: ayakkabi-canta-valiz-seyahat | id: 917 | aktif: evet | sortOrder: 70
+    └ Valiz | slug: ayakkabi-canta-valiz-seyahat-valiz | id: 918 | aktif: evet | sortOrder: 10
+    └ Seyahat Aksesuarları | slug: ayakkabi-canta-valiz-seyahat-seyahat-aksesuarlari | id: 919 | aktif: evet | sortOrder: 20
+  └ Terlik & Sandalet | slug: ayakkabi-canta-terlik-ve-sandalet | id: 1270 | aktif: evet | sortOrder: 100
+    └ Ev Terliği | slug: ayakkabi-canta-terlik-ve-sandalet-ev-terligi | id: 1271 | aktif: evet | sortOrder: 10
+    └ Sandalet | slug: ayakkabi-canta-terlik-ve-sandalet-sandalet | id: 1272 | aktif: evet | sortOrder: 20
+  └ Kadın Çanta | slug: ayakkabi-canta-kadin-canta | id: 1273 | aktif: evet | sortOrder: 110
+    └ Omuz Çantası | slug: ayakkabi-canta-kadin-canta-omuz-cantasi | id: 1274 | aktif: evet | sortOrder: 10
+    └ Portföy | slug: ayakkabi-canta-kadin-canta-portfoy | id: 1275 | aktif: evet | sortOrder: 20
+  └ Erkek Çanta | slug: ayakkabi-canta-erkek-canta | id: 1276 | aktif: evet | sortOrder: 120
+    └ Evrak Çantası | slug: ayakkabi-canta-erkek-canta-evrak-cantasi | id: 1277 | aktif: evet | sortOrder: 10
+    └ Postacı Çantası | slug: ayakkabi-canta-erkek-canta-postaci-cantasi | id: 1278 | aktif: evet | sortOrder: 20
+  └ Valiz | slug: ayakkabi-canta-valiz | id: 1279 | aktif: evet | sortOrder: 130
+    └ Kabin Boy Valiz | slug: ayakkabi-canta-valiz-kabin-boy-valiz | id: 1280 | aktif: evet | sortOrder: 10
+    └ Büyük Boy Valiz | slug: ayakkabi-canta-valiz-buyuk-boy-valiz | id: 1281 | aktif: evet | sortOrder: 20
+■ Spor & Outdoor | slug: spor-outdoor | id: 696 | aktif: evet | sortOrder: 90
+  └ Fitness Aksesuarları | slug: fitness-aksesuarlar | id: 732 | aktif: evet | sortOrder: 10
+    └ Dambıl & Ağırlık | slug: fitness-aksesuarlar-dambil-ve-agirlik | id: 1024 | aktif: evet | sortOrder: 10
+    └ Yoga Mat & Egzersiz | slug: fitness-aksesuarlar-yoga-mat-ve-egzersiz | id: 1025 | aktif: evet | sortOrder: 20
+  └ Outdoor Giyim | slug: outdoor-giyim | id: 733 | aktif: evet | sortOrder: 20
+    └ Termal Giyim | slug: outdoor-giyim-termal-giyim | id: 1026 | aktif: evet | sortOrder: 10
+    └ Rüzgarlık & Yağmurluk | slug: outdoor-giyim-ruzgarlik-ve-yagmurluk | id: 1027 | aktif: evet | sortOrder: 20
+  └ Kamp & Piknik | slug: kamp-piknik | id: 734 | aktif: evet | sortOrder: 30
+    └ Çadır & Barınak | slug: kamp-piknik-cadir-ve-barinak | id: 1028 | aktif: evet | sortOrder: 10
+    └ Kamp Mutfak Ekipmanları | slug: kamp-piknik-kamp-mutfak-ekipmanlari | id: 1029 | aktif: evet | sortOrder: 20
+  └ Bisiklet | slug: bisiklet | id: 735 | aktif: evet | sortOrder: 40
+    └ Bisiklet Aydınlatma | slug: bisiklet-bisiklet-aydinlatma | id: 1030 | aktif: evet | sortOrder: 10
+    └ Bisiklet Lastiği | slug: bisiklet-bisiklet-lastigi | id: 1031 | aktif: evet | sortOrder: 20
+  └ Spor Ayakkabı | slug: spor-ayakkabi | id: 736 | aktif: evet | sortOrder: 50
+    └ Futbol Ayakkabısı | slug: spor-ayakkabi-futbol-ayakkabisi | id: 1032 | aktif: evet | sortOrder: 10
+    └ Koşu Ayakkabısı | slug: spor-ayakkabi-kosu-ayakkabisi | id: 1033 | aktif: evet | sortOrder: 20
+  └ Spor Beslenme | slug: spor-beslenme | id: 737 | aktif: evet | sortOrder: 60
+    └ Protein & Takviyeler | slug: spor-beslenme-protein-ve-takviyeler | id: 1034 | aktif: evet | sortOrder: 10
+    └ Spor Bar & İçecek | slug: spor-beslenme-spor-bar-ve-i-cecek | id: 1035 | aktif: evet | sortOrder: 20
+  └ Koşu | slug: spor-outdoor-kosu | id: 1282 | aktif: evet | sortOrder: 110
+    └ Koşu Bandı | slug: spor-outdoor-kosu-kosu-bandi | id: 1283 | aktif: evet | sortOrder: 10
+    └ Koşu Aksesuarları | slug: spor-outdoor-kosu-kosu-aksesuarlari | id: 1284 | aktif: evet | sortOrder: 20
+  └ Takım Sporları | slug: spor-outdoor-takim-sporlari | id: 1285 | aktif: evet | sortOrder: 120
+    └ Futbol | slug: spor-outdoor-takim-sporlari-futbol | id: 1286 | aktif: evet | sortOrder: 10
+    └ Basketbol | slug: spor-outdoor-takim-sporlari-basketbol | id: 1287 | aktif: evet | sortOrder: 20
+  └ Su Sporları | slug: spor-outdoor-su-sporlari | id: 1288 | aktif: evet | sortOrder: 130
+    └ Yüzme Gözlüğü | slug: spor-outdoor-su-sporlari-yuzme-gozlugu | id: 1289 | aktif: evet | sortOrder: 10
+    └ Palet | slug: spor-outdoor-su-sporlari-palet | id: 1290 | aktif: evet | sortOrder: 20
+  └ Kış Sporları | slug: spor-outdoor-kis-sporlari | id: 1291 | aktif: evet | sortOrder: 140
+    └ Kayak | slug: spor-outdoor-kis-sporlari-kayak | id: 1292 | aktif: evet | sortOrder: 10
+    └ Snowboard | slug: spor-outdoor-kis-sporlari-snowboard | id: 1293 | aktif: evet | sortOrder: 20
+  └ Outdoor Ekipman | slug: spor-outdoor-outdoor-ekipman | id: 1294 | aktif: evet | sortOrder: 150
+    └ Kamp Lambası | slug: spor-outdoor-outdoor-ekipman-kamp-lambasi | id: 1295 | aktif: evet | sortOrder: 10
+    └ Matara | slug: spor-outdoor-outdoor-ekipman-matara | id: 1296 | aktif: evet | sortOrder: 20
+■ Otomotiv & Motosiklet | slug: otomotiv | id: 697 | aktif: evet | sortOrder: 100
+  └ Oto Aksesuarları | slug: oto-aksesuarlar | id: 738 | aktif: evet | sortOrder: 10
+    └ Araç İçi Organizer | slug: oto-aksesuarlar-arac-i-ci-organizer | id: 1036 | aktif: evet | sortOrder: 10
+    └ Koltuk Kılıfı | slug: oto-aksesuarlar-koltuk-kilifi | id: 1037 | aktif: evet | sortOrder: 20
+  └ Oto Temizlik | slug: oto-temizlik | id: 739 | aktif: evet | sortOrder: 20
+    └ Oto Şampuanı | slug: oto-temizlik-oto-sampuani | id: 1038 | aktif: evet | sortOrder: 10
+    └ Cam Temizleyici | slug: oto-temizlik-cam-temizleyici | id: 1039 | aktif: evet | sortOrder: 20
+  └ Yağlar | slug: yaglar | id: 740 | aktif: evet | sortOrder: 30
+    └ Motor Yağı | slug: yaglar-motor-yagi | id: 1040 | aktif: evet | sortOrder: 10
+    └ Yağ Filtresi | slug: yaglar-yag-filtresi | id: 1041 | aktif: evet | sortOrder: 20
+  └ Aydınlatma | slug: oto-aydinlatma | id: 741 | aktif: evet | sortOrder: 40
+    └ Far Ampulleri | slug: oto-aydinlatma-far-ampulleri | id: 1042 | aktif: evet | sortOrder: 10
+    └ LED Şerit & Aydınlatma | slug: oto-aydinlatma-led-serit-ve-aydinlatma | id: 1043 | aktif: evet | sortOrder: 20
+  └ Jant & Lastik | slug: jant-lastik | id: 742 | aktif: evet | sortOrder: 50
+    └ Lastik & Jant Setleri | slug: jant-lastik-lastik-ve-jant-setleri | id: 1044 | aktif: evet | sortOrder: 10
+    └ Bijon & Aksesuar | slug: jant-lastik-bijon-ve-aksesuar | id: 1045 | aktif: evet | sortOrder: 20
+  └ Oto Elektroniği | slug: oto-elektronigi | id: 743 | aktif: evet | sortOrder: 60
+    └ Navigasyon Sistemleri | slug: oto-elektronigi-navigasyon-sistemleri | id: 1046 | aktif: evet | sortOrder: 10
+    └ Park Sensörü & Kamera | slug: oto-elektronigi-park-sensoru-ve-kamera | id: 1047 | aktif: evet | sortOrder: 20
+  └ Akü | slug: otomotiv-aku | id: 1129 | aktif: evet | sortOrder: 70
+    └ Otomobil Aküsü | slug: otomotiv-aku-otomobil-akusu | id: 1130 | aktif: evet | sortOrder: 10
+    └ Motosiklet Aküsü | slug: otomotiv-aku-motosiklet-akusu | id: 1131 | aktif: evet | sortOrder: 20
+  └ Yedek Parça | slug: otomotiv-yedek-parca | id: 1132 | aktif: evet | sortOrder: 80
+    └ Fren Parçaları | slug: otomotiv-yedek-parca-fren-parcalari | id: 1133 | aktif: evet | sortOrder: 10
+    └ Filtreler | slug: otomotiv-yedek-parca-filtreler | id: 1134 | aktif: evet | sortOrder: 20
+  └ Motosiklet | slug: otomotiv-motosiklet | id: 1135 | aktif: evet | sortOrder: 90
+    └ Scooter | slug: otomotiv-motosiklet-scooter | id: 1136 | aktif: evet | sortOrder: 10
+    └ Touring | slug: otomotiv-motosiklet-touring | id: 1137 | aktif: evet | sortOrder: 20
+  └ Motosiklet Ekipman | slug: otomotiv-motosiklet-ekipman | id: 1138 | aktif: evet | sortOrder: 100
+    └ Motosiklet Kaskı | slug: otomotiv-motosiklet-ekipman-motosiklet-kaski | id: 1139 | aktif: evet | sortOrder: 10
+    └ Motosiklet Montu | slug: otomotiv-motosiklet-ekipman-motosiklet-montu | id: 1140 | aktif: evet | sortOrder: 20
+■ Ofis & Kırtasiye | slug: ofis-kirtasiye | id: 698 | aktif: evet | sortOrder: 110
+  └ Yazıcı Sarf | slug: yazici-sarf | id: 744 | aktif: evet | sortOrder: 10
+    └ Mürekkep Kartuşu | slug: yazici-sarf-murekkep-kartusu | id: 1048 | aktif: evet | sortOrder: 10
+    └ Toner | slug: yazici-sarf-toner | id: 1049 | aktif: evet | sortOrder: 20
+  └ Kağıt & Fatura | slug: kagit-fatura | id: 745 | aktif: evet | sortOrder: 20
+    └ Fatura Kağıdı | slug: kagit-fatura-fatura-kagidi | id: 1050 | aktif: evet | sortOrder: 10
+    └ Fatura Rulosu | slug: kagit-fatura-fatura-rulosu | id: 1051 | aktif: evet | sortOrder: 20
+  └ Defterler | slug: defterler | id: 746 | aktif: evet | sortOrder: 30
+    └ Ajanda & Planlayıcı | slug: defterler-ajanda-ve-planlayici | id: 1052 | aktif: evet | sortOrder: 10
+    └ Defter & Bloknot | slug: defterler-defter-ve-bloknot | id: 1053 | aktif: evet | sortOrder: 20
+  └ Kalem | slug: kalem | id: 747 | aktif: evet | sortOrder: 40
+    └ Tükenmez Kalem | slug: kalem-tukenmez-kalem | id: 1054 | aktif: evet | sortOrder: 10
+    └ Kurşun Kalem | slug: kalem-kursun-kalem | id: 1055 | aktif: evet | sortOrder: 20
+  └ Dosya & Klasör | slug: dosya-klasor | id: 748 | aktif: evet | sortOrder: 50
+    └ Dosya Klasör | slug: dosya-klasor-dosya-klasor | id: 1056 | aktif: evet | sortOrder: 10
+    └ Arşiv Kutuları | slug: dosya-klasor-arsiv-kutulari | id: 1057 | aktif: evet | sortOrder: 20
+  └ Etiketleme | slug: etiketleme | id: 749 | aktif: evet | sortOrder: 60
+    └ Etiket Sarfı | slug: etiketleme-etiket-sarfi | id: 1058 | aktif: evet | sortOrder: 10
+    └ Koli Etiketi | slug: etiketleme-koli-etiketi | id: 1059 | aktif: evet | sortOrder: 20
+  └ Ofis Mobilyası | slug: ofis-kirtasiye-ofis-mobilyasi | id: 1120 | aktif: evet | sortOrder: 70
+    └ Çalışma Masası | slug: ofis-kirtasiye-ofis-mobilyasi-calisma-masasi | id: 1121 | aktif: evet | sortOrder: 10
+    └ Ergonomik Koltuk | slug: ofis-kirtasiye-ofis-mobilyasi-ergonomik-koltuk | id: 1122 | aktif: evet | sortOrder: 20
+  └ Ofis Elektroniği | slug: ofis-kirtasiye-ofis-elektronigi | id: 1123 | aktif: evet | sortOrder: 80
+    └ Projeksiyon | slug: ofis-kirtasiye-ofis-elektronigi-projeksiyon | id: 1124 | aktif: evet | sortOrder: 10
+    └ Evrak İmha Makinesi | slug: ofis-kirtasiye-ofis-elektronigi-evrak-i-mha-makinesi | id: 1125 | aktif: evet | sortOrder: 20
+  └ Okul Gereçleri | slug: ofis-kirtasiye-okul-gerecleri | id: 1126 | aktif: evet | sortOrder: 90
+    └ Okul Çantası | slug: ofis-kirtasiye-okul-gerecleri-okul-cantasi | id: 1127 | aktif: evet | sortOrder: 10
+    └ Geometri Seti | slug: ofis-kirtasiye-okul-gerecleri-geometri-seti | id: 1128 | aktif: evet | sortOrder: 20
+  └ Kağıt Ürünleri | slug: ofis-kirtasiye-kagit-urunleri | id: 1297 | aktif: evet | sortOrder: 100
+    └ A4 Kağıt | slug: ofis-kirtasiye-kagit-urunleri-a4-kagit | id: 1298 | aktif: evet | sortOrder: 10
+    └ Fotokopi Kağıdı | slug: ofis-kirtasiye-kagit-urunleri-fotokopi-kagidi | id: 1299 | aktif: evet | sortOrder: 20
+  └ Defter & Ajanda | slug: ofis-kirtasiye-defter-ve-ajanda | id: 1300 | aktif: evet | sortOrder: 110
+    └ Ajanda | slug: ofis-kirtasiye-defter-ve-ajanda-ajanda | id: 1301 | aktif: evet | sortOrder: 10
+    └ Spiralli Defter | slug: ofis-kirtasiye-defter-ve-ajanda-spiralli-defter | id: 1302 | aktif: evet | sortOrder: 20
+  └ Kalem & Boyama | slug: ofis-kirtasiye-kalem-ve-boyama | id: 1303 | aktif: evet | sortOrder: 120
+    └ Tükenmez Kalem | slug: ofis-kirtasiye-kalem-ve-boyama-tukenmez-kalem | id: 1304 | aktif: evet | sortOrder: 10
+    └ Keçeli Kalem | slug: ofis-kirtasiye-kalem-ve-boyama-keceli-kalem | id: 1305 | aktif: evet | sortOrder: 20
+  └ Dosyalama | slug: ofis-kirtasiye-dosyalama | id: 1306 | aktif: evet | sortOrder: 130
+    └ Klasör | slug: ofis-kirtasiye-dosyalama-klasor | id: 1307 | aktif: evet | sortOrder: 10
+    └ Arşiv Kutusu | slug: ofis-kirtasiye-dosyalama-arsiv-kutusu | id: 1308 | aktif: evet | sortOrder: 20
+■ Pet Shop | slug: pet-shop | id: 699 | aktif: evet | sortOrder: 120
+  └ Kedi Maması | slug: kedi-mamasi | id: 750 | aktif: evet | sortOrder: 10
+    └ Kuru Mama | slug: kedi-mamasi-kuru-mama | id: 1060 | aktif: evet | sortOrder: 10
+    └ Yaş Mama | slug: kedi-mamasi-yas-mama | id: 1061 | aktif: evet | sortOrder: 20
+  └ Köpek Maması | slug: kopek-mamasi | id: 751 | aktif: evet | sortOrder: 20
+    └ Kuru Köpek Maması | slug: kopek-mamasi-kuru-kopek-mamasi | id: 1062 | aktif: evet | sortOrder: 10
+    └ Yaş Köpek Maması | slug: kopek-mamasi-yas-kopek-mamasi | id: 1063 | aktif: evet | sortOrder: 20
+  └ Kum & Hijyen | slug: kum-hijyen | id: 752 | aktif: evet | sortOrder: 30
+    └ Kedi Kumu | slug: kum-hijyen-kedi-kumu | id: 1064 | aktif: evet | sortOrder: 10
+    └ Kedi Tuvalet Spreyi | slug: kum-hijyen-kedi-tuvalet-spreyi | id: 1065 | aktif: evet | sortOrder: 20
+  └ Oyuncaklar | slug: pet-oyuncaklari | id: 753 | aktif: evet | sortOrder: 40
+    └ Kedi Oyuncakları | slug: pet-oyuncaklari-kedi-oyuncaklari | id: 1066 | aktif: evet | sortOrder: 10
+    └ Köpek Oyuncakları | slug: pet-oyuncaklari-kopek-oyuncaklari | id: 1067 | aktif: evet | sortOrder: 20
+  └ Aksesuarlar | slug: pet-aksesuarlar | id: 754 | aktif: evet | sortOrder: 50
+    └ Tasma & Eğitim | slug: pet-aksesuarlar-tasma-ve-egitim | id: 1068 | aktif: evet | sortOrder: 10
+    └ Gezdirme Ürünleri | slug: pet-aksesuarlar-gezdirme-urunleri | id: 1069 | aktif: evet | sortOrder: 20
+  └ Bakım Ürünleri | slug: pet-bakim | id: 755 | aktif: evet | sortOrder: 60
+    └ Şampuan | slug: pet-bakim-sampuan | id: 1070 | aktif: evet | sortOrder: 10
+    └ Tüy Bakım Fırçası | slug: pet-bakim-tuy-bakim-fircasi | id: 1071 | aktif: evet | sortOrder: 20
+  └ Taşıma & Gezdirme | slug: pet-shop-tasima-gezdirme | id: 947 | aktif: evet | sortOrder: 70
+    └ Taşıma Kafesi & Çanta | slug: pet-shop-tasima-gezdirme-tasima-kafesi-ve-canta | id: 952 | aktif: evet | sortOrder: 10
+    └ Gezdirme Tasma Setleri | slug: pet-shop-tasima-gezdirme-gezdirme-tasma-setleri | id: 953 | aktif: evet | sortOrder: 20
+  └ Yatak | slug: pet-shop-yatak | id: 948 | aktif: evet | sortOrder: 80
+    └ Kedi Yatağı | slug: pet-shop-yatak-kedi-yatagi | id: 954 | aktif: evet | sortOrder: 10
+    └ Köpek Yatağı | slug: pet-shop-yatak-kopek-yatagi | id: 955 | aktif: evet | sortOrder: 20
+  └ Tasma & Aksesuar | slug: pet-shop-tasma-aksesuar | id: 949 | aktif: evet | sortOrder: 90
+    └ Boyun Tasması & Emniyet | slug: pet-shop-tasma-aksesuar-boyun-tasmasi-ve-emniyet | id: 956 | aktif: evet | sortOrder: 10
+    └ Göğüs Tasması & Kemer | slug: pet-shop-tasma-aksesuar-gogus-tasmasi-ve-kemer | id: 957 | aktif: evet | sortOrder: 20
+  └ Kuş | slug: pet-shop-kus | id: 950 | aktif: evet | sortOrder: 100
+    └ Kuş Kafesi | slug: pet-shop-kus-kus-kafesi | id: 958 | aktif: evet | sortOrder: 10
+    └ Kuş Yemi | slug: pet-shop-kus-kus-yemi | id: 1315 | aktif: evet | sortOrder: 10
+    └ Kuş Yemi & Kum | slug: pet-shop-kus-kus-yemi-ve-kum | id: 959 | aktif: evet | sortOrder: 20
+  └ Akvaryum | slug: pet-shop-akvaryum | id: 951 | aktif: evet | sortOrder: 110
+    └ Akvaryum Taşları & Kum | slug: pet-shop-akvaryum-akvaryum-taslari-ve-kum | id: 960 | aktif: evet | sortOrder: 10
+    └ Balık Yemi & Bakım | slug: pet-shop-akvaryum-balik-yemi-ve-bakim | id: 961 | aktif: evet | sortOrder: 20
+  └ Kedi | slug: pet-shop-kedi | id: 1309 | aktif: evet | sortOrder: 120
+    └ Kedi Maması | slug: pet-shop-kedi-kedi-mamasi | id: 1310 | aktif: evet | sortOrder: 10
+    └ Kedi Kumu | slug: pet-shop-kedi-kedi-kumu | id: 1311 | aktif: evet | sortOrder: 20
+  └ Köpek | slug: pet-shop-kopek | id: 1312 | aktif: evet | sortOrder: 130
+    └ Köpek Maması | slug: pet-shop-kopek-kopek-mamasi | id: 1313 | aktif: evet | sortOrder: 10
+    └ Köpek Tasması | slug: pet-shop-kopek-kopek-tasmasi | id: 1314 | aktif: evet | sortOrder: 20
+  └ Balık & Akvaryum | slug: pet-shop-balik-ve-akvaryum | id: 1316 | aktif: evet | sortOrder: 150
+    └ Akvaryum | slug: pet-shop-balik-ve-akvaryum-akvaryum | id: 1317 | aktif: evet | sortOrder: 10
+    └ Balık Yemi | slug: pet-shop-balik-ve-akvaryum-balik-yemi | id: 1318 | aktif: evet | sortOrder: 20
+  └ Kemirgen | slug: pet-shop-kemirgen | id: 1319 | aktif: evet | sortOrder: 160
+    └ Kemirgen Yemi | slug: pet-shop-kemirgen-kemirgen-yemi | id: 1320 | aktif: evet | sortOrder: 10
+    └ Kemirgen Kafesi | slug: pet-shop-kemirgen-kemirgen-kafesi | id: 1321 | aktif: evet | sortOrder: 20
+  └ Sürüngen | slug: pet-shop-surungen | id: 1322 | aktif: evet | sortOrder: 170
+    └ Terraryum | slug: pet-shop-surungen-terraryum | id: 1323 | aktif: evet | sortOrder: 10
+    └ Sürüngen Isıtıcı | slug: pet-shop-surungen-surungen-isitici | id: 1324 | aktif: evet | sortOrder: 20
+  └ Mama | slug: pet-shop-mama | id: 1325 | aktif: evet | sortOrder: 180
+    └ Kuru Mama | slug: pet-shop-mama-kuru-mama | id: 1326 | aktif: evet | sortOrder: 10
+    └ Yaş Mama | slug: pet-shop-mama-yas-mama | id: 1327 | aktif: evet | sortOrder: 20
+  └ Bakım & Hijyen | slug: pet-shop-bakim-ve-hijyen | id: 1328 | aktif: evet | sortOrder: 190
+    └ Tüy Bakım | slug: pet-shop-bakim-ve-hijyen-tuy-bakim | id: 1329 | aktif: evet | sortOrder: 10
+    └ Pet Şampuan | slug: pet-shop-bakim-ve-hijyen-pet-sampuan | id: 1330 | aktif: evet | sortOrder: 20
+  └ Oyuncak & Aksesuar | slug: pet-shop-oyuncak-ve-aksesuar | id: 1331 | aktif: evet | sortOrder: 200
+    └ Kedi Oyuncağı | slug: pet-shop-oyuncak-ve-aksesuar-kedi-oyuncagi | id: 1332 | aktif: evet | sortOrder: 10
+    └ Köpek Oyuncağı | slug: pet-shop-oyuncak-ve-aksesuar-kopek-oyuncagi | id: 1333 | aktif: evet | sortOrder: 20
+■ Süpermarket | slug: supermarket | id: 700 | aktif: evet | sortOrder: 130
+  └ Temel Gıda | slug: temel-gida | id: 756 | aktif: evet | sortOrder: 10
+    └ Pirinç & Bulgur | slug: temel-gida-pirinc-ve-bulgur | id: 1072 | aktif: evet | sortOrder: 10
+    └ Makarna & Un | slug: temel-gida-makarna-ve-un | id: 1073 | aktif: evet | sortOrder: 20
+  └ İçecek | slug: icecek | id: 757 | aktif: evet | sortOrder: 20
+    └ Su & Maden Suyu | slug: icecek-su-ve-maden-suyu | id: 1074 | aktif: evet | sortOrder: 10
+    └ Çay & Kahve | slug: icecek-cay-ve-kahve | id: 1075 | aktif: evet | sortOrder: 20
+  └ Kahvaltılık | slug: kahvaltilik | id: 758 | aktif: evet | sortOrder: 30
+    └ Reçel & Bal | slug: kahvaltilik-recel-ve-bal | id: 1076 | aktif: evet | sortOrder: 10
+    └ Gevrek & Kahvaltılık | slug: kahvaltilik-gevrek-ve-kahvaltilik | id: 1077 | aktif: evet | sortOrder: 20
+  └ Temizlik | slug: temizlik | id: 759 | aktif: evet | sortOrder: 40
+    └ Çamaşır Deterjanı | slug: temizlik-camasir-deterjani | id: 1078 | aktif: evet | sortOrder: 10
+    └ Bulaşık Deterjanı | slug: temizlik-bulasik-deterjani | id: 1079 | aktif: evet | sortOrder: 20
+  └ Atıştırmalık | slug: atistirmalik | id: 760 | aktif: evet | sortOrder: 50
+    └ Cips & Atıştırmalık | slug: atistirmalik-cips-ve-atistirmalik | id: 1080 | aktif: evet | sortOrder: 10
+    └ Kuruyemiş | slug: atistirmalik-kuruyemis | id: 1081 | aktif: evet | sortOrder: 20
+  └ Bebek Maması | slug: bebek-mamasi-supermarket | id: 761 | aktif: evet | sortOrder: 60
+    └ Bebek Maması | slug: bebek-mamasi-supermarket-bebek-mamasi | id: 1082 | aktif: evet | sortOrder: 10
+    └ Bebek Aperatifleri | slug: bebek-mamasi-supermarket-bebek-aperatifleri | id: 1083 | aktif: evet | sortOrder: 20
+  └ Konserve & Hazır Yemek | slug: supermarket-konserve-hazir-yemek | id: 929 | aktif: evet | sortOrder: 70
+    └ Konserve Gıdalar | slug: supermarket-konserve-hazir-yemek-konserve-gidalar | id: 935 | aktif: evet | sortOrder: 10
+    └ Hazır Yemek & Soslar | slug: supermarket-konserve-hazir-yemek-hazir-yemek-ve-soslar | id: 936 | aktif: evet | sortOrder: 20
+  └ Kağıt Ürünleri | slug: supermarket-kagit-urunleri | id: 930 | aktif: evet | sortOrder: 80
+    └ Mutfak Kağıtları | slug: supermarket-kagit-urunleri-mutfak-kagitlari | id: 937 | aktif: evet | sortOrder: 10
+    └ Tuvalet Kağıdı | slug: supermarket-kagit-urunleri-tuvalet-kagidi | id: 938 | aktif: evet | sortOrder: 20
+  └ Çamaşır Bakım | slug: supermarket-camasir-bakim | id: 931 | aktif: evet | sortOrder: 90
+    └ Çamaşır Deterjanı | slug: supermarket-camasir-bakim-camasir-deterjani | id: 939 | aktif: evet | sortOrder: 10
+    └ Yumuşatıcı & Leke Çıkarıcı | slug: supermarket-camasir-bakim-yumusatici-ve-leke-cikarici | id: 940 | aktif: evet | sortOrder: 20
+  └ Bulaşık Bakım | slug: supermarket-bulasik-bakim | id: 932 | aktif: evet | sortOrder: 100
+    └ Bulaşık Deterjanı | slug: supermarket-bulasik-bakim-bulasik-deterjani | id: 941 | aktif: evet | sortOrder: 10
+    └ Parlatıcı & Tabletler | slug: supermarket-bulasik-bakim-parlatici-ve-tabletler | id: 942 | aktif: evet | sortOrder: 20
+  └ Kişisel Hijyen | slug: supermarket-kisisel-hijyen | id: 933 | aktif: evet | sortOrder: 110
+    └ Şampuan & Saç Bakım | slug: supermarket-kisisel-hijyen-sampuan-ve-sac-bakim | id: 943 | aktif: evet | sortOrder: 10
+    └ Ağız Bakımı | slug: supermarket-kisisel-hijyen-agiz-bakimi | id: 944 | aktif: evet | sortOrder: 20
+  └ Evcil Hayvan Tüketim | slug: supermarket-evcil-hayvan-tuketim | id: 934 | aktif: evet | sortOrder: 120
+    └ Kedi & Köpek Sağlık Ürünleri | slug: supermarket-evcil-hayvan-tuketim-kedi-ve-kopek-saglik-urunleri | id: 945 | aktif: evet | sortOrder: 10
+    └ Ödül & Atıştırmalıklar | slug: supermarket-evcil-hayvan-tuketim-odul-ve-atistirmaliklar | id: 946 | aktif: evet | sortOrder: 20
+  └ Temizlik Ürünleri | slug: supermarket-temizlik-urunleri | id: 1334 | aktif: evet | sortOrder: 130
+    └ Yüzey Temizleyici | slug: supermarket-temizlik-urunleri-yuzey-temizleyici | id: 1335 | aktif: evet | sortOrder: 10
+    └ Banyo Temizleyici | slug: supermarket-temizlik-urunleri-banyo-temizleyici | id: 1336 | aktif: evet | sortOrder: 20
+■ Yapı Market & Bahçe | slug: yapi-market-bahce | id: 819 | aktif: evet | sortOrder: 140
+  └ El Aletleri | slug: yapi-market-bahce-el-aletleri | id: 820 | aktif: evet | sortOrder: 10
+    └ Tornavida & Set | slug: yapi-market-bahce-el-aletleri-tornavida-ve-set | id: 821 | aktif: evet | sortOrder: 10
+    └ Pense & Anahtar | slug: yapi-market-bahce-el-aletleri-pense-ve-anahtar | id: 822 | aktif: evet | sortOrder: 20
+  └ Elektrikli El Aletleri | slug: yapi-market-bahce-elektrikli-el-aletleri | id: 823 | aktif: evet | sortOrder: 20
+    └ Matkap & Vidalama | slug: yapi-market-bahce-elektrikli-el-aletleri-matkap-ve-vidalama | id: 824 | aktif: evet | sortOrder: 10
+    └ Zımpara & Kesim | slug: yapi-market-bahce-elektrikli-el-aletleri-zimpara-ve-kesim | id: 825 | aktif: evet | sortOrder: 20
+  └ Boya & Badana | slug: yapi-market-bahce-boya-ve-badana | id: 826 | aktif: evet | sortOrder: 30
+    └ İç Cephe Boya | slug: yapi-market-bahce-boya-ve-badana-i-c-cephe-boya | id: 827 | aktif: evet | sortOrder: 10
+    └ Dış Cephe Boya | slug: yapi-market-bahce-boya-ve-badana-dis-cephe-boya | id: 828 | aktif: evet | sortOrder: 20
+  └ Hırdavat | slug: yapi-market-bahce-hirdavat | id: 829 | aktif: evet | sortOrder: 40
+    └ Vida & Dübel | slug: yapi-market-bahce-hirdavat-vida-ve-dubel | id: 830 | aktif: evet | sortOrder: 10
+    └ Kapı & Menteşe | slug: yapi-market-bahce-hirdavat-kapi-ve-mentese | id: 831 | aktif: evet | sortOrder: 20
+  └ Banyo Yapı Ürünleri | slug: yapi-market-bahce-banyo-yapi-urunleri | id: 832 | aktif: evet | sortOrder: 50
+    └ Batarya & Musluk | slug: yapi-market-bahce-banyo-yapi-urunleri-batarya-ve-musluk | id: 833 | aktif: evet | sortOrder: 10
+    └ Duş Sistemleri | slug: yapi-market-bahce-banyo-yapi-urunleri-dus-sistemleri | id: 834 | aktif: evet | sortOrder: 20
+  └ Bahçe Araçları & Sulama | slug: yapi-market-bahce-bahce-araclari-ve-sulama | id: 835 | aktif: evet | sortOrder: 60
+    └ Bahçe Hortumu | slug: yapi-market-bahce-bahce-araclari-ve-sulama-bahce-hortumu | id: 836 | aktif: evet | sortOrder: 10
+    └ Sulama Ekipmanları | slug: yapi-market-bahce-bahce-araclari-ve-sulama-sulama-ekipmanlari | id: 837 | aktif: evet | sortOrder: 20
+  └ Aydınlatma | slug: yapi-market-bahce-aydinlatma | id: 923 | aktif: evet | sortOrder: 70
+    └ Aydınlatma Armatürleri | slug: yapi-market-bahce-aydinlatma-aydinlatma-armaturleri | id: 924 | aktif: evet | sortOrder: 10
+    └ Akıllı Aydınlatma | slug: yapi-market-bahce-aydinlatma-akilli-aydinlatma | id: 925 | aktif: evet | sortOrder: 20
+  └ Güvenlik Sistemleri | slug: yapi-market-bahce-guvenlik-sistemleri | id: 926 | aktif: evet | sortOrder: 80
+    └ Kamera Sistemleri | slug: yapi-market-bahce-guvenlik-sistemleri-kamera-sistemleri | id: 927 | aktif: evet | sortOrder: 10
+    └ Alarm & Sensörler | slug: yapi-market-bahce-guvenlik-sistemleri-alarm-ve-sensorler | id: 928 | aktif: evet | sortOrder: 20
+  └ Banyo Ürünleri | slug: yapi-market-bahce-banyo-urunleri | id: 1337 | aktif: evet | sortOrder: 90
+    └ Banyo Bataryası | slug: yapi-market-bahce-banyo-urunleri-banyo-bataryasi | id: 1338 | aktif: evet | sortOrder: 10
+    └ Duş Seti | slug: yapi-market-bahce-banyo-urunleri-dus-seti | id: 1339 | aktif: evet | sortOrder: 20
+  └ Mutfak Yapı Ürünleri | slug: yapi-market-bahce-mutfak-yapi-urunleri | id: 1340 | aktif: evet | sortOrder: 100
+    └ Mutfak Bataryası | slug: yapi-market-bahce-mutfak-yapi-urunleri-mutfak-bataryasi | id: 1341 | aktif: evet | sortOrder: 10
+    └ Evye | slug: yapi-market-bahce-mutfak-yapi-urunleri-evye | id: 1342 | aktif: evet | sortOrder: 20
+  └ Bahçe Araçları | slug: yapi-market-bahce-bahce-araclari | id: 1343 | aktif: evet | sortOrder: 110
+    └ Budama Makası | slug: yapi-market-bahce-bahce-araclari-budama-makasi | id: 1344 | aktif: evet | sortOrder: 10
+    └ Bahçe Eldiveni | slug: yapi-market-bahce-bahce-araclari-bahce-eldiveni | id: 1345 | aktif: evet | sortOrder: 20
+  └ Sulama | slug: yapi-market-bahce-sulama | id: 1346 | aktif: evet | sortOrder: 120
+    └ Bahçe Hortumu | slug: yapi-market-bahce-sulama-bahce-hortumu | id: 1347 | aktif: evet | sortOrder: 10
+    └ Sulama Tabancası | slug: yapi-market-bahce-sulama-sulama-tabancasi | id: 1348 | aktif: evet | sortOrder: 20
+■ Oyun & Hobi | slug: oyun-hobi | id: 838 | aktif: evet | sortOrder: 150
+  └ Eğitici Oyuncaklar | slug: oyun-hobi-egitici-oyuncaklar | id: 839 | aktif: evet | sortOrder: 10
+    └ Puzzle | slug: oyun-hobi-egitici-oyuncaklar-puzzle | id: 840 | aktif: evet | sortOrder: 10
+    └ STEM Set | slug: oyun-hobi-egitici-oyuncaklar-stem-set | id: 841 | aktif: evet | sortOrder: 20
+  └ Kutu Oyunları & Zeka | slug: oyun-hobi-kutu-oyunlari-ve-zeka | id: 842 | aktif: evet | sortOrder: 20
+    └ Masa Oyunları | slug: oyun-hobi-kutu-oyunlari-ve-zeka-masa-oyunlari | id: 843 | aktif: evet | sortOrder: 10
+    └ Kart Oyunları | slug: oyun-hobi-kutu-oyunlari-ve-zeka-kart-oyunlari | id: 844 | aktif: evet | sortOrder: 20
+  └ Model & Maket | slug: oyun-hobi-model-ve-maket | id: 845 | aktif: evet | sortOrder: 30
+    └ Model Arabalar | slug: oyun-hobi-model-ve-maket-model-arabalar | id: 846 | aktif: evet | sortOrder: 10
+    └ Model Uçaklar | slug: oyun-hobi-model-ve-maket-model-ucaklar | id: 847 | aktif: evet | sortOrder: 20
+  └ Boyama & Sanat Malzemeleri | slug: oyun-hobi-boyama-ve-sanat-malzemeleri | id: 848 | aktif: evet | sortOrder: 40
+    └ Boya & Fırça | slug: oyun-hobi-boyama-ve-sanat-malzemeleri-boya-ve-firca | id: 849 | aktif: evet | sortOrder: 10
+    └ Tuval & Kağıt | slug: oyun-hobi-boyama-ve-sanat-malzemeleri-tuval-ve-kagit | id: 850 | aktif: evet | sortOrder: 20
+  └ Yapı Oyuncakları | slug: oyun-hobi-yapi-oyuncaklari | id: 851 | aktif: evet | sortOrder: 50
+    └ Yapı Blokları | slug: oyun-hobi-yapi-oyuncaklari-yapi-bloklari | id: 852 | aktif: evet | sortOrder: 10
+    └ İnşa Setleri | slug: oyun-hobi-yapi-oyuncaklari-i-nsa-setleri | id: 853 | aktif: evet | sortOrder: 20
+  └ El Sanatları | slug: oyun-hobi-el-sanatlari | id: 854 | aktif: evet | sortOrder: 60
+    └ Makrome & Örgü Seti | slug: oyun-hobi-el-sanatlari-makrome-ve-orgu-seti | id: 855 | aktif: evet | sortOrder: 10
+    └ Takı Yapım Setleri | slug: oyun-hobi-el-sanatlari-taki-yapim-setleri | id: 856 | aktif: evet | sortOrder: 20
+  └ Konsol Oyunları | slug: oyun-hobi-konsol-oyunlari | id: 1084 | aktif: evet | sortOrder: 70
+    └ PlayStation Oyunları | slug: oyun-hobi-konsol-oyunlari-playstation-oyunlari | id: 1085 | aktif: evet | sortOrder: 10
+    └ Xbox Oyunları | slug: oyun-hobi-konsol-oyunlari-xbox-oyunlari | id: 1086 | aktif: evet | sortOrder: 20
+  └ Müzik Enstrümanları | slug: oyun-hobi-muzik-enstrumanlari | id: 1087 | aktif: evet | sortOrder: 80
+    └ Gitar | slug: oyun-hobi-muzik-enstrumanlari-gitar | id: 1088 | aktif: evet | sortOrder: 10
+    └ Klavye | slug: oyun-hobi-muzik-enstrumanlari-klavye | id: 1089 | aktif: evet | sortOrder: 20
+  └ Uzaktan Kumandalı Ürünler | slug: oyun-hobi-uzaktan-kumandali-urunler | id: 1090 | aktif: evet | sortOrder: 90
+    └ RC Araba | slug: oyun-hobi-uzaktan-kumandali-urunler-rc-araba | id: 1091 | aktif: evet | sortOrder: 10
+    └ RC Drone | slug: oyun-hobi-uzaktan-kumandali-urunler-rc-drone | id: 1092 | aktif: evet | sortOrder: 20
+  └ Oyuncak & Hobi Setleri | slug: oyun-hobi-oyuncak-ve-hobi-setleri | id: 1349 | aktif: evet | sortOrder: 100
+    └ Bilim Seti | slug: oyun-hobi-oyuncak-ve-hobi-setleri-bilim-seti | id: 1350 | aktif: evet | sortOrder: 10
+    └ El Beceri Seti | slug: oyun-hobi-oyuncak-ve-hobi-setleri-el-beceri-seti | id: 1351 | aktif: evet | sortOrder: 20
+  └ Koleksiyon | slug: oyun-hobi-koleksiyon | id: 1352 | aktif: evet | sortOrder: 110
+    └ Koleksiyon Figür | slug: oyun-hobi-koleksiyon-koleksiyon-figur | id: 1353 | aktif: evet | sortOrder: 10
+    └ Koleksiyon Kartları | slug: oyun-hobi-koleksiyon-koleksiyon-kartlari | id: 1354 | aktif: evet | sortOrder: 20
+  └ Sanat & Hobi | slug: oyun-hobi-sanat-ve-hobi | id: 1355 | aktif: evet | sortOrder: 120
+    └ Akrilik Boya | slug: oyun-hobi-sanat-ve-hobi-akrilik-boya | id: 1356 | aktif: evet | sortOrder: 10
+    └ Fırça Seti | slug: oyun-hobi-sanat-ve-hobi-firca-seti | id: 1357 | aktif: evet | sortOrder: 20
+  └ Puzzle | slug: oyun-hobi-puzzle | id: 1358 | aktif: evet | sortOrder: 130
+    └ 500 Parça Puzzle | slug: oyun-hobi-puzzle-500-parca-puzzle | id: 1359 | aktif: evet | sortOrder: 10
+    └ 1000 Parça Puzzle | slug: oyun-hobi-puzzle-1000-parca-puzzle | id: 1360 | aktif: evet | sortOrder: 20
+■ Kitap, Müzik, Film | slug: kitap-muzik-film | id: 857 | aktif: evet | sortOrder: 160
+  └ Roman & Hikaye | slug: kitap-muzik-film-roman-ve-hikaye | id: 858 | aktif: evet | sortOrder: 10
+    └ Romanlar | slug: kitap-muzik-film-roman-ve-hikaye-romanlar | id: 859 | aktif: evet | sortOrder: 10
+    └ Hikaye Kitapları | slug: kitap-muzik-film-roman-ve-hikaye-hikaye-kitaplari | id: 860 | aktif: evet | sortOrder: 20
+  └ Çocuk Kitapları | slug: kitap-muzik-film-cocuk-kitaplari | id: 861 | aktif: evet | sortOrder: 20
+    └ Masal Kitapları | slug: kitap-muzik-film-cocuk-kitaplari-masal-kitaplari | id: 862 | aktif: evet | sortOrder: 10
+    └ Boyama Kitapları | slug: kitap-muzik-film-cocuk-kitaplari-boyama-kitaplari | id: 863 | aktif: evet | sortOrder: 20
+    └ Etkinlik Kitapları | slug: kitap-muzik-film-cocuk-kitaplari-etkinlik-kitaplari | id: 1361 | aktif: evet | sortOrder: 20
+  └ Akademik & Eğitim | slug: kitap-muzik-film-akademik-ve-egitim | id: 864 | aktif: evet | sortOrder: 30
+    └ Matematik & Fen | slug: kitap-muzik-film-akademik-ve-egitim-matematik-ve-fen | id: 865 | aktif: evet | sortOrder: 10
+    └ Dil Öğrenimi | slug: kitap-muzik-film-akademik-ve-egitim-dil-ogrenimi | id: 866 | aktif: evet | sortOrder: 20
+  └ Müzik | slug: kitap-muzik-film-muzik | id: 867 | aktif: evet | sortOrder: 40
+    └ Albüm & CD | slug: kitap-muzik-film-muzik-album-ve-cd | id: 868 | aktif: evet | sortOrder: 10
+    └ CD | slug: kitap-muzik-film-muzik-cd | id: 1365 | aktif: evet | sortOrder: 10
+    └ Müzik Eğitimi | slug: kitap-muzik-film-muzik-muzik-egitimi | id: 869 | aktif: evet | sortOrder: 20
+    └ Plak | slug: kitap-muzik-film-muzik-plak | id: 1366 | aktif: evet | sortOrder: 20
+  └ Film & Dizi | slug: kitap-muzik-film-film-ve-dizi | id: 870 | aktif: evet | sortOrder: 50
+    └ DVD & Blu-ray | slug: kitap-muzik-film-film-ve-dizi-dvd-ve-blu-ray | id: 871 | aktif: evet | sortOrder: 10
+    └ Film Aksesuarları | slug: kitap-muzik-film-film-ve-dizi-film-aksesuarlari | id: 872 | aktif: evet | sortOrder: 20
+  └ Hediye & Koleksiyon | slug: kitap-muzik-film-hediye-ve-koleksiyon | id: 873 | aktif: evet | sortOrder: 60
+    └ Poster & Koleksiyon | slug: kitap-muzik-film-hediye-ve-koleksiyon-poster-ve-koleksiyon | id: 874 | aktif: evet | sortOrder: 10
+    └ Özel Baskı | slug: kitap-muzik-film-hediye-ve-koleksiyon-ozel-baski | id: 875 | aktif: evet | sortOrder: 20
+  └ Kitap | slug: kitap-muzik-film-kitap | id: 1093 | aktif: evet | sortOrder: 70
+    └ Kişisel Gelişim | slug: kitap-muzik-film-kitap-kisisel-gelisim | id: 1094 | aktif: evet | sortOrder: 10
+    └ Bilim & Araştırma | slug: kitap-muzik-film-kitap-bilim-ve-arastirma | id: 1095 | aktif: evet | sortOrder: 20
+  └ Yabancı Dil | slug: kitap-muzik-film-yabanci-dil | id: 1096 | aktif: evet | sortOrder: 80
+    └ İngilizce Kaynaklar | slug: kitap-muzik-film-yabanci-dil-i-ngilizce-kaynaklar | id: 1097 | aktif: evet | sortOrder: 10
+    └ Sınav Hazırlık | slug: kitap-muzik-film-yabanci-dil-sinav-hazirlik | id: 1098 | aktif: evet | sortOrder: 20
+  └ Dergi | slug: kitap-muzik-film-dergi | id: 1099 | aktif: evet | sortOrder: 90
+    └ Aylık Dergiler | slug: kitap-muzik-film-dergi-aylik-dergiler | id: 1100 | aktif: evet | sortOrder: 10
+    └ Koleksiyon Sayıları | slug: kitap-muzik-film-dergi-koleksiyon-sayilari | id: 1101 | aktif: evet | sortOrder: 20
+  └ Koleksiyon Yayınları | slug: kitap-muzik-film-koleksiyon-yayinlari | id: 1102 | aktif: evet | sortOrder: 100
+    └ Özel Baskılar | slug: kitap-muzik-film-koleksiyon-yayinlari-ozel-baskilar | id: 1103 | aktif: evet | sortOrder: 10
+    └ Limitli Seriler | slug: kitap-muzik-film-koleksiyon-yayinlari-limitli-seriler | id: 1104 | aktif: evet | sortOrder: 20
+  └ Eğitim | slug: kitap-muzik-film-egitim | id: 1362 | aktif: evet | sortOrder: 120
+    └ Sınav Hazırlık | slug: kitap-muzik-film-egitim-sinav-hazirlik | id: 1363 | aktif: evet | sortOrder: 10
+    └ Akademik Kaynak | slug: kitap-muzik-film-egitim-akademik-kaynak | id: 1364 | aktif: evet | sortOrder: 20
+  └ Film | slug: kitap-muzik-film-film | id: 1367 | aktif: evet | sortOrder: 140
+    └ DVD | slug: kitap-muzik-film-film-dvd | id: 1368 | aktif: evet | sortOrder: 10
+    └ Blu-ray | slug: kitap-muzik-film-film-blu-ray | id: 1369 | aktif: evet | sortOrder: 20
+■ Sağlık | slug: saglik | id: 876 | aktif: evet | sortOrder: 170
+  └ Vitamin & Takviye | slug: saglik-vitamin-ve-takviye | id: 877 | aktif: evet | sortOrder: 10
+    └ Vitaminler | slug: saglik-vitamin-ve-takviye-vitaminler | id: 878 | aktif: evet | sortOrder: 10
+    └ Probiyotik | slug: saglik-vitamin-ve-takviye-probiyotik | id: 879 | aktif: evet | sortOrder: 20
+  └ Medikal Cihazlar | slug: saglik-medikal-cihazlar | id: 880 | aktif: evet | sortOrder: 20
+    └ Tansiyon Aleti | slug: saglik-medikal-cihazlar-tansiyon-aleti | id: 881 | aktif: evet | sortOrder: 10
+    └ Ateş Ölçer | slug: saglik-medikal-cihazlar-ates-olcer | id: 882 | aktif: evet | sortOrder: 20
+  └ Ortopedik Ürünler | slug: saglik-ortopedik-urunler | id: 883 | aktif: evet | sortOrder: 30
+    └ Ortez & Destek | slug: saglik-ortopedik-urunler-ortez-ve-destek | id: 884 | aktif: evet | sortOrder: 10
+    └ Bandaj & Sargı | slug: saglik-ortopedik-urunler-bandaj-ve-sargi | id: 885 | aktif: evet | sortOrder: 20
+  └ İlk Yardım | slug: saglik-i-lk-yardim | id: 886 | aktif: evet | sortOrder: 40
+    └ Yara Bandı | slug: saglik-i-lk-yardim-yara-bandi | id: 887 | aktif: evet | sortOrder: 10
+    └ Soğuk Kompres | slug: saglik-i-lk-yardim-soguk-kompres | id: 888 | aktif: evet | sortOrder: 20
+  └ Uyku & Rahatlama | slug: saglik-uyku-ve-rahatlama | id: 889 | aktif: evet | sortOrder: 50
+    └ Uyku Maskesi | slug: saglik-uyku-ve-rahatlama-uyku-maskesi | id: 890 | aktif: evet | sortOrder: 10
+    └ Difüzör & Aromaterapi | slug: saglik-uyku-ve-rahatlama-difuzor-ve-aromaterapi | id: 891 | aktif: evet | sortOrder: 20
+  └ Göz & İşitme | slug: saglik-goz-ve-i-sitme | id: 892 | aktif: evet | sortOrder: 60
+    └ Göz Bakım Ürünleri | slug: saglik-goz-ve-i-sitme-goz-bakim-urunleri | id: 893 | aktif: evet | sortOrder: 10
+    └ Kulak Tıkacı & Aksesuar | slug: saglik-goz-ve-i-sitme-kulak-tikaci-ve-aksesuar | id: 894 | aktif: evet | sortOrder: 20
+  └ Cinsel Sağlık | slug: saglik-cinsel-saglik | id: 920 | aktif: evet | sortOrder: 70
+    └ Cinsel Sağlık Ürünleri | slug: saglik-cinsel-saglik-cinsel-saglik-urunleri | id: 921 | aktif: evet | sortOrder: 10
+    └ Prezervatif & Kayganlaştırıcı | slug: saglik-cinsel-saglik-prezervatif-ve-kayganlastirici | id: 922 | aktif: evet | sortOrder: 20
+  └ Göz Sağlığı | slug: saglik-goz-sagligi | id: 1370 | aktif: evet | sortOrder: 80
+    └ Göz Damlası | slug: saglik-goz-sagligi-goz-damlasi | id: 1371 | aktif: evet | sortOrder: 10
+    └ Lens Solüsyonu | slug: saglik-goz-sagligi-lens-solusyonu | id: 1372 | aktif: evet | sortOrder: 20
+  └ İşitme Destek | slug: saglik-i-sitme-destek | id: 1373 | aktif: evet | sortOrder: 90
+    └ Kulak Tıkacı | slug: saglik-i-sitme-destek-kulak-tikaci | id: 1374 | aktif: evet | sortOrder: 10
+    └ İşitme Cihazı Pili | slug: saglik-i-sitme-destek-i-sitme-cihazi-pili | id: 1375 | aktif: evet | sortOrder: 20
+■ Takı & Aksesuar | slug: taki-aksesuar | id: 895 | aktif: evet | sortOrder: 180
+  └ Kolye & Uçları | slug: taki-aksesuar-kolye-ve-uclari | id: 896 | aktif: evet | sortOrder: 10
+    └ Kolye Zincirleri | slug: taki-aksesuar-kolye-ve-uclari-kolye-zincirleri | id: 897 | aktif: evet | sortOrder: 10
+    └ Kolye Uçları | slug: taki-aksesuar-kolye-ve-uclari-kolye-uclari | id: 898 | aktif: evet | sortOrder: 20
+  └ Bileklik & Halhal | slug: taki-aksesuar-bileklik-ve-halhal | id: 899 | aktif: evet | sortOrder: 20
+    └ Bileklikler | slug: taki-aksesuar-bileklik-ve-halhal-bileklikler | id: 900 | aktif: evet | sortOrder: 10
+    └ Halhal | slug: taki-aksesuar-bileklik-ve-halhal-halhal | id: 901 | aktif: evet | sortOrder: 20
+  └ Yüzük | slug: taki-aksesuar-yuzuk | id: 902 | aktif: evet | sortOrder: 30
+    └ Alyans | slug: taki-aksesuar-yuzuk-alyans | id: 903 | aktif: evet | sortOrder: 10
+    └ Taşlı Yüzük | slug: taki-aksesuar-yuzuk-tasli-yuzuk | id: 904 | aktif: evet | sortOrder: 20
+  └ Küpe | slug: taki-aksesuar-kupe | id: 905 | aktif: evet | sortOrder: 40
+    └ Küpeler | slug: taki-aksesuar-kupe-kupeler | id: 906 | aktif: evet | sortOrder: 10
+    └ Küpe Takım | slug: taki-aksesuar-kupe-kupe-takim | id: 907 | aktif: evet | sortOrder: 20
+  └ Saat | slug: taki-aksesuar-saat | id: 908 | aktif: evet | sortOrder: 50
+    └ Kadın Saat | slug: taki-aksesuar-saat-kadin-saat | id: 1376 | aktif: evet | sortOrder: 10
+    └ Saat Kayışı | slug: taki-aksesuar-saat-saat-kayisi | id: 909 | aktif: evet | sortOrder: 10
+    └ Akıllı Saat Aksesuarı | slug: taki-aksesuar-saat-akilli-saat-aksesuari | id: 910 | aktif: evet | sortOrder: 20
+    └ Erkek Saat | slug: taki-aksesuar-saat-erkek-saat | id: 1377 | aktif: evet | sortOrder: 20
+  └ Saç Aksesuarları | slug: taki-aksesuar-sac-aksesuarlari | id: 911 | aktif: evet | sortOrder: 60
+    └ Saç Tokası | slug: taki-aksesuar-sac-aksesuarlari-sac-tokasi | id: 912 | aktif: evet | sortOrder: 10
+    └ Saç Bandı | slug: taki-aksesuar-sac-aksesuarlari-sac-bandi | id: 913 | aktif: evet | sortOrder: 20
+  └ Kadın Takı | slug: taki-aksesuar-kadin-taki | id: 1105 | aktif: evet | sortOrder: 70
+    └ Altın Takı | slug: taki-aksesuar-kadin-taki-altin-taki | id: 1106 | aktif: evet | sortOrder: 10
+    └ Gümüş Takı | slug: taki-aksesuar-kadin-taki-gumus-taki | id: 1107 | aktif: evet | sortOrder: 20
+  └ Erkek Aksesuar | slug: taki-aksesuar-erkek-aksesuar | id: 1108 | aktif: evet | sortOrder: 80
+    └ Bileklik | slug: taki-aksesuar-erkek-aksesuar-bileklik | id: 1109 | aktif: evet | sortOrder: 10
+    └ Kol Düğmesi | slug: taki-aksesuar-erkek-aksesuar-kol-dugmesi | id: 1110 | aktif: evet | sortOrder: 20
+  └ Güneş Gözlüğü | slug: taki-aksesuar-gunes-gozlugu | id: 1111 | aktif: evet | sortOrder: 90
+    └ Kadın Güneş Gözlüğü | slug: taki-aksesuar-gunes-gozlugu-kadin-gunes-gozlugu | id: 1112 | aktif: evet | sortOrder: 10
+    └ Erkek Güneş Gözlüğü | slug: taki-aksesuar-gunes-gozlugu-erkek-gunes-gozlugu | id: 1113 | aktif: evet | sortOrder: 20
+  └ Bijuteri | slug: taki-aksesuar-bijuteri | id: 1114 | aktif: evet | sortOrder: 100
+    └ Günlük Bijuteri | slug: taki-aksesuar-bijuteri-gunluk-bijuteri | id: 1115 | aktif: evet | sortOrder: 10
+    └ Set Bijuteri | slug: taki-aksesuar-bijuteri-set-bijuteri | id: 1116 | aktif: evet | sortOrder: 20
+  └ Değerli Takı | slug: taki-aksesuar-degerli-taki | id: 1117 | aktif: evet | sortOrder: 110
+    └ Pırlanta Takı | slug: taki-aksesuar-degerli-taki-pirlanta-taki | id: 1118 | aktif: evet | sortOrder: 10
+    └ İnci Takı | slug: taki-aksesuar-degerli-taki-i-nci-taki | id: 1119 | aktif: evet | sortOrder: 20
+  └ Saç Aksesuarı | slug: taki-aksesuar-sac-aksesuari | id: 1378 | aktif: evet | sortOrder: 130
+    └ Saç Tokası | slug: taki-aksesuar-sac-aksesuari-sac-tokasi | id: 1379 | aktif: evet | sortOrder: 10
+    └ Taç | slug: taki-aksesuar-sac-aksesuari-tac | id: 1380 | aktif: evet | sortOrder: 20

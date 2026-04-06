@@ -6,13 +6,16 @@ import https from "node:https";
 import { AmazonJsonAdapter } from "./amazon.adapter";
 import { HepsiburadaCsvAdapter } from "./hepsiburada.adapter";
 import { TrendyolXmlAdapter } from "./trendyol.adapter";
-import { FeedAdapter, ParsedFeedItem } from "./types";
+import { isTrendyolNormalizedJsonPayload, TrendyolJsonAdapter } from "./trendyol-json.adapter";
+import { FeedAdapter } from "./types";
 
 const trendyolAdapter = new TrendyolXmlAdapter();
 const hepsiburadaAdapter = new HepsiburadaCsvAdapter();
 const amazonAdapter = new AmazonJsonAdapter();
+const trendyolJsonAdapter = new TrendyolJsonAdapter();
 
 export function getFeedAdapter(type: FeedType, storeSlug: string): FeedAdapter {
+  const slug = storeSlug.toLowerCase();
   switch (type) {
     case "XML":
       return trendyolAdapter;
@@ -20,9 +23,11 @@ export function getFeedAdapter(type: FeedType, storeSlug: string): FeedAdapter {
       return hepsiburadaAdapter;
     case "JSON_API":
     default:
-      return amazonAdapter;
+      return slug === "trendyol" ? trendyolJsonAdapter : amazonAdapter;
   }
 }
+
+export { isTrendyolNormalizedJsonPayload, trendyolJsonAdapter };
 
 function fetchRemote(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -63,5 +68,12 @@ export async function readFeedFile(sourceRef: string): Promise<string> {
   return fs.readFileSync(filePath, "utf8");
 }
 
-export type { ParsedFeedItem } from "./types";
+export type { FeedParseResult, ParsedFeedItem } from "./types";
+export {
+  coerceFeedItemExternalId,
+  isValidFeedExternalId,
+  primitiveFeedIdCandidate,
+  slugSafeSegmentFromExternalId,
+  stripFeedFileUtf8Bom
+} from "./feedIdentity";
 

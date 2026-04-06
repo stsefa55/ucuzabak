@@ -51,7 +51,7 @@ export default function AdminProductImportPage() {
       <Header />
       <main className="main">
         <div className="container">
-          <div className="card" style={{ maxWidth: 840, margin: "0 auto" }}>
+          <div className="card admin-page" style={{ maxWidth: 840, margin: "0 auto" }}>
             <h1 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.75rem" }}>
               CSV ile ürün içeri aktarma
             </h1>

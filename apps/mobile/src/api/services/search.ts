@@ -21,12 +21,15 @@ function toSpecsRecord(specsJson: unknown): Product["specs"] | undefined {
   const obj = specsJson as Record<string, unknown>;
   const entries = Object.entries(obj).filter(([_, v]) => typeof v !== "undefined");
   if (entries.length === 0) return undefined;
-  return entries.reduce<Product["specs"]>((acc, [k, v]) => {
-    if (typeof v === "string" || typeof v === "number" || typeof v === "boolean" || v === null) {
-      acc[k] = v;
-    }
-    return acc;
-  }, {} as Record<string, string | number | boolean | null | undefined>);
+  return entries.reduce(
+    (acc: NonNullable<Product["specs"]>, [k, v]) => {
+      if (typeof v === "string" || typeof v === "number" || typeof v === "boolean" || v === null) {
+        acc[k] = v;
+      }
+      return acc;
+    },
+    {} as NonNullable<Product["specs"]>,
+  );
 }
 
 type BackendSearchProduct = {
@@ -85,12 +88,12 @@ export async function fetchSearchProducts(q: string): Promise<Product[]> {
         priceDropPercent: null,
         storeCount: p.offerCountCache ?? 0,
         specs: toSpecsRecord(p.specsJson),
-        dataSource: "backend",
+        dataSource: "backend" as const
       };
     });
 
     console.log("[SEARCH DEBUG] result count returned:", mapped.length);
-    return mapped;
+    return mapped as Product[];
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.log("FALLBACK USED: SEARCH API ERROR");

@@ -2,12 +2,14 @@
 
 import { create } from "zustand";
 
-interface UserInfo {
+export interface UserInfo {
   id: number;
   email: string;
   name: string;
   role: string;
   phone?: string | null;
+  /** Sunucudan gelmezse (eski oturum) doğrulanmış kabul edilir. */
+  emailVerified?: boolean;
 }
 
 interface AuthState {

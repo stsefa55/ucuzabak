@@ -1,16 +1,26 @@
 import { parse } from "csv-parse/sync";
-import { FeedAdapter, ParsedFeedItem } from "./types";
+import { FeedAdapter, FeedParseResult, ParsedFeedItem } from "./types";
 
 export class HepsiburadaCsvAdapter implements FeedAdapter {
-  parse(content: string): ParsedFeedItem[] {
+  parse(content: string): FeedParseResult {
     const records = parse(content, {
       columns: true,
       skip_empty_lines: true,
     }) as any[];
 
-    return records.map((row) => ({
+    const items = records.map((row) => ({
       externalId: String(row.id || row.externalId),
       title: String(row.title),
+      brand:
+        row.brand != null && String(row.brand).trim() !== ""
+          ? String(row.brand).trim()
+          : undefined,
+      categoryText:
+        row.category != null && String(row.category).trim() !== ""
+          ? String(row.category).trim()
+          : row.categoryPath != null && String(row.categoryPath).trim() !== ""
+            ? String(row.categoryPath).trim()
+            : undefined,
       price: Number(row.price),
       originalPrice: row.originalPrice ? Number(row.originalPrice) : undefined,
       currency: row.currency || "TRY",
@@ -22,6 +32,7 @@ export class HepsiburadaCsvAdapter implements FeedAdapter {
       url: String(row.url),
       imageUrl: row.imageUrl || undefined
     }));
+    return { items };
   }
 }
 

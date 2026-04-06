@@ -1,15 +1,9 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
+import { useTransition } from "react";
 import { Dropdown, DropdownItem } from "../ui/dropdown";
-
-const SORT_OPTIONS = [
-  { value: "popular", label: "En Popüler Ürünler" },
-  { value: "lowest_price", label: "En Düşük Fiyat" },
-  { value: "highest_price", label: "En Yüksek Fiyat" },
-  { value: "price_drop", label: "Fiyatı Düşenler" },
-  { value: "newest", label: "En Yeni Ürünler" }
-] as const;
+import { LISTING_SORT_OPTIONS } from "../../lib/listingFilterUrls";
 
 type SortSelectProps = {
   defaultValue: string;
@@ -23,7 +17,9 @@ type SortSelectProps = {
 export function SortSelect({ defaultValue, searchParams, className, style, labelInTrigger }: SortSelectProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const currentLabel = SORT_OPTIONS.find((o) => o.value === defaultValue)?.label ?? SORT_OPTIONS[0].label;
+  const [isPending, startTransition] = useTransition();
+  const currentLabel =
+    LISTING_SORT_OPTIONS.find((o) => o.value === defaultValue)?.label ?? LISTING_SORT_OPTIONS[0].label;
   const triggerLabel = labelInTrigger ? `Sırala: ${currentLabel}` : currentLabel;
 
   const buildUrl = (sort: string) => {
@@ -31,21 +27,29 @@ export function SortSelect({ defaultValue, searchParams, className, style, label
     Object.entries(searchParams).forEach(([key, value]) => {
       if (value !== undefined && value !== "" && key !== "page") params.set(key, value);
     });
+    // Infinite scroll için her yeni sıralama ilk sayfadan başlar.
+    params.delete("page");
     params.set("sort", sort);
     return `${pathname}?${params.toString()}`;
   };
 
   const handleSelect = (value: string) => {
-    router.push(buildUrl(value));
+    startTransition(() => {
+      router.push(buildUrl(value), { scroll: false });
+    });
   };
 
   return (
     <Dropdown
       align="left"
-      panelMatchTriggerWidth={labelInTrigger}
+      panelMatchTriggerWidth
       useBackdrop={false}
       trigger={
-        <span className={`sort-dropdown-trigger ${className ?? ""}`} style={style}>
+        <span
+          className={`sort-dropdown-trigger ${className ?? ""} ${isPending ? "sort-dropdown-trigger--pending" : ""}`.trim()}
+          style={style}
+          aria-busy={isPending}
+        >
           <span className="sort-dropdown-label">{triggerLabel}</span>
           <svg
             className="sort-dropdown-chevron"
@@ -64,8 +68,8 @@ export function SortSelect({ defaultValue, searchParams, className, style, label
         </span>
       }
     >
-      <div className={labelInTrigger ? "sort-dropdown-panel sort-dropdown-panel-match-trigger" : "sort-dropdown-panel"}>
-        {SORT_OPTIONS.map(({ value, label }) => (
+      <div className="sort-dropdown-panel sort-dropdown-panel-match-trigger">
+        {LISTING_SORT_OPTIONS.map(({ value, label }) => (
           <DropdownItem
             key={value}
             onClick={() => handleSelect(value)}
@@ -86,7 +90,7 @@ export function SortSelect({ defaultValue, searchParams, className, style, label
               </svg>
             )}
             {defaultValue !== value && <span style={{ width: 16, flexShrink: 0 }} />}
-            {label}
+            <span className="sort-dropdown-item-label">{label}</span>
           </DropdownItem>
         ))}
       </div>

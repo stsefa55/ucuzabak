@@ -14,6 +14,9 @@ RUN pnpm install
 
 FROM base AS build
 
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps ./apps
 COPY packages ./packages

@@ -62,14 +62,15 @@ export function Dropdown({ trigger, align = "right", panelMatchTriggerWidth, use
       </button>
       {open && (
         <div
-          className="dropdown-panel"
+          className={cn("dropdown-panel", panelMatchTriggerWidth && "dropdown-panel--match-trigger")}
           style={{
             position: "absolute",
             top: "100%",
             left: panelMatchTriggerWidth ? 0 : align === "right" ? undefined : 0,
             right: panelMatchTriggerWidth ? 0 : align === "right" ? 0 : undefined,
             marginTop: 6,
-            zIndex: 60
+            zIndex: 60,
+            ...(panelMatchTriggerWidth ? { width: "100%", boxSizing: "border-box" as const } : {})
           }}
         >
           {children}

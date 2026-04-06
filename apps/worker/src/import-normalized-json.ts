@@ -1,8 +1,20 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { Prisma, ProductStatus } from "@prisma/client";
+import type { ProductMatchReason } from "./productMatching/matchCanonicalProduct";
+import {
+  lastCategorySegmentForSimilarity,
+  normalizeCategoryText,
+  normalizeProductTitle,
+  slugifyCanonical
+} from "@ucuzabak/shared";
 import { prisma } from "./prisma";
-import { createCategoryResolutionContext, resolveCategoryTextId } from "./categoryCanonical/resolveCategoryText";
+import { loadCategoryMappingOverrides } from "./categoryCanonical/loadCategoryOverrides";
+import {
+  createCategoryResolutionContext,
+  resolveCategoryTextWithTrace
+} from "./categoryCanonical/resolveCategoryText";
+import { matchCanonicalProduct, type TitlePrefixCache } from "./productMatching/matchCanonicalProduct";
 
 type NormalizedFeedItem = {
   source?: string;
@@ -11,11 +23,14 @@ type NormalizedFeedItem = {
   description?: string | null;
   brand?: string | null;
   mpn?: string | null;
+  /** Barkod / GTIN — canonical eşlemede öncelikli */
+  ean?: string | null;
   categoryText?: string | null;
   url?: string | null;
   mobileUrl?: string | null;
   image?: string | null;
   images?: string[] | null;
+  specsJson?: Record<string, unknown> | null;
   price: number | string;
   currency?: string | null;
   inStock?: boolean | null;
@@ -67,24 +82,6 @@ async function pathExists(p: string): Promise<boolean> {
   }
 }
 
-function normalizeTr(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/[ç]/g, "c")
-    .replace(/[ğ]/g, "g")
-    .replace(/[ı]/g, "i")
-    .replace(/[ö]/g, "o")
-    .replace(/[ş]/g, "s")
-    .replace(/[ü]/g, "u")
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function slugify(input: string): string {
-  return normalizeTr(input).replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
-}
-
 function normalizePrice(value: number | string): Prisma.Decimal | null {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0) return null;
@@ -93,6 +90,60 @@ function normalizePrice(value: number | string): Prisma.Decimal | null {
 
 function addReason(stats: ImportStats, reason: string) {
   stats.reasons[reason] = (stats.reasons[reason] ?? 0) + 1;
+}
+
+function normalizeSpacingForDisplay(input: string): string {
+  return String(input ?? "")
+    .replace(/[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeTitleForSlugSeed(input: string): string {
+  // slug seed: deterministic, spacing ve noktalama sorunlarını stabilize et.
+  return normalizeProductTitle(normalizeSpacingForDisplay(input));
+}
+
+/** Faz 3: operasyon listesi — import satırı DB’ye yazılmadan atlandıysa kayıt (migration gerekir). */
+async function logImportSkip(params: {
+  storeId: number;
+  feedSource: string;
+  externalId?: string | null;
+  categoryText?: string | null;
+  title?: string | null;
+  brand?: string | null;
+  reason: string;
+  categoryResolutionMethod?: string | null;
+  rawPayload?: Record<string, unknown>;
+}) {
+  try {
+    await prisma.importSkippedRow.create({
+      data: {
+        storeId: params.storeId,
+        feedSource: params.feedSource || null,
+        externalId: params.externalId || null,
+        categoryText: params.categoryText || null,
+        normalizedCategoryKey: params.categoryText
+          ? normalizeCategoryText(params.categoryText)
+          : null,
+        title: params.title || null,
+        brand: params.brand || null,
+        reason: params.reason,
+        categoryResolutionMethod: params.categoryResolutionMethod || null,
+        rawPayload: params.rawPayload ? (params.rawPayload as Prisma.InputJsonValue) : undefined
+      }
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[normalized-import] ImportSkippedRow yazılamadı (${params.reason}): ${msg}`);
+  }
+}
+
+/** Ürün kaydında tutulacak barkod (yalnızca rakam, 8–14). */
+function normalizeEanForStore(ean: string | null | undefined): string | null {
+  const d = String(ean ?? "").replace(/\D/g, "");
+  if (d.length < 8 || d.length > 14) return null;
+  return d;
 }
 
 async function readNormalizedItems(filePath: string): Promise<NormalizedFeedItem[]> {
@@ -196,18 +247,19 @@ async function importFile(filePath: string, storeSlug: string): Promise<ImportSt
     where: { isActive: true },
     select: { id: true, name: true, slug: true, parentId: true }
   });
-  const categoryCtx = createCategoryResolutionContext(categories);
+  const overrideByKey = await loadCategoryMappingOverrides(prisma);
+  const categoryCtx = createCategoryResolutionContext(categories, { overrideByKey });
 
   const existingBrands = await prisma.brand.findMany({ select: { id: true, slug: true } });
   const brandBySlug = new Map(existingBrands.map((b) => [b.slug, b.id]));
 
   const reservedProductSlugs = new Set<string>();
-  const titlePrefixQueryCache = new Map<string, Awaited<ReturnType<typeof prisma.product.findMany>>>();
+  const titlePrefixQueryCache: TitlePrefixCache = new Map();
   const productImageUrlCache = new Map<number, Set<string>>();
   const productsNeedingCacheRefresh = new Set<number>();
 
   async function findOrCreateBrandCached(brandName: string): Promise<number> {
-    const slug = slugify(brandName);
+    const slug = slugifyCanonical(brandName);
     const hit = brandBySlug.get(slug);
     if (hit !== undefined) return hit;
     const created = await prisma.brand.create({
@@ -255,78 +307,136 @@ async function importFile(filePath: string, storeSlug: string): Promise<ImportSt
 
     try {
       const externalId = String(item.externalId ?? "").trim();
-      const title = String(item.title ?? "").trim();
+      const rawTitle = String(item.title ?? "");
+      const title = normalizeSpacingForDisplay(rawTitle);
       const categoryText = String(item.categoryText ?? "").trim();
       const productUrl = String(item.mobileUrl ?? item.url ?? "").trim();
       const currentPrice = normalizePrice(item.price);
       const inStock = Boolean(item.inStock ?? true);
       const currency = String(item.currency ?? "TRY").trim() || "TRY";
+      const feedSource = String(item.source ?? storeSlug).toLowerCase().trim() || "unknown";
+      const feedEan = normalizeEanForStore(item.ean);
 
       if (!externalId || !title) {
         stats.skipped += 1;
         addReason(stats, "missing_externalId_or_title");
+        await logImportSkip({
+          storeId: store.id,
+          feedSource,
+          externalId: externalId || null,
+          title: title || null,
+          brand: String(item.brand ?? "").trim() || null,
+          reason: "missing_externalId_or_title",
+          rawPayload: { externalId: item.externalId ?? null, title: item.title ?? null }
+        });
         continue;
       }
       if (!currentPrice) {
         stats.skipped += 1;
         addReason(stats, "invalid_price");
+        await logImportSkip({
+          storeId: store.id,
+          feedSource,
+          externalId,
+          title,
+          categoryText: categoryText || null,
+          brand: String(item.brand ?? "").trim() || null,
+          reason: "invalid_price",
+          rawPayload: { price: item.price }
+        });
         continue;
       }
       if (!categoryText) {
         stats.skipped += 1;
         addReason(stats, "missing_categoryText");
+        await logImportSkip({
+          storeId: store.id,
+          feedSource,
+          externalId,
+          title,
+          brand: String(item.brand ?? "").trim() || null,
+          reason: "missing_categoryText"
+        });
         continue;
       }
 
-      const categoryId = resolveCategoryTextId(categoryCtx, categoryText);
+      // --- Canonicalization: kategori (kaynak-bilinçli override + izlenebilir yöntem) ---
+      const catRes = resolveCategoryTextWithTrace(categoryCtx, categoryText, feedSource);
+      if (process.env.UCZBK_FEED_CATEGORY_DEBUG === "1") {
+        const sim = catRes.method === "auto_similarity" ? catRes.similarityScore : undefined;
+        const reject = catRes.method === "none" ? catRes.autoSimilarityReject : undefined;
+        const normLast = normalizeCategoryText(lastCategorySegmentForSimilarity(categoryText)).slice(0, 120);
+        console.log(
+          [
+            "[import-json]",
+            "category",
+            `externalId=${externalId}`,
+            `method=${catRes.method}`,
+            `categoryId=${catRes.categoryId ?? "null"}`,
+            `score=${sim != null ? sim.toFixed(3) : "-"}`,
+            `norm_last=${JSON.stringify(normLast)}`,
+            reject ? `similarity_reject=${reject}` : "",
+            `raw=${JSON.stringify(categoryText.slice(0, 100))}`
+          ]
+            .filter(Boolean)
+            .join(" ")
+        );
+      }
+      const categoryId = catRes.categoryId;
       if (!categoryId) {
         stats.skipped += 1;
         addReason(stats, "category_unmappable");
+        addReason(stats, `category_method:${catRes.method}`);
+        await logImportSkip({
+          storeId: store.id,
+          feedSource,
+          externalId,
+          categoryText,
+          title,
+          brand: String(item.brand ?? "").trim() || null,
+          reason: "category_unmappable",
+          categoryResolutionMethod: catRes.method,
+          rawPayload: { categoryText, method: catRes.method }
+        });
         continue;
       }
+      addReason(stats, `category_resolved:${catRes.method}`);
 
       const brandName = String(item.brand ?? "").trim();
       let brandId: number | null = null;
       if (brandName) brandId = await findOrCreateBrandCached(brandName);
 
       const mpn = String(item.mpn ?? "").trim() || null;
-      let product =
-        (brandId && mpn
-          ? await prisma.product.findFirst({
-              where: {
-                brandId,
-                modelNumber: { equals: mpn, mode: "insensitive" }
-              }
-            })
-          : null) ??
-        null;
+      const specsJson = item.specsJson && typeof item.specsJson === "object" ? item.specsJson : null;
 
-      if (!product && brandId) {
-        const normTitle = normalizeTr(title);
-        const titlePrefix = title.split(/\s+/).slice(0, 4).join(" ");
-        const cacheKey = `${brandId}|${titlePrefix}`;
-        let candidates = titlePrefixQueryCache.get(cacheKey);
-        if (!candidates) {
-          const rows = await prisma.product.findMany({
-            where: {
-              brandId,
-              name: { contains: titlePrefix, mode: "insensitive" }
-            },
-            take: 20
-          });
-          candidates = rows;
-          titlePrefixQueryCache.set(cacheKey, candidates);
-        }
-        product =
-          candidates.find((p) => normalizeTr(p.name) === normTitle) ??
-          candidates.find(
-            (p) => normalizeTr(p.name).includes(normTitle) || normTitle.includes(normalizeTr(p.name))
-          ) ??
-          null;
-      }
+      // --- Canonicalization: ürün eşlemesi (EAN → model → başlık; çoklu bulanıkta birleştirme yok) ---
+      const pm = await matchCanonicalProduct(
+        prisma,
+        {
+          brandId,
+          ean: item.ean ?? null,
+          mpn,
+          title, // spacing normalize edilmiş
+          specsJson,
+          categoryId
+        },
+        titlePrefixQueryCache
+      );
+
+      let product = pm.product;
+      let productMatchReason: ProductMatchReason = pm.reason;
+      const productConfidence = pm.confidence;
+
+      if (pm.reason === "ean_exact") addReason(stats, "matched_by_ean");
+      else if (pm.reason === "brand_model_exact") addReason(stats, "matched_by_model");
+      else if (pm.reason === "title_exact") addReason(stats, "matched_by_title_exact");
+      else if (pm.reason === "title_single_candidate") addReason(stats, "matched_by_title_single");
+      else if (pm.reason === "title_similarity") addReason(stats, "matched_by_title_similarity");
+      else if (pm.reason === "spec_overlap") addReason(stats, "matched_by_spec");
 
       if (!product) {
-        const baseSlug = slugify(`${brandName || "markasiz"}-${title}`) || `urun-${externalId}`;
+        const slugSeed = `${brandName || "markasiz"}-${normalizeTitleForSlugSeed(title)}`;
+        const baseSlug = slugifyCanonical(slugSeed) || `urun-${externalId}`;
         const uniqueSlug = await ensureUniqueProductSlug(baseSlug, reservedProductSlugs);
         product = await prisma.product.create({
           data: {
@@ -336,11 +446,15 @@ async function importFile(filePath: string, storeSlug: string): Promise<ImportSt
             brandId,
             categoryId,
             modelNumber: mpn,
+            ean: feedEan,
+            specsJson: specsJson ? (specsJson as Prisma.InputJsonValue) : undefined,
             mainImageUrl: (item.image ?? item.images?.[0] ?? null) || null,
             status: ProductStatus.ACTIVE
           }
         });
         stats.productsCreated += 1;
+        addReason(stats, "product_created");
+        productMatchReason = "created_new";
         if (brandId && title) {
           const titlePrefix = title.split(/\s+/).slice(0, 4).join(" ");
           titlePrefixQueryCache.delete(`${brandId}|${titlePrefix}`);
@@ -353,6 +467,11 @@ async function importFile(filePath: string, storeSlug: string): Promise<ImportSt
             categoryId: product.categoryId ?? categoryId,
             brandId: product.brandId ?? brandId,
             modelNumber: product.modelNumber ?? mpn,
+            ean: product.ean ?? feedEan,
+            specsJson:
+              (product.specsJson ?? specsJson)
+                ? ((product.specsJson ?? specsJson) as Prisma.InputJsonValue)
+                : undefined,
             description: product.description ?? (item.description?.trim() || null),
             mainImageUrl: product.mainImageUrl ?? ((item.image ?? item.images?.[0] ?? null) || null)
           }
@@ -368,23 +487,40 @@ async function importFile(filePath: string, storeSlug: string): Promise<ImportSt
         }
       });
 
+      const storeMatchScore =
+        productMatchReason === "created_new" ? 100 : Math.min(100, Math.max(0, Math.round(productConfidence)));
+
+      const matchDetailsJson = {
+        version: 2 as const,
+        importPipeline: "normalized-json-v2",
+        feedSource,
+        categoryText,
+        categoryResolution: { method: catRes.method, categoryId },
+        productMatch: {
+          reason: productMatchReason,
+          confidence: productConfidence,
+          details: pm.details as Prisma.InputJsonValue
+        },
+        legacy: {
+          source: "normalized-json-import",
+          merchantId: item.merchantId ?? null,
+          boutiqueId: item.boutiqueId ?? null
+        }
+      } as Prisma.InputJsonValue;
+
       const storeProduct = existingStoreProduct
         ? await prisma.storeProduct.update({
             where: { id: existingStoreProduct.id },
             data: {
               productId: product.id,
               title,
+              ean: feedEan ?? existingStoreProduct.ean,
               modelNumber: mpn ?? existingStoreProduct.modelNumber,
               url: productUrl || existingStoreProduct.url,
               imageUrl: (item.image ?? item.images?.[0] ?? null) || existingStoreProduct.imageUrl,
               matchStatus: "AUTO_MATCHED",
-              matchScore: 100,
-              matchDetailsJson: {
-                source: "normalized-json-import",
-                categoryText,
-                merchantId: item.merchantId ?? null,
-                boutiqueId: item.boutiqueId ?? null
-              }
+              matchScore: storeMatchScore,
+              matchDetailsJson
             }
           })
         : await prisma.storeProduct.create({
@@ -393,17 +529,14 @@ async function importFile(filePath: string, storeSlug: string): Promise<ImportSt
               externalId,
               productId: product.id,
               title,
+              ean: feedEan,
               modelNumber: mpn,
+              specsJson: specsJson ? (specsJson as Prisma.InputJsonValue) : undefined,
               url: productUrl || item.url || "",
               imageUrl: (item.image ?? item.images?.[0] ?? null) || null,
               matchStatus: "AUTO_MATCHED",
-              matchScore: 100,
-              matchDetailsJson: {
-                source: "normalized-json-import",
-                categoryText,
-                merchantId: item.merchantId ?? null,
-                boutiqueId: item.boutiqueId ?? null
-              }
+              matchScore: storeMatchScore,
+              matchDetailsJson
             }
           });
 

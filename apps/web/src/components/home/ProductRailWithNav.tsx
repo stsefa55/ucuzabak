@@ -7,7 +7,7 @@ interface ProductRailWithNavProps {
   ariaLabel?: string;
 }
 
-const BAR_HEIGHT = 8;
+const BAR_HEIGHT = 5;
 
 export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: ProductRailWithNavProps) {
   const scrollRegionId = useId();
@@ -49,6 +49,7 @@ export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: P
       if (e.button !== 0) return; // sadece sol tık
       // Görsel üzerinde mousedown'da tarayıcı resim sürüklemeyi başlatmasın; böylece ray kaydırma çalışsın
       const t = e.target as HTMLElement;
+      if (t.closest?.("button, a, .product-card-image-nav, .product-card-image-dots")) return;
       if (t.tagName === "IMG" || t.closest?.(".product-card-image")) e.preventDefault();
       const el = scrollRef.current;
       if (!el) return;
@@ -151,7 +152,7 @@ export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: P
           marginBottom: 8,
           scrollPadding: "0 1rem"
         }}
-        className="product-rail product-rail-with-nav product-rail-scrollbar-hidden"
+        className="product-rail product-rail-with-nav product-rail-scrollbar-hidden product-rail-scroll-x"
       >
         {children}
       </div>
@@ -167,7 +168,7 @@ export function ProductRailWithNav({ children, ariaLabel = "Ürün listesi" }: P
         tabIndex={0}
         onClick={handleBarClick}
         style={{
-          marginTop: 6,
+          marginTop: 4,
           height: BAR_HEIGHT,
           borderRadius: BAR_HEIGHT / 2,
           background: "#e5e7eb",

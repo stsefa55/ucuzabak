@@ -60,17 +60,10 @@ export function PriceHistoryChart({ slug }: Props) {
     })) ?? [];
 
   return (
-    <div className="card">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "0.75rem"
-        }}
-      >
-        <h2 style={{ fontSize: "1.1rem", fontWeight: 600 }}>Fiyat geçmişi</h2>
-        <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
+    <div className="card product-detail-panel-card">
+      <div className="product-detail-panel-card__head">
+        <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: 0 }}>Fiyat geçmişi</h2>
+        <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap", justifyContent: "flex-end" }}>
           {RANGE_OPTIONS.map((opt) => (
             <button
               key={opt.key}
@@ -85,48 +78,50 @@ export function PriceHistoryChart({ slug }: Props) {
         </div>
       </div>
 
-      {isLoading && <p>Fiyat geçmişi yükleniyor...</p>}
-      {error && (
-        <p className="text-danger" style={{ fontSize: "0.85rem" }}>
-          Fiyat geçmişi yüklenirken bir hata oluştu.
-        </p>
-      )}
-      {!isLoading && !error && chartData.length === 0 && (
-        <p className="text-muted" style={{ fontSize: "0.9rem" }}>
-          Bu ürün için henüz fiyat geçmişi yok.
-        </p>
-      )}
-      {!isLoading && !error && chartData.length > 0 && (
-        <div style={{ width: "100%", height: 180 }}>
-          <ResponsiveContainer>
-            <LineChart data={chartData} margin={{ left: 0, right: 0, top: 10, bottom: 0 }}>
-              <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
-              <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-              <YAxis
-                tick={{ fontSize: 10 }}
-                tickFormatter={(v: number) => `${v.toLocaleString("tr-TR")}`}
-              />
-              <Tooltip
-                formatter={(value: any) =>
-                  `${Number(value).toLocaleString("tr-TR", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                  })} TL`
-                }
-                labelFormatter={(label) => `Tarih: ${label}`}
-              />
-              <Line
-                type="monotone"
-                dataKey="price"
-                stroke="#2563eb"
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      <div className="product-detail-panel-card__body">
+        {isLoading && <p className="text-muted" style={{ fontSize: "0.9rem", margin: 0 }}>Fiyat geçmişi yükleniyor...</p>}
+        {error && (
+          <p className="text-danger" style={{ fontSize: "0.85rem", margin: 0 }}>
+            Fiyat geçmişi yüklenirken bir hata oluştu.
+          </p>
+        )}
+        {!isLoading && !error && chartData.length === 0 && (
+          <p className="text-muted" style={{ fontSize: "0.9rem", margin: 0 }}>
+            Bu ürün için henüz fiyat geçmişi yok.
+          </p>
+        )}
+        {!isLoading && !error && chartData.length > 0 && (
+          <div className="product-detail-panel-card__chart">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ left: 0, right: 0, top: 10, bottom: 0 }}>
+                <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+                <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                <YAxis
+                  tick={{ fontSize: 10 }}
+                  tickFormatter={(v: number) => `${v.toLocaleString("tr-TR")}`}
+                />
+                <Tooltip
+                  formatter={(value: any) =>
+                    `${Number(value).toLocaleString("tr-TR", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2
+                    })} TL`
+                  }
+                  labelFormatter={(label) => `Tarih: ${label}`}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#2563eb"
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

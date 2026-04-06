@@ -1,13 +1,23 @@
 /**
- * Tek seferlik analiz: feed içindeki categoryText değerlerinden eşlenemeyenleri sayar.
- * Kullanım (apps/worker): pnpm exec ts-node scripts/analyze-unmappable-category-text.ts [json-yolu]
+ * Tek seferlik analiz: feed içindeki categoryText değerlerinden eşlenemeyenleri sayar (override dahil).
+ * Kullanım: pnpm exec ts-node --transpile-only scripts/analyze-unmappable-category-text.ts [json-yolu] [--default-source=trendyol]
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createCategoryResolutionContext, resolveCategoryTextId } from "../src/categoryCanonical/resolveCategoryText";
+import { createCategoryResolutionContext, resolveCategoryTextWithTrace } from "../src/categoryCanonical/resolveCategoryText";
+import { loadCategoryMappingOverrides } from "../src/categoryCanonical/loadCategoryOverrides";
 import { prisma } from "../src/prisma";
 
-type FeedItem = { categoryText?: string | null };
+type FeedItem = { categoryText?: string | null; source?: string | null };
+
+function parseArg(name: string): string | null {
+  const p = `--${name}=`;
+  const exact = process.argv.find((v) => v.startsWith(p));
+  if (exact) return exact.slice(p.length);
+  const idx = process.argv.findIndex((v) => v === `--${name}`);
+  if (idx >= 0 && process.argv[idx + 1]) return process.argv[idx + 1];
+  return null;
+}
 
 function normalizeKey(s: string): string {
   return s
@@ -17,7 +27,8 @@ function normalizeKey(s: string): string {
 }
 
 async function main() {
-  const argPath = process.argv[2];
+  const defaultSource = parseArg("default-source") ?? "trendyol";
+  const argPath = process.argv[2]?.startsWith("--") ? null : process.argv[2];
   const defaultFeed = path.join(
     __dirname,
     "../imports/processed/trendyol_2026-03-20_13-53-46.2026-03-20T12-06-46-558Z.json"
@@ -32,7 +43,8 @@ async function main() {
     select: { id: true, name: true, slug: true, parentId: true }
   });
 
-  const categoryCtx = createCategoryResolutionContext(categories);
+  const overrideByKey = await loadCategoryMappingOverrides(prisma);
+  const categoryCtx = createCategoryResolutionContext(categories, { overrideByKey });
 
   const groups = new Map<string, { total: number; variants: Map<string, number> }>();
   let emptyCt = 0;
@@ -45,7 +57,10 @@ async function main() {
       continue;
     }
 
-    const id = resolveCategoryTextId(categoryCtx, ct);
+    const feedSource = String(item.source ?? defaultSource)
+      .toLowerCase()
+      .trim();
+    const id = resolveCategoryTextWithTrace(categoryCtx, ct, feedSource).categoryId;
     if (id !== null) {
       mappableRows += 1;
       continue;
@@ -86,7 +101,7 @@ async function main() {
 
   console.log(JSON.stringify(out, null, 2));
   console.error(
-    `[analyze-unmappable] file=${filePath} totalItems=${items.length} emptyCategoryText=${emptyCt} mappable=${mappableRows} unmappableRows=${unmappableRows} unmappableUnique=${groups.size}`
+    `[analyze-unmappable] file=${filePath} totalItems=${items.length} emptyCategoryText=${emptyCt} mappable=${mappableRows} unmappableRows=${unmappableRows} unmappableUnique=${groups.size} overridesLoaded=${overrideByKey.size} defaultSource=${defaultSource}`
   );
 }
 

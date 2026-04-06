@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { AdminPageHeader } from "../../../src/components/admin/AdminPageHeader";
 import { apiFetch } from "../../../src/lib/api-client";
 import { useAuthStore } from "../../../src/stores/auth-store";
 
@@ -27,8 +28,12 @@ interface FeedImportItem {
   processedCount: number;
   createdCount: number;
   updatedCount: number;
+  matchedCount: number;
+  unmatchedCount: number;
   errorCount: number;
   errorLog?: string | null;
+  /** Worker: özet, reasonCounts, örnek satır logları */
+  importSummaryJson?: unknown;
   sourceRef?: string | null;
   checksum?: string | null;
   startedAt?: string | null;
@@ -51,33 +56,26 @@ function FeedImportRow({ fi }: { fi: FeedImportItem }) {
 
   return (
     <>
-      <tr
-        style={{
-          borderTop: "1px solid #e5e7eb",
-          backgroundColor: fi.errorCount > 0 ? "rgba(254, 226, 226, 0.3)" : undefined
-        }}
-      >
-        <td style={{ padding: "0.5rem" }}>{fi.id}</td>
-        <td style={{ padding: "0.5rem" }}>{fi.store?.name ?? "-"}</td>
-        <td style={{ padding: "0.5rem" }}>{typeLabel}</td>
-        <td style={{ padding: "0.5rem" }}>{statusLabel}</td>
-        <td style={{ padding: "0.5rem", textAlign: "right" }}>{fi.processedCount}</td>
-        <td style={{ padding: "0.5rem", textAlign: "right" }}>{fi.createdCount}</td>
-        <td style={{ padding: "0.5rem", textAlign: "right" }}>{fi.updatedCount}</td>
-        <td style={{ padding: "0.5rem", textAlign: "right" }}>
+      <tr style={{ backgroundColor: fi.errorCount > 0 ? "rgba(254, 226, 226, 0.25)" : undefined }}>
+        <td>{fi.id}</td>
+        <td>{fi.store?.name ?? "—"}</td>
+        <td>{typeLabel}</td>
+        <td>{statusLabel}</td>
+        <td style={{ textAlign: "right" }}>{fi.processedCount}</td>
+        <td style={{ textAlign: "right" }}>{fi.createdCount}</td>
+        <td style={{ textAlign: "right" }}>{fi.updatedCount}</td>
+        <td style={{ textAlign: "right" }}>{fi.matchedCount ?? 0}</td>
+        <td style={{ textAlign: "right" }}>{fi.unmatchedCount ?? 0}</td>
+        <td style={{ textAlign: "right" }}>
           {fi.errorCount > 0 ? (
             <span style={{ color: "#b91c1c", fontWeight: 600 }}>{fi.errorCount}</span>
           ) : (
             fi.errorCount
           )}
         </td>
-        <td style={{ padding: "0.5rem", whiteSpace: "nowrap" }}>
-          {fi.startedAt ? new Date(fi.startedAt).toLocaleString("tr-TR") : "-"}
-        </td>
-        <td style={{ padding: "0.5rem", whiteSpace: "nowrap" }}>
-          {fi.finishedAt ? new Date(fi.finishedAt).toLocaleString("tr-TR") : "-"}
-        </td>
-        <td style={{ padding: "0.5rem" }}>
+        <td style={{ whiteSpace: "nowrap" }}>{fi.startedAt ? new Date(fi.startedAt).toLocaleString("tr-TR") : "—"}</td>
+        <td style={{ whiteSpace: "nowrap" }}>{fi.finishedAt ? new Date(fi.finishedAt).toLocaleString("tr-TR") : "—"}</td>
+        <td>
           <button
             type="button"
             className="btn-ghost btn-sm"
@@ -88,9 +86,14 @@ function FeedImportRow({ fi }: { fi: FeedImportItem }) {
         </td>
       </tr>
       {showDetail && (
-        <tr style={{ borderTop: "none", backgroundColor: "#f9fafb" }}>
-          <td colSpan={10} style={{ padding: "0.75rem 1rem", verticalAlign: "top" }}>
+        <tr style={{ backgroundColor: "#f8fafc" }}>
+          <td colSpan={13} style={{ padding: "0.75rem 1rem", verticalAlign: "top" }}>
             <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <div className="text-muted" style={{ lineHeight: 1.45 }}>
+                <strong>Durum / sütunlar:</strong> «Başarılı» yalnızca işin çökmediğini gösterir (PARTIAL = satır
+                hatası var). «Oluşturulan» = yeni <em>StoreProduct</em> (mağaza satırı). Vitrin için canonical{" "}
+                <em>Product</em> + teklif gerekir — ayrıntı altta <code>importSummaryJson.counts</code>.
+              </div>
               {fi.sourceRef != null && fi.sourceRef !== "" && (
                 <div>
                   <strong>Kaynak (sourceRef):</strong>{" "}
@@ -102,9 +105,30 @@ function FeedImportRow({ fi }: { fi: FeedImportItem }) {
                   <strong>Checksum:</strong> <code>{fi.checksum}</code>
                 </div>
               )}
+              {fi.importSummaryJson != null && typeof fi.importSummaryJson === "object" ? (
+                <div>
+                  <strong>İş özeti (importSummaryJson):</strong>
+                  <pre
+                    style={{
+                      marginTop: 4,
+                      padding: "0.5rem",
+                      background: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 4,
+                      maxHeight: 360,
+                      overflow: "auto",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                      fontSize: "0.78rem"
+                    }}
+                  >
+                    {JSON.stringify(fi.importSummaryJson, null, 2)}
+                  </pre>
+                </div>
+              ) : null}
               {(fi.errorLog != null && fi.errorLog !== "") ? (
                 <div>
-                  <strong>Hata / özet:</strong>
+                  <strong>Exception örnekleri (errorLog, kısaltılmış):</strong>
                   <pre
                     style={{
                       marginTop: 4,
@@ -135,9 +159,20 @@ function FeedImportRow({ fi }: { fi: FeedImportItem }) {
   );
 }
 
+const VALID_STATUS = new Set(["PENDING", "RUNNING", "SUCCESS", "FAILED", "PARTIAL"]);
+
 export default function AdminFeedImportsPage() {
   const { accessToken } = useAuthStore();
   const [statusFilter, setStatusFilter] = useState<string>("");
+
+  useEffect(() => {
+    try {
+      const s = new URLSearchParams(window.location.search).get("status")?.trim().toUpperCase() ?? "";
+      if (VALID_STATUS.has(s)) setStatusFilter(s);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const queryParams = new URLSearchParams({ page: "1", pageSize: "50" });
   if (statusFilter) queryParams.set("status", statusFilter);
@@ -154,15 +189,20 @@ export default function AdminFeedImportsPage() {
   if (!accessToken) return null;
 
   return (
-    <div className="card">
-      <h2 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.75rem" }}>
-        Feed importları
-      </h2>
-      <p className="text-muted" style={{ fontSize: "0.85rem", marginBottom: "1rem" }}>
-        Mağaza feed’lerinden yapılan import kayıtları. Manuel import için Mağazalar sayfasında ilgili
-        mağazanın &quot;Şimdi içeri aktar&quot; butonunu kullanın.
-      </p>
-      <div style={{ marginBottom: "1rem", display: "flex", alignItems: "center", gap: 12 }}>
+    <div className="card admin-page">
+      <AdminPageHeader
+        title="Feed importları"
+        description={
+          <>
+            Mağaza feed’lerinden yapılan import kayıtları. Manuel dosya / yapıştırma için{" "}
+            <a href="/admin/feed-manuel-import" style={{ fontWeight: 600 }}>
+              Manuel feed import
+            </a>{" "}
+            sayfasını kullanın.
+          </>
+        }
+      />
+      <div style={{ marginBottom: "1rem", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
         <label style={{ fontSize: "0.85rem" }}>
           Durum filtresi:
           <select
@@ -185,32 +225,34 @@ export default function AdminFeedImportsPage() {
           </span>
         )}
       </div>
-      {isLoading && <p>Yükleniyor...</p>}
+      {isLoading && <p className="admin-loading" style={{ padding: "0.5rem 0" }}>Yükleniyor…</p>}
       {error && (
         <p className="text-danger">Feed importları yüklenirken bir hata oluştu.</p>
       )}
       {data && (
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
+        <div className="admin-data-table-wrap">
+          <table className="admin-data-table">
             <thead>
               <tr>
-                <th style={{ textAlign: "left", padding: "0.5rem" }}>ID</th>
-                <th style={{ textAlign: "left", padding: "0.5rem" }}>Mağaza</th>
-                <th style={{ textAlign: "left", padding: "0.5rem" }}>Tip</th>
-                <th style={{ textAlign: "left", padding: "0.5rem" }}>Durum</th>
-                <th style={{ textAlign: "right", padding: "0.5rem" }}>İşlenen</th>
-                <th style={{ textAlign: "right", padding: "0.5rem" }}>Oluşan</th>
-                <th style={{ textAlign: "right", padding: "0.5rem" }}>Güncellenen</th>
-                <th style={{ textAlign: "right", padding: "0.5rem" }}>Hata</th>
-                <th style={{ textAlign: "left", padding: "0.5rem" }}>Başlangıç</th>
-                <th style={{ textAlign: "left", padding: "0.5rem" }}>Bitiş</th>
-                <th style={{ textAlign: "left", padding: "0.5rem" }}></th>
+                <th>ID</th>
+                <th>Mağaza</th>
+                <th>Tip</th>
+                <th>Durum</th>
+                <th style={{ textAlign: "right" }}>İşlenen</th>
+                <th style={{ textAlign: "right" }}>Oluşan</th>
+                <th style={{ textAlign: "right" }}>Güncellenen</th>
+                <th style={{ textAlign: "right" }}>Eşleşen</th>
+                <th style={{ textAlign: "right" }}>Eşleşmeyen</th>
+                <th style={{ textAlign: "right" }}>Hata</th>
+                <th>Başlangıç</th>
+                <th>Bitiş</th>
+                <th aria-label="Detay" />
               </tr>
             </thead>
             <tbody>
               {data.items.length === 0 ? (
                 <tr>
-                  <td colSpan={10} style={{ padding: "1rem", textAlign: "center" }} className="text-muted">
+                  <td colSpan={13} style={{ padding: "1rem", textAlign: "center" }} className="text-muted">
                     Kayıt yok.
                   </td>
                 </tr>

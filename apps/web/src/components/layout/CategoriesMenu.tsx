@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronDown, ChevronRight, LayoutGrid } from "lucide-react";
+import { ChevronDown, LayoutGrid } from "lucide-react";
 import { apiFetch } from "../../lib/api-client";
 import { cn } from "../../lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMenuBackdrop } from "./MenuBackdrop";
 import { getRootCategoryIconComponent } from "../../lib/categoryIconMap";
 
@@ -22,37 +22,65 @@ interface CategoriesMenuProps {
   anchorRef?: React.RefObject<HTMLDivElement | null>;
 }
 
+const HOVER_CLEAR_MS = 280;
+
 export function CategoriesMenu({ anchorRef }: CategoriesMenuProps) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const triggerWrapRef = useRef<HTMLDivElement>(null);
+  const megaPanelRef = useRef<HTMLDivElement>(null);
+  const hoverClearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { register } = useMenuBackdrop();
+
+  const [hoveredRootSlug, setHoveredRootSlug] = useState<string | null>(null);
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["header-categories"],
     queryFn: () => apiFetch<Category[]>("/categories")
   });
-  const [expandedRoot, setExpandedRoot] = useState<string | null>(null);
 
-  const { data: children = [], isFetching: childrenLoading } = useQuery<Category[]>({
-    queryKey: ["header-categories-children", expandedRoot],
-    enabled: open && !!expandedRoot,
-    queryFn: () => apiFetch<Category[]>(`/categories/${encodeURIComponent(expandedRoot as string)}/children`)
-  });
+  const clearHoverTimer = useCallback(() => {
+    if (hoverClearTimerRef.current) {
+      clearTimeout(hoverClearTimerRef.current);
+      hoverClearTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleClearHover = useCallback(() => {
+    clearHoverTimer();
+    hoverClearTimerRef.current = setTimeout(() => {
+      setHoveredRootSlug(null);
+      hoverClearTimerRef.current = null;
+    }, HOVER_CLEAR_MS);
+  }, [clearHoverTimer]);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (open) return register();
   }, [open, register]);
 
   useEffect(() => {
-    if (!open) setExpandedRoot(null);
+    if (!open) {
+      setHoveredRootSlug(null);
+    }
   }, [open]);
+
+  const { data: children = [], isFetching: childrenLoading } = useQuery<Category[]>({
+    queryKey: ["header-categories-children", hoveredRootSlug],
+    enabled: open && !!hoveredRootSlug,
+    queryFn: () =>
+      apiFetch<Category[]>(`/categories/${encodeURIComponent(hoveredRootSlug as string)}/children`)
+  });
+
+  const activeRoot = categories.find((c) => c.slug === hoveredRootSlug);
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
-      const anchor = anchorRef?.current;
-      const inAnchor = anchor && anchor.contains(e.target as Node);
-      const inTrigger = ref.current && ref.current.contains(e.target as Node);
-      if (!inAnchor && !inTrigger) setOpen(false);
+      const t = e.target as Node;
+      const inTrigger = triggerWrapRef.current?.contains(t);
+      const inMega = megaPanelRef.current?.contains(t);
+      if (!inTrigger && !inMega) setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -65,138 +93,118 @@ export function CategoriesMenu({ anchorRef }: CategoriesMenuProps) {
       window.removeEventListener("click", onClick);
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, anchorRef]);
+  }, [open]);
 
-  const renderRootRow = (cat: Category) => {
-    const isExpanded = expandedRoot === cat.slug;
-    const currentChildren = isExpanded ? children : [];
-    return (
-      <div key={cat.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-        <button
-          type="button"
-          onClick={() => setExpandedRoot((prev) => (prev === cat.slug ? null : cat.slug))}
-          className="dropdown-item"
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            justifyContent: "space-between"
-          }}
-          aria-expanded={isExpanded}
-          aria-controls={`categories-children-${cat.id}`}
-        >
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-            {(() => {
-              const Icon = getRootCategoryIconComponent(cat.slug);
-              return (
-                <span
-                  style={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: 8,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#f3f4f6",
-                    flex: "0 0 auto"
-                  }}
-                >
-                  <Icon size={18} color="#374151" />
-                </span>
-              );
-            })()}
-            <span style={{ fontWeight: 600 }}>{cat.name}</span>
-          </span>
-          <ChevronRight
-            size={16}
-            style={{
-              transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-              transition: "transform 0.15s ease",
-              opacity: 0.8
-            }}
-          />
-        </button>
+  const handleOpenToggle = () => setOpen((v) => !v);
 
-        {isExpanded ? (
-          <div id={`categories-children-${cat.id}`} style={{ padding: "0 8px 10px 28px", display: "grid", gap: 4 }}>
-            <Link
-              href={`/kategori/${cat.slug}`}
-              onClick={() => setOpen(false)}
-              className="dropdown-item"
-              style={{ fontSize: 13, fontWeight: 700, color: "#2563eb" }}
-            >
-              Tümünü gör
-            </Link>
-
-            {childrenLoading ? (
-              <div style={{ fontSize: 13, color: "#6b7280", padding: "6px 8px" }}>Yükleniyor...</div>
-            ) : currentChildren.length > 0 ? (
-              currentChildren.map((child) => (
-                <Link
-                  key={child.id}
-                  href={`/kategori/${cat.slug}/${child.slug}`}
-                  onClick={() => setOpen(false)}
-                  className="dropdown-item"
-                  style={{ display: "block", padding: "6px 8px", fontSize: 13, color: "#374151" }}
-                >
-                  {child.name}
-                </Link>
-              ))
-            ) : (
-              <div style={{ fontSize: 13, color: "#6b7280", padding: "6px 8px" }}>Alt kategori bulunamadı.</div>
-            )}
-          </div>
-        ) : null}
-      </div>
-    );
+  const handleLeftEnter = (slug: string) => {
+    clearHoverTimer();
+    setHoveredRootSlug(slug);
   };
 
-  const widePanel =
-    open && categories.length > 0 ? (
-      <div
-        className="dropdown-panel dropdown-panel-categories dropdown-panel-categories-wide"
-        style={{
-          position: "absolute",
-          left: 0,
-          top: "100%",
-          marginTop: 6,
-          width: "100%",
-          maxHeight: "min(70vh, 420px)",
-          overflowY: "auto",
-          overflowX: "hidden",
-          zIndex: 60
-        }}
-      >
-        <div style={{ padding: 8 }}>{categories.map(renderRootRow)}</div>
-      </div>
-    ) : null;
+  const handleMegaEnter = () => {
+    clearHoverTimer();
+  };
 
-  const narrowPanel =
+  const handleMegaLeave = () => {
+    scheduleClearHover();
+  };
+
+  const megaContent =
     open && categories.length > 0 ? (
       <div
-        className="dropdown-panel dropdown-panel-categories"
-        style={{
-          position: "absolute",
-          top: "100%",
-          left: 0,
-          marginTop: 6,
-          minWidth: 220,
-          maxHeight: "min(70vh, 420px)",
-          overflowY: "auto",
-          overflowX: "hidden",
-          zIndex: 60
-        }}
+        ref={megaPanelRef}
+        id="mega-menu-panel"
+        className="mega-menu"
+        style={{ zIndex: 60 }}
+        onMouseEnter={handleMegaEnter}
+        onMouseLeave={handleMegaLeave}
+        role="dialog"
+        aria-label="Kategori menüsü"
+        aria-modal="false"
       >
-        <div style={{ padding: 6 }}>{categories.map(renderRootRow)}</div>
+        <div className="mega-menu__inner">
+          <nav
+            className={cn("mega-menu__cols", activeRoot && "mega-menu__cols--with-preview")}
+            aria-label="Kategoriler"
+          >
+            <div className="mega-menu__sidebar">
+              <ul className="mega-menu__root-list">
+                {categories.map((cat) => {
+                  const isHighlight = hoveredRootSlug === cat.slug;
+                  const Icon = getRootCategoryIconComponent(cat.slug);
+                  return (
+                    <li key={cat.id}>
+                      <Link
+                        href={`/kategori/${encodeURIComponent(cat.slug)}`}
+                        className={cn(
+                          "mega-menu__root-item",
+                          isHighlight && "mega-menu__root-item--highlight"
+                        )}
+                        onMouseEnter={() => handleLeftEnter(cat.slug)}
+                        onFocus={() => handleLeftEnter(cat.slug)}
+                        onClick={() => setOpen(false)}
+                      >
+                        <span className="mega-menu__root-icon" aria-hidden>
+                          <Icon size={18} color="#374151" />
+                        </span>
+                        <span className="mega-menu__root-label">{cat.name}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {activeRoot ? (
+              <div className="mega-menu__main" aria-live="polite">
+                <>
+                  <div className="mega-menu__main-head">
+                    <h2 className="mega-menu__main-title">{activeRoot.name}</h2>
+                    <Link
+                      href={`/kategori/${activeRoot.slug}`}
+                      className="mega-menu__see-all"
+                      onClick={() => setOpen(false)}
+                    >
+                      Tümünü gör
+                    </Link>
+                  </div>
+                  {childrenLoading ? (
+                    <p className="mega-menu__loading">Yükleniyor...</p>
+                  ) : children.length > 0 ? (
+                    <ul className="mega-menu__child-grid">
+                      {children.map((child) => (
+                        <li key={child.id}>
+                          <Link
+                            href={`/kategori/${activeRoot.slug}/${child.slug}`}
+                            className="mega-menu__child-link"
+                            onClick={() => setOpen(false)}
+                          >
+                            {child.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mega-menu__empty">Bu kategoride alt kategori bulunmuyor.</p>
+                  )}
+                </>
+              </div>
+            ) : null}
+          </nav>
+        </div>
       </div>
     ) : null;
 
   return (
-    <div ref={ref} className="desktop-only" style={{ position: "relative", display: "inline-block" }}>
+    <div
+      ref={triggerWrapRef}
+      className="desktop-only"
+      style={{ position: "relative", display: "inline-block" }}
+    >
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={handleOpenToggle}
         className={cn("btn-ghost")}
         style={{
           display: "inline-flex",
@@ -206,14 +214,19 @@ export function CategoriesMenu({ anchorRef }: CategoriesMenuProps) {
           fontWeight: 500,
           color: "#374151"
         }}
-        aria-haspopup="true"
+        aria-haspopup="dialog"
         aria-expanded={open}
+        aria-controls={open ? "mega-menu-panel" : undefined}
       >
         <LayoutGrid size={18} />
         Kategoriler
         <ChevronDown size={16} style={{ opacity: open ? 1 : 0.7 }} />
       </button>
-      {anchorRef?.current ? createPortal(widePanel, anchorRef.current) : narrowPanel}
+      {mounted && megaContent
+        ? anchorRef?.current
+          ? createPortal(megaContent, anchorRef.current)
+          : megaContent
+        : null}
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { ProductStatus } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { CategoriesService } from "../categories/categories.service";
 import { PrismaService } from "../prisma/prisma.service";
+import { STOREFRONT_LISTING_PRODUCT_IMAGES } from "./storefront-listing-images.args";
+import { storefrontProductWhere } from "./storefront-product.scope";
 
 @Injectable()
 export class ProductsSimilarService {
@@ -11,41 +13,42 @@ export class ProductsSimilarService {
   ) {}
 
   async getSimilarBySlug(slug: string) {
-    const product = await this.prisma.product.findUnique({
-      where: { slug },
+    const normalized = (slug ?? "").trim();
+    if (!normalized) {
+      return [];
+    }
+
+    const product = await this.prisma.product.findFirst({
+      where: storefrontProductWhere({
+        slug: normalized
+      }),
       select: { id: true, categoryId: true, brandId: true }
     });
     if (!product) {
       return [];
     }
 
-    const where: {
-      id?: { not: number };
-      categoryId?: number | null;
-      brandId?: number | null;
-      status?: ProductStatus;
-    } = {
-      id: { not: product.id },
-      status: ProductStatus.ACTIVE
+    const extra: Prisma.ProductWhereInput = {
+      id: { not: product.id }
     };
 
     if (product.categoryId) {
-      where.categoryId = product.categoryId;
+      extra.categoryId = product.categoryId;
     }
 
     const similar = await this.prisma.product.findMany({
-      where,
+      where: storefrontProductWhere(extra),
       take: 8,
       orderBy: {
         offerCountCache: "desc"
       },
       include: {
         brand: true,
-        category: true
+        category: true,
+        productImages: STOREFRONT_LISTING_PRODUCT_IMAGES
       }
     });
 
     return this.categoriesService.attachCategoryPathToProducts(similar);
   }
 }
-

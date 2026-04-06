@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { AdminPageHeader } from "../../../src/components/admin/AdminPageHeader";
 import { apiFetch } from "../../../src/lib/api-client";
 import { useAuthStore } from "../../../src/stores/auth-store";
 
@@ -27,28 +28,30 @@ export default function AdminUnmatchedPage() {
   if (!accessToken) return null;
 
   return (
-    <div className="card">
-      <h2 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.75rem" }}>
-        Eşleşmemiş ürünler
-      </h2>
-      {isLoading && <p>Yükleniyor...</p>}
+    <div className="card admin-page">
+      <AdminPageHeader
+        title="Eşleşmemiş ürünler"
+        description="Mağaza ürünleri ile katalog eşleşmesi bekleyen veya inceleme kuyruğundaki kayıtlar."
+      />
+      {isLoading && <p className="admin-loading" style={{ padding: "0.5rem 0" }}>Yükleniyor…</p>}
       {error && (
         <p className="text-danger">Eşleşmemiş ürünler yüklenirken bir hata oluştu.</p>
       )}
       {data && (
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem" }}>
-          <thead>
-            <tr>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>ID</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Mağaza</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Mağaza ürünü</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Önerilen ürün</th>
-              <th style={{ textAlign: "right", padding: "0.5rem" }}>Skor</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Detay özeti</th>
-              <th style={{ textAlign: "left", padding: "0.5rem" }}>Durum</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className="admin-data-table-wrap">
+          <table className="admin-data-table" style={{ fontSize: "0.8rem" }}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Mağaza</th>
+                <th>Mağaza ürünü</th>
+                <th>Önerilen ürün</th>
+                <th style={{ textAlign: "right" }}>Skor</th>
+                <th>Detay özeti</th>
+                <th>Durum</th>
+              </tr>
+            </thead>
+            <tbody>
             {data.items.map((item) => {
               const sp = item.storeProduct;
               const suggested = item.suggestedProduct;
@@ -66,32 +69,31 @@ export default function AdminUnmatchedPage() {
               if (specCount) summaryParts.push(`Spec eşleşme: ${specCount}`);
 
               return (
-                <tr key={item.id} style={{ borderTop: "1px solid #e5e7eb" }}>
-                  <td style={{ padding: "0.5rem" }}>{item.id}</td>
-                  <td style={{ padding: "0.5rem" }}>{sp?.store?.name}</td>
-                  <td style={{ padding: "0.5rem" }}>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
+                  <td>{sp?.store?.name}</td>
+                  <td>
                     <div style={{ fontWeight: 500 }}>{sp?.title}</div>
                     <div className="text-muted" style={{ fontSize: "0.75rem" }}>
                       {sp?.externalId}
                     </div>
                   </td>
-                  <td style={{ padding: "0.5rem" }}>
+                  <td>
                     {suggested ? (
                       <Link href={`/urun/${suggested.slug}`}>{suggested.name}</Link>
                     ) : (
-                      "-"
+                      "—"
                     )}
                   </td>
-                  <td style={{ padding: "0.5rem", textAlign: "right" }}>{score}</td>
-                  <td style={{ padding: "0.5rem" }}>
-                    {summaryParts.length > 0 ? summaryParts.join(" • ") : "-"}
-                  </td>
-                  <td style={{ padding: "0.5rem" }}>{item.status}</td>
+                  <td style={{ textAlign: "right" }}>{score}</td>
+                  <td>{summaryParts.length > 0 ? summaryParts.join(" • ") : "—"}</td>
+                  <td>{item.status}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

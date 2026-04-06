@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true
+  reactStrictMode: true,
+  async redirects() {
+    return [{ source: "/favicon.ico", destination: "/favicon.svg", permanent: false }];
+  }
 };
 
 export default nextConfig;
-

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { apiFetch } from "../../lib/api-client";
+import { syncGuestFavoritesToAccount } from "../../lib/guest-favorites-sync";
 import { useAuthStore } from "../../stores/auth-store";
 
 export function LoginForm() {
@@ -21,8 +22,9 @@ export function LoginForm() {
         body: { email, password }
       });
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setSession(data.accessToken, data.user);
+      await syncGuestFavoritesToAccount(data.accessToken);
       if (data.user?.role === "ADMIN") {
         router.push("/admin");
       } else {
@@ -75,7 +77,7 @@ export function LoginForm() {
         <div className="auth-form__field">
           <div className="auth-form__label-row">
             <label htmlFor="password" className="auth-form__label">Şifre</label>
-            <Link href="/sifremi-unuttum" className="auth-form__forgot">Şifreni unuttum?</Link>
+            <Link href="/sifremi-unuttum" className="auth-form__forgot">Şifremi unuttum</Link>
           </div>
           <input
             id="password"
@@ -102,7 +104,12 @@ export function LoginForm() {
 }
 
 const REGISTER_STEPS = [
-  { key: "email", title: "E-posta", subtitle: "Hesabınıza giriş için kullanacağınız e-posta adresi." },
+  {
+    key: "email",
+    title: "E-posta",
+    subtitle:
+      "Hesabınıza giriş için kullanacağınız adres. Adres zaten kayıtlıysa kaydı tamamladığınızda bilgilendirilirsiniz."
+  },
   { key: "name", title: "Ad ve soyad", subtitle: "Size nasıl hitap edelim?" },
   { key: "birthDate", title: "Doğum tarihi", subtitle: "Doğum tarihinizi seçin." },
   { key: "phone", title: "Telefon", subtitle: "İsteğe bağlı. Size ulaşmak için kullanacağız." },
@@ -121,7 +128,6 @@ export function RegisterForm() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
   const formatPhone = (raw: string) => {
     const d = raw.replace(/\D/g, "").slice(0, 11);
@@ -150,8 +156,9 @@ export function RegisterForm() {
         }
       });
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setSession(data.accessToken, data.user);
+      await syncGuestFavoritesToAccount(data.accessToken);
       router.push("/");
     },
     onError: (err: any) => {
@@ -179,21 +186,7 @@ export function RegisterForm() {
       return;
     }
     if (step === 1) {
-      setIsCheckingEmail(true);
-      try {
-        const res = await apiFetch<{ available: boolean }>(
-          `/auth/check-email?email=${encodeURIComponent(email.trim())}`
-        );
-        if (!res.available) {
-          setError("Bu e-posta adresi zaten kayıtlı.");
-          return;
-        }
-        setStep(2);
-      } catch {
-        setError("E-posta kontrolü yapılamadı. Lütfen tekrar deneyin.");
-      } finally {
-        setIsCheckingEmail(false);
-      }
+      setStep(2);
     } else {
       setStep((s) => Math.min(s + 1, totalSteps));
     }
@@ -384,15 +377,13 @@ export function RegisterForm() {
           <button
             type="submit"
             className="auth-form__submit"
-            disabled={!canProceed() || mutation.isPending || isCheckingEmail}
+            disabled={!canProceed() || mutation.isPending}
           >
             {mutation.isPending
               ? "Kayıt yapılıyor..."
-              : isCheckingEmail
-                ? "Kontrol ediliyor..."
-                : isLastStep
-                  ? "Kayıt ol"
-                  : "İleri"}
+              : isLastStep
+                ? "Kayıt ol"
+                : "İleri"}
           </button>
         </div>
       </form>

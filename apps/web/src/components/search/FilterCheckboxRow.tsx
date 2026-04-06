@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 
 type FilterCheckboxRowLinkProps = {
   mode: "link";
@@ -13,6 +13,8 @@ type FilterCheckboxRowLinkProps = {
   /** Sol ek (kök kategori ikonu vb.) */
   leading?: ReactNode;
   className?: string;
+  /** Çoklu seçimde yanlışlıkla birden fazla "sayfa" işaretlenmesin diye false */
+  ariaCurrentWhenChecked?: boolean;
 };
 
 type FilterCheckboxRowStaticProps = {
@@ -30,7 +32,7 @@ export type FilterCheckboxRowProps = FilterCheckboxRowLinkProps | FilterCheckbox
 /**
  * Checkbox görünümlü satır: link (filtre seçimi) veya statik (yakında).
  */
-export function FilterCheckboxRow(props: FilterCheckboxRowProps) {
+function FilterCheckboxRowImpl(props: FilterCheckboxRowProps) {
   const checkedVal =
     props.mode === "link" ? props.checked : Boolean(props.mode === "static" && props.checked);
   const box = (
@@ -42,12 +44,13 @@ export function FilterCheckboxRow(props: FilterCheckboxRowProps) {
   );
 
   if (props.mode === "link") {
-    const { href, checked, label, meta, leading, className = "" } = props;
+    const { href, checked, label, meta, leading, className = "", ariaCurrentWhenChecked = true } = props;
     return (
       <Link
         href={href}
+        scroll={false}
         className={`filter-check__row ${checked ? "filter-check__row--checked" : ""} ${className}`.trim()}
-        aria-current={checked ? "page" : undefined}
+        aria-current={checked && ariaCurrentWhenChecked ? "page" : undefined}
       >
         {box}
         {leading ? <span className="filter-check__leading">{leading}</span> : null}
@@ -69,3 +72,5 @@ export function FilterCheckboxRow(props: FilterCheckboxRowProps) {
     </span>
   );
 }
+
+export const FilterCheckboxRow = memo(FilterCheckboxRowImpl);

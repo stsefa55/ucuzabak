@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
+import { getJwtSecret } from "./auth-secrets";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -23,7 +24,7 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.API_JWT_SECRET || "change-me-in-dev"
+        secret: getJwtSecret()
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (request as any).user = payload;

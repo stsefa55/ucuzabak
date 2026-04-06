@@ -1,0 +1,2 @@
+id,title,brand,category,price,originalPrice,currency,stock,url,imageUrl,ean,modelNumber
+MANUEL-CSV-001,"Örnek ürün başlığı (CSV)",ÖrnekMarka,"Ev > Mutfak",199.50,249.00,TRY,8,https://example.com/urun/manuel-csv-001,https://example.com/images/ornek-csv.jpg,8680000789012,MDL-CSV-01

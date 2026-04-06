@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import type { ComponentProps } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+type IoniconName = ComponentProps<typeof Ionicons>["name"];
 import { colors, radius, type } from "../design/tokens";
 import { ScreenContainer } from "../components/ui/ScreenContainer";
 import { useNavigation } from "@react-navigation/native";
@@ -106,7 +109,7 @@ export function SettingsScreen() {
   const item = (
     title: string,
     subtitle: string | null,
-    iconName: string,
+    iconName: IoniconName,
     onPress: () => void
   ) => {
     return (

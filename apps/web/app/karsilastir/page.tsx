@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { API_BASE_URL } from "../../src/lib/api-client";
+import { getApiBaseUrl } from "../../src/lib/api-client";
+import { fetchJsonOrNull } from "../../src/lib/server-api-fetch";
 import { Header } from "../../src/components/layout/Header";
 import { useCompareStore, type CompareProduct } from "../../src/stores/compare-store";
 
@@ -37,12 +38,8 @@ export default function ComparePage() {
     Promise.all(
       compareProducts.map(async (p): Promise<CompareRow> => {
         try {
-          const res = await fetch(`${API_BASE_URL}/products/${p.slug}`);
-          if (!res.ok) {
-            if (res.status === 404) return { ...p, _fetchError: true };
-            return { ...p, _fetchError: true };
-          }
-          const data = await res.json();
+          const data = await fetchJsonOrNull<Record<string, unknown>>(`${getApiBaseUrl()}/products/${p.slug}`);
+          if (!data) return { ...p, _fetchError: true };
           return toCompareRow(data);
         } catch {
           return { ...p, _fetchError: true };

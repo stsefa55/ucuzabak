@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { API_BASE_URL } from "../../../src/lib/api-client";
+import { isValidCanonicalSlug } from "@ucuzabak/shared";
+import { getApiBaseUrl } from "../../../src/lib/api-client";
+import { fetchJsonArray, fetchJsonOrNull } from "../../../src/lib/server-api-fetch";
 import { categoryHrefFromSlugs, categoryPageBasePathFromSlugs } from "../../../src/lib/categoryPaths";
 import { Header } from "../../../src/components/layout/Header";
 import { ProductFavoriteSection } from "../../../src/components/products/ProductFavoriteSection";
 import { ProductPriceAlertSection } from "../../../src/components/products/ProductPriceAlertSection";
 import { PriceHistoryChart } from "../../../src/components/products/PriceHistoryChart";
-import { ProductCard } from "../../../src/components/products/ProductCard";
+import { ProductCard, type ProductCardProduct } from "../../../src/components/products/ProductCard";
 import { ProductGallery } from "../../../src/components/products/ProductGallery";
 import { RecordProductView } from "../../../src/components/products/RecordProductView";
+import { ProductRailWithNav } from "../../../src/components/home/ProductRailWithNav";
 import { Card } from "../../../src/components/ui/card";
 import { Badge } from "../../../src/components/ui/badge";
 import { Tag, Store } from "lucide-react";
@@ -19,41 +22,123 @@ interface ProductPageProps {
   params: { slug: string };
 }
 
-async function fetchProduct(slug: string) {
-  const res = await fetch(`${API_BASE_URL}/products/${slug}`, {
-    next: { revalidate: 0 }
-  });
-  if (res.status === 404) {
-    return null;
-  }
-  return res.json();
+/** Detay sayfası — kart modelinden genişletilmiş alanlar */
+interface ProductDetail extends ProductCardProduct {
+  description?: string | null;
+  productImages?: Array<{ id?: number; imageUrl: string; position?: number }>;
+  categoryPathSlugs?: string[];
+  categoryPathNames?: string[];
+  lowestPriceCache?: string | null;
+  brand?: { name: string | null } | null;
+  category?: { name: string | null; slug: string } | null;
 }
 
-async function fetchOffers(slug: string) {
-  const res = await fetch(`${API_BASE_URL}/products/${slug}/offers`, {
-    next: { revalidate: 0 }
-  });
-  return res.json();
+interface OfferRow {
+  id: number;
+  currentPrice?: string | number | null;
+  originalPrice?: string | number | null;
+  inStock?: boolean;
+  status?: string;
+  lastSeenAt?: string | null;
+  updatedAt?: string;
+  listDiscountPercent?: number | null;
+  storefrontListDiscountEligible?: boolean;
+  store?: { name?: string | null };
 }
 
-async function fetchSimilar(slug: string) {
-  const res = await fetch(`${API_BASE_URL}/products/${slug}/similar`, {
+function isProductPayload(x: unknown): x is ProductDetail {
+  if (!x || typeof x !== "object") return false;
+  const o = x as Record<string, unknown>;
+  return (
+    typeof o.id === "number" &&
+    typeof o.name === "string" &&
+    typeof o.slug === "string" &&
+    isValidCanonicalSlug(o.slug)
+  );
+}
+
+function normalizeProduct(raw: ProductDetail): ProductDetail {
+  return {
+    ...raw,
+    lowestPriceCache:
+      raw.lowestPriceCache == null ? null : String(raw.lowestPriceCache),
+    categoryPathSlugs: Array.isArray(raw.categoryPathSlugs)
+      ? raw.categoryPathSlugs.filter((s): s is string => typeof s === "string" && s.length > 0)
+      : [],
+    categoryPathNames: Array.isArray(raw.categoryPathNames)
+      ? raw.categoryPathNames.filter((s): s is string => typeof s === "string")
+      : [],
+    productImages: Array.isArray(raw.productImages)
+      ? raw.productImages.filter(
+          (img): img is { id?: number; imageUrl: string; position?: number } =>
+            !!img &&
+            typeof img === "object" &&
+            typeof (img as { imageUrl?: unknown }).imageUrl === "string" &&
+            (img as { imageUrl: string }).imageUrl.length > 0
+        )
+      : []
+  };
+}
+
+function normalizeOffers(rows: OfferRow[]): OfferRow[] {
+  return rows.filter((r): r is OfferRow => !!r && typeof r === "object" && typeof r.id === "number");
+}
+
+function normalizeSimilar(rows: ProductCardProduct[]): ProductCardProduct[] {
+  return rows.filter(
+    (p): p is ProductCardProduct =>
+      !!p &&
+      typeof p === "object" &&
+      typeof p.id === "number" &&
+      typeof p.name === "string" &&
+      typeof p.slug === "string" &&
+      isValidCanonicalSlug(p.slug)
+  );
+}
+
+async function fetchProduct(slug: string): Promise<ProductDetail | null> {
+  const base = getApiBaseUrl();
+  const url = `${base}/products/${encodeURIComponent(slug)}`;
+  const data = await fetchJsonOrNull<unknown>(url, { next: { revalidate: 0 } });
+  if (!data) return null;
+  if (!isProductPayload(data)) return null;
+  return normalizeProduct(data);
+}
+
+async function fetchOffers(slug: string): Promise<OfferRow[]> {
+  const base = getApiBaseUrl();
+  return fetchJsonArray<OfferRow>(`${base}/products/${encodeURIComponent(slug)}/offers`, {
+    next: { revalidate: 0 }
+  });
+}
+
+async function fetchSimilar(slug: string): Promise<ProductCardProduct[]> {
+  const base = getApiBaseUrl();
+  return fetchJsonArray<ProductCardProduct>(`${base}/products/${encodeURIComponent(slug)}/similar`, {
     next: { revalidate: 60 }
   });
-  return res.json();
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
+  if (!isValidCanonicalSlug(params.slug)) {
+    notFound();
+  }
+  const offerOutBase =
+    process.env.NEXT_PUBLIC_API_BASE_URL?.trim() || "http://localhost:4000/api/v1";
   const product = await fetchProduct(params.slug);
   if (!product) {
     notFound();
   }
-  const [offers, similarProducts] = await Promise.all([
+  const [offersRaw, similarProductsRaw] = await Promise.all([
     fetchOffers(params.slug),
     fetchSimilar(params.slug)
   ]);
+  const offers = normalizeOffers(offersRaw);
+  const similarProducts = normalizeSimilar(similarProductsRaw);
+  const productPathSlugs = product.categoryPathSlugs ?? [];
+  const productPathNames = product.categoryPathNames ?? [];
 
-  const lowestOffer = offers.length > 0 ? offers[0] : null;
+  const lowestOffer: OfferRow | null = offers.length > 0 ? (offers[0] ?? null) : null;
   const lowestPrice =
     lowestOffer?.currentPrice != null
       ? `${lowestOffer.currentPrice} TL`
@@ -71,22 +156,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <Link href="/" className="text-muted">
               Anasayfa
             </Link>
-            {product.categoryPathSlugs && product.categoryPathSlugs.length > 0 ? (
-              product.categoryPathSlugs.map((slug: string, i: number) => {
-                const name = product.categoryPathNames?.[i] ?? slug;
-                const href = categoryPageBasePathFromSlugs(product.categoryPathSlugs!.slice(0, i + 1));
-                const isLast = i === product.categoryPathSlugs!.length - 1;
+            {productPathSlugs.length > 0 ? (
+              productPathSlugs.map((slug: string, i: number) => {
+                const name = productPathNames[i] ?? slug;
+                const href = categoryPageBasePathFromSlugs(productPathSlugs.slice(0, i + 1));
                 return (
                   <span key={`${slug}-${i}`}>
                     {" "}
                     /{" "}
-                    {isLast ? (
-                      <span className="text-muted">{name}</span>
-                    ) : (
-                      <Link href={href} className="text-muted">
-                        {name}
-                      </Link>
-                    )}
+                    <Link href={href} className="text-muted">
+                      {name}
+                    </Link>
                   </span>
                 );
               })
@@ -118,10 +198,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   mainImageUrl={product.mainImageUrl}
                   images={product.productImages}
                 />
-                <div>
-                  <h1 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "0.5rem", lineHeight: 1.25 }}>
-                    {product.name}
-                  </h1>
+                <div className="product-detail-hero__copy">
+                  <div className="product-detail-hero__top">
+                    <h1 className="product-detail-hero__title" style={{ fontSize: "1.75rem", fontWeight: 700, lineHeight: 1.25 }}>
+                      {product.name}
+                    </h1>
+                    <div className="product-detail-hero__actions" role="group" aria-label="Favori ve fiyat alarmı">
+                      <div className="product-detail-hero__toolbar">
+                        <div className="product-detail-hero__toolbar-main">
+                          <ProductFavoriteSection productId={product.id} productSlug={params.slug} compact />
+                          <span className="product-detail-hero__toolbar-sep" aria-hidden="true" />
+                          <ProductPriceAlertSection productId={product.id} compact />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
                     {product.brand?.name && <span>{product.brand.name}</span>}
                     {product.category && (
@@ -163,70 +254,122 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <section style={{ marginBottom: "1.5rem" }}>
             <div
-              className="product-detail-chart-actions"
+              className="product-detail-chart-offers"
               style={{
                 display: "grid",
-                gridTemplateColumns: "minmax(0, 1fr) 280px",
+                gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
                 gap: "1.25rem",
                 alignItems: "flex-start"
               }}
             >
-              <PriceHistoryChart slug={params.slug} />
-              <Card style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <ProductFavoriteSection productId={product.id} />
-                <ProductPriceAlertSection productId={product.id} />
-              </Card>
-            </div>
-          </section>
-
-          <section style={{ marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.75rem" }}>
-              Teklifler
-            </h2>
-            {offers.length === 0 ? (
-              <p className="text-muted">Bu ürün için henüz kayıtlı teklif yok.</p>
-            ) : (
-              <div className="card">
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: "left", padding: "0.5rem" }}>Mağaza</th>
-                      <th style={{ textAlign: "right", padding: "0.5rem" }}>Fiyat</th>
-                      <th style={{ textAlign: "right", padding: "0.5rem" }}>Durum</th>
-                      <th style={{ textAlign: "right", padding: "0.5rem" }}>Git</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {offers.map((offer: any) => (
-                      <tr key={offer.id} style={{ borderTop: "1px solid #e5e7eb" }}>
-                        <td style={{ padding: "0.5rem" }}>{offer.store?.name}</td>
-                        <td style={{ padding: "0.5rem", textAlign: "right" }}>
-                          {offer.currentPrice} TL
-                        </td>
-                        <td style={{ padding: "0.5rem", textAlign: "right" }}>
-                          {offer.inStock ? (
-                            <span className="badge">Stokta</span>
-                          ) : (
-                            <span className="text-muted">Stok yok</span>
-                          )}
-                        </td>
-                        <td style={{ padding: "0.5rem", textAlign: "right" }}>
-                          <a
-                            href={`${API_BASE_URL}/out/${offer.id}`}
-                            className="btn-primary"
-                            style={{ fontSize: "0.8rem" }}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Mağazaya git
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", minWidth: 0 }}>
+                <PriceHistoryChart slug={params.slug} />
               </div>
-            )}
+              <div style={{ minWidth: 0 }}>
+                <div className="card product-detail-panel-card">
+                  <div className="product-detail-panel-card__head product-detail-panel-card__head--single">
+                    <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: 0 }}>Teklifler</h2>
+                  </div>
+                  <p className="text-muted" style={{ fontSize: "0.78rem", lineHeight: 1.5, margin: "0 0 0.65rem", padding: "0 1rem" }}>
+                    Tablodaki <strong>indirim %</strong>, mağazanın liste fiyatı (<code>originalPrice</code>) ile güncel
+                    fiyat arasındaki farktır. Grafikteki eğri ise <strong>PriceHistory</strong> ile zaman içi fiyat
+                    değişimidir. Rozet yalnızca veri taze ve koşullar sağlandığında gösterilir.
+                  </p>
+                  <div className="product-detail-panel-card__body product-detail-panel-card__body--scroll">
+                    {offers.length === 0 ? (
+                      <p className="text-muted" style={{ fontSize: "0.9rem", margin: 0 }}>
+                        Bu ürün için henüz kayıtlı teklif yok.
+                      </p>
+                    ) : (
+                      <div className="product-detail-offers-table-wrap">
+                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
+                          <thead>
+                            <tr>
+                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Mağaza</th>
+                              <th style={{ textAlign: "right", padding: "0.45rem" }}>Güncel</th>
+                              <th style={{ textAlign: "right", padding: "0.45rem" }}>Liste</th>
+                              <th style={{ textAlign: "right", padding: "0.45rem" }}>İndirim</th>
+                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Stok</th>
+                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Durum</th>
+                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Son görülme</th>
+                              <th style={{ textAlign: "right", padding: "0.45rem" }}>Git</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {offers.map((offer: OfferRow) => {
+                              const cur = offer.currentPrice != null ? Number(offer.currentPrice) : NaN;
+                              const orig = offer.originalPrice != null ? Number(offer.originalPrice) : NaN;
+                              const showStrike =
+                                offer.storefrontListDiscountEligible === true &&
+                                offer.listDiscountPercent != null &&
+                                offer.listDiscountPercent > 0;
+                              return (
+                                <tr key={offer.id} style={{ borderTop: "1px solid #e5e7eb" }}>
+                                  <td style={{ padding: "0.45rem", wordBreak: "break-word" }}>{offer.store?.name}</td>
+                                  <td style={{ padding: "0.45rem", textAlign: "right", whiteSpace: "nowrap", fontWeight: 600 }}>
+                                    {Number.isFinite(cur) ? `${cur.toLocaleString("tr-TR")} TL` : "—"}
+                                  </td>
+                                  <td style={{ padding: "0.45rem", textAlign: "right", whiteSpace: "nowrap" }}>
+                                    {Number.isFinite(orig) ? (
+                                      <span style={showStrike ? { textDecoration: "line-through", color: "#64748b" } : undefined}>
+                                        {orig.toLocaleString("tr-TR")} TL
+                                      </span>
+                                    ) : (
+                                      "—"
+                                    )}
+                                  </td>
+                                  <td style={{ padding: "0.45rem", textAlign: "right", whiteSpace: "nowrap" }}>
+                                    {showStrike && offer.listDiscountPercent != null ? (
+                                      <span style={{ color: "#16a34a", fontWeight: 600 }}>%{offer.listDiscountPercent}</span>
+                                    ) : (
+                                      <span className="text-muted">—</span>
+                                    )}
+                                  </td>
+                                  <td style={{ padding: "0.45rem" }}>
+                                    {offer.inStock ? (
+                                      <span className="badge">Stokta</span>
+                                    ) : (
+                                      <span className="text-muted">Stok yok</span>
+                                    )}
+                                  </td>
+                                  <td style={{ padding: "0.45rem", fontSize: "0.8rem" }}>
+                                    {offer.status === "ACTIVE"
+                                      ? "Aktif"
+                                      : offer.status === "DISABLED"
+                                        ? "Kapalı"
+                                        : offer.status === "OUT_OF_STOCK"
+                                          ? "Stok dışı"
+                                          : (offer.status ?? "—")}
+                                  </td>
+                                  <td style={{ padding: "0.45rem", fontSize: "0.78rem", whiteSpace: "nowrap" }}>
+                                    {offer.lastSeenAt
+                                      ? new Date(offer.lastSeenAt).toLocaleString("tr-TR")
+                                      : offer.updatedAt
+                                        ? new Date(offer.updatedAt).toLocaleString("tr-TR")
+                                        : "—"}
+                                  </td>
+                                  <td style={{ padding: "0.45rem", textAlign: "right" }}>
+                                    <a
+                                      href={`${offerOutBase}/out/${offer.id}`}
+                                      className="btn-primary"
+                                      style={{ fontSize: "0.78rem", padding: "0.35rem 0.5rem", whiteSpace: "nowrap" }}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      Mağazaya git
+                                    </a>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
 
           {similarProducts.length > 0 && (
@@ -234,23 +377,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <h2 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.75rem" }}>
                 Benzer ürünler
               </h2>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  overflowX: "auto",
-                  scrollBehavior: "smooth",
-                  paddingBottom: "0.5rem",
-                  scrollbarWidth: "thin"
-                }}
-                className="product-rail"
-              >
+              <ProductRailWithNav ariaLabel="Benzer ürünler">
                 {similarProducts.map((p: any) => (
-                  <div key={p.id} style={{ minWidth: 260, maxWidth: 280, flexShrink: 0 }}>
+                  <div key={p.id} className="product-rail-card">
                     <ProductCard product={p} />
                   </div>
                 ))}
-              </div>
+              </ProductRailWithNav>
             </section>
           )}
         </div>

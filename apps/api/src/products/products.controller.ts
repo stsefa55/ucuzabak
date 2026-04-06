@@ -15,12 +15,21 @@ export class ProductsController {
 
   @Get()
   @ApiOkResponse({ description: "Ürün listeleme" })
-  list(@Query() query: ProductListQueryDto) {
-    return this.productsService.list(query);
+  async list(@Query() query: ProductListQueryDto) {
+    const t0 = Date.now();
+    const out = await this.productsService.list(query);
+    console.log(`[perf] GET /products ${Date.now() - t0}ms`);
+    return out;
+  }
+
+  @Get("featured")
+  @ApiOkResponse({ description: "Öne çıkan (admin vitrin)" })
+  getFeatured() {
+    return this.productsService.getFeaturedProducts();
   }
 
   @Get("popular")
-  @ApiOkResponse({ description: "Popüler ürünler" })
+  @ApiOkResponse({ description: "Popüler ürünler (son günlerde affiliate tıklama)" })
   getPopular() {
     return this.productsService.getPopularProducts();
   }
@@ -32,15 +41,9 @@ export class ProductsController {
   }
 
   @Get("deals")
-  @ApiOkResponse({ description: "Fırsat ürünleri" })
+  @ApiOkResponse({ description: "Fırsat ürünleri (liste fiyatı indirim oranı)" })
   getDeals() {
     return this.productsService.getDealProducts();
-  }
-
-  @Get("most-clicked")
-  @ApiOkResponse({ description: "En çok tıklanan ürünler (öne çıkan)" })
-  getMostClicked() {
-    return this.productsService.getMostClickedProducts(12);
   }
 
   @Get("by-slugs")

@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "externalId": "MANUEL-JSON-001",
+      "title": "Örnek ürün başlığı (JSON)",
+      "brand": "ÖrnekMarka",
+      "category": "Elektronik > Ses",
+      "price": 1299,
+      "originalPrice": 1599,
+      "currency": "TRY",
+      "inStock": true,
+      "stock": 5,
+      "ean": "8680000654321",
+      "modelNumber": "MDL-JSON-01",
+      "url": "https://example.com/urun/manuel-json-001",
+      "imageUrl": "https://example.com/images/ornek-json.jpg"
+    }
+  ]
+}

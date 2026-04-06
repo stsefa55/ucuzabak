@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import { FeedAdapter, ParsedFeedItem } from "./types";
+import { FeedAdapter, FeedParseResult, ParsedFeedItem } from "./types";
 
 function toStr(v: unknown): string | undefined {
   if (v == null) return undefined;
@@ -25,7 +25,7 @@ function slugFromTitle(title: unknown): string {
 }
 
 export class TrendyolXmlAdapter implements FeedAdapter {
-  parse(content: string): ParsedFeedItem[] {
+  parse(content: string): FeedParseResult {
     const parser = new XMLParser({
       ignoreAttributes: false,
       attributeNamePrefix: "@_"
@@ -38,10 +38,14 @@ export class TrendyolXmlAdapter implements FeedAdapter {
       ? [json.products.product]
       : [];
 
-    return products.map((p: any) => {
+    const items = products.map((p: any) => {
       const ean = toStrOrUndefined(p.ean);
       const modelNumber = toStrOrUndefined(p.modelNumber);
       const title = toStr(p.title) || "Untitled";
+      const brand = toStrOrUndefined(p.brand ?? p.manufacturer ?? p.vendor ?? p.Brand);
+      const categoryText = toStrOrUndefined(
+        p.category ?? p.categoryPath ?? p.categoryName ?? p.breadcrumb ?? p.Breadcrumbs
+      );
       const rawId = toStrOrUndefined(p.id);
       const externalId =
         rawId ?? ean ?? modelNumber ?? slugFromTitle(p.title);
@@ -49,6 +53,8 @@ export class TrendyolXmlAdapter implements FeedAdapter {
       return {
         externalId,
         title,
+        brand,
+        categoryText,
         price: Number(p.price) || 0,
         originalPrice: p.originalPrice != null ? Number(p.originalPrice) : undefined,
         currency: toStrOrUndefined(p.currency) || "TRY",
@@ -61,5 +67,6 @@ export class TrendyolXmlAdapter implements FeedAdapter {
         imageUrl: toStrOrUndefined(p.imageUrl)
       };
     });
+    return { items };
   }
 }

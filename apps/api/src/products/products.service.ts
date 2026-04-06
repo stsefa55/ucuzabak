@@ -1,53 +1,49 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { OfferStatus, ProductStatus } from "@prisma/client";
+import { OfferStatus } from "@prisma/client";
 import { CategoriesService } from "../categories/categories.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProductListQueryDto, ProductSortField } from "./dto/product-list.query.dto";
 import { PriceHistoryQueryDto, PriceHistoryRange } from "./dto/price-history-range.dto";
+import {
+  canShowStorefrontListDiscountBadge,
+  computeListDiscountPercent
+} from "../common/offer-list-discount";
+import { STOREFRONT_LISTING_PRODUCT_IMAGES } from "./storefront-listing-images.args";
+import { STOREFRONT_PRODUCT_WHERE, storefrontProductWhere } from "./storefront-product.scope";
+
+/** Affiliate tıklama penceresi (gün) — POPULAR_AFFILIATE_CLICK_WINDOW_DAYS */
+function popularAffiliateClickWindowDays(): number {
+  const n = Number(process.env.POPULAR_AFFILIATE_CLICK_WINDOW_DAYS ?? "30");
+  if (!Number.isFinite(n) || n < 1) return 30;
+  return Math.min(365, Math.floor(n));
+}
+
+/** PriceHistory geriye bakış (gün) */
+const PRICE_DROP_HISTORY_DAYS = 60;
+/** Son kayıttan önceki max fiyat için pencere (gün) */
+const PRICE_DROP_PRIOR_WINDOW_DAYS = 45;
 
 @Injectable()
 export class ProductsService {
+  private readonly logger = new Logger(ProductsService.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly categoriesService: CategoriesService
   ) {}
 
-  private async getCategorySelfAndDescendantIdsBySlug(slug: string): Promise<number[]> {
-    const root = await this.prisma.category.findUnique({
-      where: { slug },
-      select: { id: true }
-    });
-
-    if (!root) return [];
-
-    const ids: number[] = [root.id];
-    let frontier: number[] = [root.id];
-
-    while (frontier.length > 0) {
-      const children = await this.prisma.category.findMany({
-        where: { parentId: { in: frontier } },
-        select: { id: true }
-      });
-      if (children.length === 0) break;
-      frontier = children.map((c) => c.id);
-      ids.push(...frontier);
-    }
-
-    return ids;
-  }
-
   async list(query: ProductListQueryDto) {
+    const t0 = Date.now();
     const { page = 1, pageSize = 20 } = query;
 
-    const where: Prisma.ProductWhereInput = { status: ProductStatus.ACTIVE };
+    const extra: Prisma.ProductWhereInput = {};
 
     if (query.q) {
-      where.name = { contains: query.q, mode: "insensitive" };
+      extra.name = { contains: query.q, mode: "insensitive" };
     }
 
     if (query.categorySlug) {
-      const categoryIds = await this.getCategorySelfAndDescendantIdsBySlug(query.categorySlug);
+      const categoryIds = await this.categoriesService.getSelfAndDescendantCategoryIdsBySlug(query.categorySlug);
       if (categoryIds.length === 0) {
         return {
           items: [],
@@ -56,22 +52,33 @@ export class ProductsService {
           pageSize
         };
       }
-      where.categoryId = { in: categoryIds };
+      extra.categoryId = { in: categoryIds };
     }
 
-    if (query.brandSlug) {
-      where.brand = { slug: query.brandSlug };
+    const brandCsv = query.brandSlugs?.trim();
+    const brandList = brandCsv
+      ? brandCsv
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    if (brandList.length > 0) {
+      extra.brand = { slug: { in: brandList } };
+    } else if (query.brandSlug) {
+      extra.brand = { slug: query.brandSlug };
     }
 
     if (query.minPrice !== undefined || query.maxPrice !== undefined) {
-      where.lowestPriceCache = {};
+      extra.lowestPriceCache = {};
       if (query.minPrice !== undefined) {
-        (where.lowestPriceCache as Prisma.DecimalFilter).gte = query.minPrice;
+        (extra.lowestPriceCache as Prisma.DecimalFilter).gte = query.minPrice;
       }
       if (query.maxPrice !== undefined) {
-        (where.lowestPriceCache as Prisma.DecimalFilter).lte = query.maxPrice;
+        (extra.lowestPriceCache as Prisma.DecimalFilter).lte = query.maxPrice;
       }
     }
+
+    const where = storefrontProductWhere(extra);
 
     const orderBy: Prisma.ProductOrderByWithRelationInput[] = [];
 
@@ -103,27 +110,52 @@ export class ProductsService {
         orderBy,
         skip: (page - 1) * pageSize,
         take: pageSize,
-        include: {
-          brand: true,
-          category: true
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          mainImageUrl: true,
+          lowestPriceCache: true,
+          offerCountCache: true,
+          ean: true,
+          modelNumber: true,
+          specsJson: true,
+          categoryId: true,
+          productImages: STOREFRONT_LISTING_PRODUCT_IMAGES,
+          brand: {
+            select: { name: true }
+          },
+          category: {
+            select: { name: true, slug: true }
+          }
         }
       }),
       this.prisma.product.count({ where })
     ]);
 
     const enrichedItems = await this.categoriesService.attachCategoryPathToProducts(items);
+    const withHints = await this.attachOfferListingHints(enrichedItems);
 
-    return {
-      items: enrichedItems,
+    const out = {
+      items: withHints,
       total,
       page,
       pageSize
     };
+    this.logger.log(`[perf] products.list q=${query.q ?? ""} category=${query.categorySlug ?? ""} took ${Date.now() - t0}ms`);
+    return out;
   }
 
   async findBySlug(slug: string) {
-    const product = await this.prisma.product.findUnique({
-      where: { slug, status: ProductStatus.ACTIVE },
+    const normalizedSlug = (slug ?? "").trim();
+    if (!normalizedSlug) {
+      throw new NotFoundException("Ürün bulunamadı.");
+    }
+
+    const product = await this.prisma.product.findFirst({
+      where: storefrontProductWhere({
+        slug: normalizedSlug
+      }),
       include: {
         brand: true,
         category: true,
@@ -143,8 +175,14 @@ export class ProductsService {
     if (slugs.length === 0) return [];
     const uniq = [...new Set(slugs)].slice(0, 20);
     const products = await this.prisma.product.findMany({
-      where: { slug: { in: uniq }, status: ProductStatus.ACTIVE },
-      include: { brand: true, category: true }
+      where: storefrontProductWhere({
+        slug: { in: uniq }
+      }),
+      include: {
+        brand: true,
+        category: true,
+        productImages: STOREFRONT_LISTING_PRODUCT_IMAGES
+      }
     });
     const bySlug = new Map(products.map((p) => [p.slug, p]));
     const ordered = uniq.map((slug) => bySlug.get(slug)).filter(Boolean) as typeof products;
@@ -152,8 +190,11 @@ export class ProductsService {
   }
 
   async getOffersBySlug(slug: string) {
-    const product = await this.prisma.product.findUnique({
-      where: { slug },
+    const normalizedSlug = (slug ?? "").trim();
+    const product = await this.prisma.product.findFirst({
+      where: storefrontProductWhere({
+        slug: normalizedSlug
+      }),
       select: { id: true }
     });
     if (!product) {
@@ -170,31 +211,44 @@ export class ProductsService {
       }
     });
 
-    return offers;
+    return offers.map((o) => {
+      const current = Number(o.currentPrice);
+      const orig = o.originalPrice != null ? Number(o.originalPrice) : null;
+      const listDiscountPercent =
+        orig != null && orig > current && orig > 0 ? computeListDiscountPercent(current, orig) : null;
+      const storefrontListDiscountEligible = canShowStorefrontListDiscountBadge({
+        status: o.status,
+        currentPrice: current,
+        originalPrice: orig,
+        lastSeenAt: o.lastSeenAt,
+        updatedAt: o.updatedAt
+      });
+      return {
+        ...o,
+        listDiscountPercent,
+        storefrontListDiscountEligible
+      };
+    });
   }
 
   async getPriceHistoryBySlug(slug: string, query: PriceHistoryQueryDto) {
-    const product = await this.prisma.product.findUnique({
-      where: { slug },
+    const normalizedSlug = (slug ?? "").trim();
+    const product = await this.prisma.product.findFirst({
+      where: storefrontProductWhere({
+        slug: normalizedSlug
+      }),
       select: { id: true }
     });
     if (!product) {
       throw new NotFoundException("Ürün bulunamadı.");
     }
 
-    const offers = await this.prisma.offer.findMany({
-      where: { productId: product.id },
-      select: { id: true }
-    });
-
-    if (offers.length === 0) {
-      return { range: query.range, points: [] };
-    }
+    const range = query.range ?? PriceHistoryRange.D90;
 
     const now = new Date();
     let fromDate: Date | undefined;
 
-    switch (query.range) {
+    switch (range) {
       case PriceHistoryRange.D7:
         fromDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         break;
@@ -213,22 +267,26 @@ export class ProductsService {
         break;
     }
 
-    const where: Prisma.PriceHistoryWhereInput = {
-      offerId: { in: offers.map((o) => o.id) }
-    };
-
-    if (fromDate) {
-      (where.recordedAt as Prisma.DateTimeFilter | undefined) = {
-        gte: fromDate
-      };
-    }
-
-    const histories = await this.prisma.priceHistory.findMany({
-      where,
-      orderBy: {
-        recordedAt: "asc"
-      }
-    });
+    /** Offer id listesi + IN(...) yerine JOIN: çok teklifte daha güvenilir ve hızlı. */
+    type PhRow = { price: Prisma.Decimal; recordedAt: Date };
+    const histories = await this.prisma.$queryRaw<PhRow[]>(
+      fromDate
+        ? Prisma.sql`
+            SELECT ph.price, ph."recordedAt"
+            FROM "PriceHistory" ph
+            INNER JOIN "Offer" o ON o.id = ph."offerId"
+            WHERE o."productId" = ${product.id}
+              AND ph."recordedAt" >= ${fromDate}
+            ORDER BY ph."recordedAt" ASC
+          `
+        : Prisma.sql`
+            SELECT ph.price, ph."recordedAt"
+            FROM "PriceHistory" ph
+            INNER JOIN "Offer" o ON o.id = ph."offerId"
+            WHERE o."productId" = ${product.id}
+            ORDER BY ph."recordedAt" ASC
+          `
+    );
 
     // Aggregate by day, taking min price of the day
     const byDay = new Map<
@@ -277,187 +335,292 @@ export class ProductsService {
     );
 
     return {
-      range: query.range,
+      range,
       points
     };
   }
 
-  async getPopularProducts() {
+  /** Admin işaretli vitrin ürünleri — tıklama / teklif sayısından bağımsız. */
+  async getFeaturedProducts() {
     const items = await this.prisma.product.findMany({
       where: {
-        status: "ACTIVE"
+        AND: [STOREFRONT_PRODUCT_WHERE, { isFeatured: true }]
       },
-      orderBy: [
-        { offerCountCache: "desc" },
-        { createdAt: "desc" }
-      ],
+      orderBy: [{ featuredSortOrder: "asc" }, { id: "asc" }],
       take: 60,
       include: {
         brand: true,
-        category: true
+        category: true,
+        productImages: STOREFRONT_LISTING_PRODUCT_IMAGES
       }
     });
-
-    return this.categoriesService.attachCategoryPathToProducts(items);
+    const withPath = await this.categoriesService.attachCategoryPathToProducts(items);
+    return this.attachOfferListingHints(withPath);
   }
 
-  async getPriceDroppedProducts() {
-    // originalPrice > currentPrice olan teklifleri baz al
-    const discountedOffers = await this.prisma.offer.findMany({
-      where: {
-        status: "ACTIVE",
-        originalPrice: {
-          not: null
-        },
-        currentPrice: {
-          lt: new Prisma.Decimal(0) // placeholder, aşağıda filtrelenecek
-        }
-      },
-      take: 0
-    });
-
-    // Prisma Decimal ile doğrudan fark hesabı için raw query yerine basit bir yaklaşım:
-    const offers = await this.prisma.offer.findMany({
-      where: {
-        status: "ACTIVE",
-        originalPrice: {
-          not: null
-        }
-      },
-      select: {
-        id: true,
-        productId: true,
-        currentPrice: true,
-        originalPrice: true
-      }
-    });
-
-    const byProduct = new Map<
-      number,
-      {
-        productId: number;
-        discountAmount: number;
-      }
-    >();
-
-    for (const o of offers) {
-      if (!o.originalPrice) continue;
-      const current = Number(o.currentPrice);
-      const original = Number(o.originalPrice);
-      if (current >= original) continue;
-      const discount = original - current;
-      const existing = byProduct.get(o.productId);
-      if (!existing || discount > existing.discountAmount) {
-        byProduct.set(o.productId, { productId: o.productId, discountAmount: discount });
-      }
-    }
-
-    const sorted = Array.from(byProduct.values())
-      .sort((a, b) => b.discountAmount - a.discountAmount)
-      .slice(0, 60);
-
-    const productIds = sorted.map((x) => x.productId);
-
-    if (productIds.length === 0) {
-      return [];
-    }
-
-    const products = await this.prisma.product.findMany({
-      where: {
-        id: { in: productIds },
-        status: "ACTIVE"
-      },
-      include: {
-        brand: true,
-        category: true
-      }
-    });
-
-    // Aynı sırayı koru
-    const productsById = new Map(products.map((p) => [p.id, p]));
-    const ordered = productIds.map((id) => productsById.get(id)).filter(Boolean) as typeof products;
-    return this.categoriesService.attachCategoryPathToProducts(ordered);
-  }
-
-  async getDealProducts() {
-    // İndirim miktarına göre en avantajlı ürünler
-    const offers = await this.prisma.offer.findMany({
-      where: {
-        status: "ACTIVE",
-        originalPrice: {
-          not: null
-        }
-      },
-      select: {
-        id: true,
-        productId: true,
-        currentPrice: true,
-        originalPrice: true
-      }
-    });
-
-    const byProduct = new Map<
-      number,
-      {
-        productId: number;
-        discountAmount: number;
-      }
-    >();
-
-    for (const o of offers) {
-      if (!o.originalPrice) continue;
-      const current = Number(o.currentPrice);
-      const original = Number(o.originalPrice);
-      if (current >= original) continue;
-      const discount = original - current;
-      const existing = byProduct.get(o.productId);
-      if (!existing || discount > existing.discountAmount) {
-        byProduct.set(o.productId, { productId: o.productId, discountAmount: discount });
-      }
-    }
-
-    const sorted = Array.from(byProduct.values())
-      .sort((a, b) => b.discountAmount - a.discountAmount)
-      .slice(0, 60);
-
-    const productIds = sorted.map((x) => x.productId);
-
-    if (productIds.length === 0) {
-      return [];
-    }
-
-    const products = await this.prisma.product.findMany({
-      where: {
-        id: { in: productIds },
-        status: "ACTIVE"
-      },
-      include: {
-        brand: true,
-        category: true
-      }
-    });
-
-    const productsById = new Map(products.map((p) => [p.id, p]));
-    const ordered = productIds.map((id) => productsById.get(id)).filter(Boolean) as typeof products;
-    return this.categoriesService.attachCategoryPathToProducts(ordered);
-  }
-
-  async getMostClickedProducts(limit = 12) {
+  /** Affiliate yönlendirme tıklamalarına göre popülerlik (son N gün). */
+  async getPopularProducts() {
+    const days = popularAffiliateClickWindowDays();
+    const since = new Date(Date.now() - days * 86_400_000);
     const groups = await this.prisma.affiliateClick.groupBy({
       by: ["productId"],
+      where: { createdAt: { gte: since } },
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
-      take: limit
+      take: 60
     });
     const productIds = groups.map((g) => g.productId);
-    if (productIds.length === 0) return [];
+    if (productIds.length === 0) {
+      return [];
+    }
     const products = await this.prisma.product.findMany({
-      where: { id: { in: productIds }, status: ProductStatus.ACTIVE },
-      include: { brand: true, category: true }
+      where: storefrontProductWhere({
+        id: { in: productIds }
+      }),
+      include: {
+        brand: true,
+        category: true,
+        productImages: STOREFRONT_LISTING_PRODUCT_IMAGES
+      }
     });
     const byId = new Map(products.map((p) => [p.id, p]));
     const ordered = productIds.map((id) => byId.get(id)).filter(Boolean) as typeof products;
-    return this.categoriesService.attachCategoryPathToProducts(ordered);
+    const withPath = await this.categoriesService.attachCategoryPathToProducts(ordered);
+    return this.attachOfferListingHints(withPath);
+  }
+
+  /**
+   * PriceHistory: teklif bazında son kayıt, önceki penceredeki max fiyattan düşükse anlamlı düşüş.
+   * Ürün skoru = teklif başına düşüş tutarının ürün içi maksimumu; azalan sıra.
+   */
+  async getPriceDroppedProducts() {
+    type Row = { productId: number; drop_amt: unknown };
+    const rows = await this.prisma.$queryRaw<Row[]>`
+      WITH latest_per_offer AS (
+        SELECT DISTINCT ON (ph."offerId")
+          ph."offerId",
+          o."productId" AS pid,
+          ph.price AS latest_price,
+          ph."recordedAt" AS latest_at
+        FROM "PriceHistory" ph
+        INNER JOIN "Offer" o ON o.id = ph."offerId"
+        INNER JOIN "Product" p ON p.id = o."productId"
+        WHERE o.status = 'ACTIVE'
+          AND p.status = 'ACTIVE'
+          AND p.slug <> ''
+          AND ph."recordedAt" >= NOW() - (${PRICE_DROP_HISTORY_DAYS}::int * INTERVAL '1 day')
+        ORDER BY ph."offerId", ph."recordedAt" DESC
+      ),
+      prior_max AS (
+        SELECT ph."offerId", MAX(ph.price) AS max_price_before
+        FROM "PriceHistory" ph
+        INNER JOIN latest_per_offer l ON l."offerId" = ph."offerId"
+        WHERE ph."recordedAt" < l.latest_at
+          AND ph."recordedAt" >= l.latest_at - (${PRICE_DROP_PRIOR_WINDOW_DAYS}::int * INTERVAL '1 day')
+        GROUP BY ph."offerId"
+      ),
+      per_product AS (
+        SELECT l.pid AS "productId",
+               (pm.max_price_before - l.latest_price) AS drop_amt
+        FROM latest_per_offer l
+        INNER JOIN prior_max pm ON pm."offerId" = l."offerId"
+        WHERE pm.max_price_before > l.latest_price
+      )
+      SELECT "productId", MAX(drop_amt) AS drop_amt
+      FROM per_product
+      GROUP BY "productId"
+      ORDER BY MAX(drop_amt) DESC
+      LIMIT 60
+    `;
+
+    const productIds = rows.map((r) => r.productId).filter((id) => Number.isInteger(id));
+    if (productIds.length === 0) {
+      return [];
+    }
+
+    const products = await this.prisma.product.findMany({
+      where: storefrontProductWhere({
+        id: { in: productIds }
+      }),
+      include: {
+        brand: true,
+        category: true,
+        productImages: STOREFRONT_LISTING_PRODUCT_IMAGES
+      }
+    });
+    const productsById = new Map(products.map((p) => [p.id, p]));
+    const ordered = productIds.map((id) => productsById.get(id)).filter(Boolean) as typeof products;
+    const withPath = await this.categoriesService.attachCategoryPathToProducts(ordered);
+    return this.attachOfferListingHints(withPath);
+  }
+
+  /**
+   * Liste indirimi: originalPrice > currentPrice; önce indirim oranı, sonra tutar (ACTIVE teklif + vitrin ürünü).
+   */
+  async getDealProducts() {
+    const offers = await this.prisma.offer.findMany({
+      where: {
+        status: OfferStatus.ACTIVE,
+        originalPrice: { not: null }
+      },
+      select: {
+        productId: true,
+        currentPrice: true,
+        originalPrice: true,
+        lastSeenAt: true,
+        updatedAt: true
+      }
+    });
+
+    type Score = { productId: number; pct: number; amount: number };
+    const byProduct = new Map<number, Score>();
+
+    for (const o of offers) {
+      if (!o.originalPrice) continue;
+      const current = Number(o.currentPrice);
+      const original = Number(o.originalPrice);
+      if (!(original > 0) || current >= original) continue;
+      if (
+        !canShowStorefrontListDiscountBadge({
+          status: OfferStatus.ACTIVE,
+          currentPrice: current,
+          originalPrice: original,
+          lastSeenAt: o.lastSeenAt,
+          updatedAt: o.updatedAt
+        })
+      ) {
+        continue;
+      }
+      const amount = original - current;
+      const pct = amount / original;
+      const prev = byProduct.get(o.productId);
+      if (!prev || pct > prev.pct || (pct === prev.pct && amount > prev.amount)) {
+        byProduct.set(o.productId, { productId: o.productId, pct, amount });
+      }
+    }
+
+    const sorted = Array.from(byProduct.values())
+      .sort((a, b) => b.pct - a.pct || b.amount - a.amount)
+      .slice(0, 60);
+
+    const productIds = sorted.map((x) => x.productId);
+    if (productIds.length === 0) {
+      return [];
+    }
+
+    const products = await this.prisma.product.findMany({
+      where: storefrontProductWhere({
+        id: { in: productIds }
+      }),
+      include: {
+        brand: true,
+        category: true,
+        productImages: STOREFRONT_LISTING_PRODUCT_IMAGES
+      }
+    });
+    const productsById = new Map(products.map((p) => [p.id, p]));
+    const ordered = productIds.map((id) => productsById.get(id)).filter(Boolean) as typeof products;
+    const withPath = await this.categoriesService.attachCategoryPathToProducts(ordered);
+    return this.attachOfferListingHints(withPath);
+  }
+
+  /** En düşük fiyatlı ACTIVE tekliften kart ipuçları (orijinal fiyat, indirim %, stok, mağaza adı). */
+  private async attachOfferListingHints<T extends { id: number; lowestPriceCache?: unknown }>(
+    items: T[]
+  ): Promise<
+    Array<
+      T & {
+        cardOriginalPrice: string | null;
+        cardDiscountPercent: number | null;
+        cardInStock: boolean | null;
+        cardStoreName: string | null;
+      }
+    >
+  > {
+    if (items.length === 0) return [] as Array<
+      T & {
+        cardOriginalPrice: string | null;
+        cardDiscountPercent: number | null;
+        cardInStock: boolean | null;
+        cardStoreName: string | null;
+      }
+    >;
+    const ids = items.map((i) => i.id);
+    const offers = await this.prisma.offer.findMany({
+      where: { productId: { in: ids }, status: OfferStatus.ACTIVE },
+      select: {
+        productId: true,
+        currentPrice: true,
+        originalPrice: true,
+        inStock: true,
+        lastSeenAt: true,
+        updatedAt: true,
+        store: { select: { name: true } }
+      }
+    });
+    const best = new Map<
+      number,
+      {
+        current: number;
+        original: number | null;
+        inStock: boolean;
+        storeName: string;
+        lastSeenAt: Date | null;
+        updatedAt: Date;
+      }
+    >();
+    for (const o of offers) {
+      const cur = Number(o.currentPrice);
+      const orig = o.originalPrice != null ? Number(o.originalPrice) : null;
+      const ex = best.get(o.productId);
+      if (!ex || cur < ex.current) {
+        best.set(o.productId, {
+          current: cur,
+          original: orig,
+          inStock: o.inStock,
+          storeName: o.store.name,
+          lastSeenAt: o.lastSeenAt,
+          updatedAt: o.updatedAt
+        });
+      }
+    }
+    return items.map((item) => {
+      const b = best.get(item.id);
+      if (!b) {
+        return {
+          ...item,
+          cardOriginalPrice: null,
+          cardDiscountPercent: null,
+          cardInStock: null,
+          cardStoreName: null
+        };
+      }
+      const loParsed =
+        item.lowestPriceCache != null && item.lowestPriceCache !== ""
+          ? Number(String(item.lowestPriceCache))
+          : NaN;
+      const lo = Number.isFinite(loParsed) ? loParsed : b.current;
+      const showOrig =
+        b.original != null &&
+        b.original > lo &&
+        b.original > 0 &&
+        canShowStorefrontListDiscountBadge({
+          status: OfferStatus.ACTIVE,
+          currentPrice: lo,
+          originalPrice: b.original,
+          lastSeenAt: b.lastSeenAt,
+          updatedAt: b.updatedAt
+        });
+      const pct =
+        showOrig && b.original != null ? computeListDiscountPercent(lo, b.original) : null;
+      return {
+        ...item,
+        cardOriginalPrice: showOrig ? String(b.original) : null,
+        cardDiscountPercent: pct,
+        cardInStock: b.inStock,
+        cardStoreName: b.storeName
+      };
+    });
   }
 }
 

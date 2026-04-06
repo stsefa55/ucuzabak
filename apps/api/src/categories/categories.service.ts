@@ -1,12 +1,34 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Prisma, ProductStatus } from "@prisma/client";
+import { CacheService } from "../cache/cache.service";
 import { PrismaService } from "../prisma/prisma.service";
 
 export type CategoryNavigationFilters = {
   brandSlug?: string;
+  /** Çoklu marka (CSV), ürün listesi / arama ile aynı */
+  brandSlugs?: string;
   minPrice?: number;
   maxPrice?: number;
 };
+
+function parseBrandSlugsCsv(csv?: string): string[] {
+  return String(csv ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function applyBrandFilterToWhere(
+  where: Prisma.ProductWhereInput,
+  f?: Pick<CategoryNavigationFilters, "brandSlug" | "brandSlugs">
+) {
+  const list = parseBrandSlugsCsv(f?.brandSlugs);
+  if (list.length > 0) {
+    where.brand = { slug: { in: list } };
+  } else if (f?.brandSlug?.trim()) {
+    where.brand = { slug: f.brandSlug.trim() };
+  }
+}
 
 type CanonicalCategoryRow = {
   id: number;
@@ -19,14 +41,65 @@ type CanonicalCategoryRow = {
   isActive: boolean;
 };
 
+type CompactCategoryNode = {
+  id: number;
+  name: string;
+  slug: string;
+  parentId: number | null;
+};
+
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(CategoriesService.name);
 
-  listTree() {
-    // Prisma client henüz yeni alanları (iconName/imageUrl/isActive/sortOrder) tanımıyor olabilir.
-    // Bu nedenle storefront için gerekli veriyi DB'den raw SQL ile çekiyoruz.
-    return this.prisma.$queryRawUnsafe<CanonicalCategoryRow[]>(`
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cache: CacheService
+  ) {}
+
+  private logTiming(scope: string, startedAt: number) {
+    const elapsedMs = Date.now() - startedAt;
+    this.logger.log(`[perf] ${scope} took ${elapsedMs}ms`);
+  }
+
+  private async getActiveCategoryNodes(): Promise<CompactCategoryNode[]> {
+    return this.cache.getOrSet("cat:active:nodes:v1", 120, async () => {
+      return this.prisma.category.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true, slug: true, parentId: true }
+      });
+    });
+  }
+
+  private async getDescendantIdsByRootIdCached(rootId: number): Promise<number[]> {
+    return this.cache.getOrSet(`cat:desc:${rootId}:v1`, 300, async () => {
+      const nodes = await this.getActiveCategoryNodes();
+      const childrenByParent = new Map<number, number[]>();
+      for (const n of nodes) {
+        if (n.parentId == null) continue;
+        const arr = childrenByParent.get(n.parentId) ?? [];
+        arr.push(n.id);
+        childrenByParent.set(n.parentId, arr);
+      }
+      const ids: number[] = [rootId];
+      const queue: number[] = [rootId];
+      let cursor = 0;
+      while (cursor < queue.length) {
+        const cur = queue[cursor++];
+        const children = childrenByParent.get(cur) ?? [];
+        for (const id of children) {
+          ids.push(id);
+          queue.push(id);
+        }
+      }
+      return ids;
+    });
+  }
+
+  /** Kök kategoriler — canonical alanlar için parametresiz Prisma.sql (şema/DB uyumlu). */
+  async listTree() {
+    const rows = await this.prisma.$queryRaw<CanonicalCategoryRow[]>(
+      Prisma.sql`
       SELECT
         id,
         name,
@@ -42,13 +115,19 @@ export class CategoriesService {
       ORDER BY
         "sortOrder" ASC NULLS LAST,
         "position" ASC,
-        "name" ASC;
-    `);
+        "name" ASC
+    `
+    );
+    if (process.env.NODE_ENV !== "production") {
+      this.logger.debug(`GET /categories: ${rows.length} root category row(s)`);
+    }
+    return rows;
   }
 
   /** Kategori listesi + her kategorideki aktif ürün sayısı (sadece üst kategoriler) */
   async listWithProductCount() {
-    const canonical = await this.prisma.$queryRawUnsafe<CanonicalCategoryRow[]>(`
+    const canonical = await this.prisma.$queryRaw<CanonicalCategoryRow[]>(
+      Prisma.sql`
       SELECT
         id,
         name,
@@ -64,8 +143,9 @@ export class CategoriesService {
       ORDER BY
         "sortOrder" ASC NULLS LAST,
         "position" ASC,
-        "name" ASC;
-    `);
+        "name" ASC
+    `
+    );
 
     const countRows = await this.prisma.product.groupBy({
       by: ["categoryId"],
@@ -147,7 +227,7 @@ export class CategoriesService {
     const parentId = parentRows[0]?.id;
     if (!parentId) throw new NotFoundException("Kategori bulunamadı.");
 
-    return this.prisma.$queryRaw<CanonicalCategoryRow[]>(
+    const rows = await this.prisma.$queryRaw<CanonicalCategoryRow[]>(
       Prisma.sql`
         SELECT
           id,
@@ -167,6 +247,17 @@ export class CategoriesService {
           "name" ASC;
       `
     );
+    if (rows.length === 0) return rows;
+    const ids = rows.map((r) => r.id);
+    const groups = await this.prisma.category.groupBy({
+      by: ["parentId"],
+      where: { parentId: { in: ids }, isActive: true },
+      _count: { _all: true }
+    });
+    const hasChild = new Map(groups.map((g) => [g.parentId as number, true]));
+    return rows.map((r) => ({ ...r, hasChildren: hasChild.has(r.id) })) as Array<
+      CanonicalCategoryRow & { hasChildren: boolean }
+    >;
   }
 
   /**
@@ -187,15 +278,15 @@ export class CategoriesService {
     slug: string;
     parentId: number | null;
   }): Promise<{ pathSlugs: string[]; pathNames: string[] }> {
+    const all = await this.getActiveCategoryNodes();
+    const byId = new Map(all.map((c) => [c.id, c]));
     const chain: { slug: string; name: string }[] = [];
     let current: { id: number; name: string; slug: string; parentId: number | null } | null = row;
-    while (current) {
+    let safety = 0;
+    while (current && safety < 64) {
       chain.push({ slug: current.slug, name: current.name });
-      if (!current.parentId) break;
-      current = await this.prisma.category.findUnique({
-        where: { id: current.parentId },
-        select: { id: true, name: true, slug: true, parentId: true }
-      });
+      current = current.parentId != null ? byId.get(current.parentId) ?? null : null;
+      safety += 1;
     }
     chain.reverse();
     return {
@@ -246,30 +337,17 @@ export class CategoriesService {
 
   /** Alt ağaçtaki tüm kategori id'leri (kök dahil). */
   async getDescendantCategoryIdsById(rootId: number): Promise<number[]> {
-    const ids: number[] = [rootId];
-    let frontier: number[] = [rootId];
-    while (frontier.length > 0) {
-      const children = await this.prisma.category.findMany({
-        where: { parentId: { in: frontier } },
-        select: { id: true }
-      });
-      if (children.length === 0) break;
-      frontier = children.map((c) => c.id);
-      ids.push(...frontier);
-    }
-    return ids;
+    return this.getDescendantIdsByRootIdCached(rootId);
   }
 
   /**
    * Yaprak slug ile bu kategori + tüm alt kategoriler (ürün listesi `categorySlug` ile aynı kapsam).
    */
   async getSelfAndDescendantCategoryIdsBySlug(slug: string): Promise<number[]> {
-    const root = await this.prisma.category.findFirst({
-      where: { slug, isActive: true },
-      select: { id: true }
-    });
+    const nodes = await this.getActiveCategoryNodes();
+    const root = nodes.find((n) => n.slug === slug);
     if (!root) return [];
-    return this.getDescendantCategoryIdsById(root.id);
+    return this.getDescendantIdsByRootIdCached(root.id);
   }
 
   /**
@@ -290,6 +368,23 @@ export class CategoriesService {
     }>;
     priceExtent: { min: number | null; max: number | null };
   }> {
+    const startedAt = Date.now();
+    const cacheKey = `cat:facets:${leafSlug}:min:${query.minPrice ?? ""}:max:${query.maxPrice ?? ""}:v2`;
+    const cached = await this.cache.get<{
+      brands: Array<{
+        id: number;
+        name: string;
+        slug: string;
+        logoUrl: string | null;
+        productCount: number;
+      }>;
+      priceExtent: { min: number | null; max: number | null };
+    }>(cacheKey);
+    if (cached) {
+      this.logTiming(`categories.facets(cache-hit) slug=${leafSlug}`, startedAt);
+      return cached;
+    }
+
     const categoryIds = await this.getSelfAndDescendantCategoryIdsBySlug(leafSlug);
     const empty = (): {
       brands: Array<{
@@ -343,7 +438,10 @@ export class CategoriesService {
     const withBrand = group.filter((g): g is typeof g & { brandId: number } => g.brandId != null);
 
     if (withBrand.length === 0) {
-      return { brands: [], priceExtent };
+      const out = { brands: [], priceExtent };
+      await this.cache.set(cacheKey, out, 90);
+      this.logTiming(`categories.facets slug=${leafSlug}`, startedAt);
+      return out;
     }
 
     const brandIds = withBrand.map((g) => g.brandId);
@@ -352,16 +450,22 @@ export class CategoriesService {
       orderBy: { name: "asc" }
     });
     const countBy = new Map(withBrand.map((g) => [g.brandId, g._count.id]));
-    return {
+    const out = {
       brands: brands.map((b) => ({
         id: b.id,
         name: b.name,
         slug: b.slug,
         logoUrl: b.logoUrl,
         productCount: countBy.get(b.id) ?? 0
-      })),
+      })).sort((a, b) => {
+        if (b.productCount !== a.productCount) return b.productCount - a.productCount;
+        return a.name.localeCompare(b.name, "tr");
+      }),
       priceExtent
     };
+    await this.cache.set(cacheKey, out, 90);
+    this.logTiming(`categories.facets slug=${leafSlug}`, startedAt);
+    return out;
   }
 
   /**
@@ -377,9 +481,7 @@ export class CategoriesService {
       status: ProductStatus.ACTIVE,
       categoryId: { in: ids }
     };
-    if (filters?.brandSlug) {
-      where.brand = { slug: filters.brandSlug };
-    }
+    applyBrandFilterToWhere(where, filters);
     if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
       where.lowestPriceCache = {};
       if (filters.minPrice !== undefined) {
@@ -395,7 +497,12 @@ export class CategoriesService {
   private sanitizeNavigationFilters(f?: CategoryNavigationFilters): CategoryNavigationFilters | undefined {
     if (!f) return undefined;
     const out: CategoryNavigationFilters = {};
-    if (f.brandSlug?.trim()) out.brandSlug = f.brandSlug.trim();
+    const brands = parseBrandSlugsCsv(f.brandSlugs);
+    if (brands.length > 0) {
+      out.brandSlugs = brands.join(",");
+    } else if (f.brandSlug?.trim()) {
+      out.brandSlug = f.brandSlug.trim();
+    }
     if (f.minPrice !== undefined && Number.isFinite(f.minPrice) && !Number.isNaN(f.minPrice)) {
       out.minPrice = f.minPrice;
     }
@@ -412,6 +519,15 @@ export class CategoriesService {
    * - Üst kategori linki: parentId varsa her zaman bir üst.
    */
   async getNavigationPanelForLeaf(leafSlug: string, filters?: CategoryNavigationFilters) {
+    const startedAt = Date.now();
+    const f = this.sanitizeNavigationFilters(filters);
+    const cacheKey = `cat:nav:${leafSlug}:br:${f?.brandSlugs ?? ""}:${f?.brandSlug ?? ""}:min:${f?.minPrice ?? ""}:max:${f?.maxPrice ?? ""}:v4`;
+    const cached = await this.cache.get<any>(cacheKey);
+    if (cached) {
+      this.logTiming(`categories.navigation(cache-hit) slug=${leafSlug}`, startedAt);
+      return cached;
+    }
+
     const leaf = await this.prisma.category.findFirst({
       where: { slug: leafSlug, isActive: true },
       select: { id: true, name: true, slug: true, parentId: true }
@@ -419,7 +535,8 @@ export class CategoriesService {
     if (!leaf) throw new NotFoundException("Kategori bulunamadı.");
 
     const currentPath = await this.buildPathSegmentsFromLeafRow(leaf);
-    const f = this.sanitizeNavigationFilters(filters);
+    const nodes = await this.getActiveCategoryNodes();
+    const byId = new Map(nodes.map((n) => [n.id, n]));
 
     let parentInfo: {
       slug: string;
@@ -428,26 +545,18 @@ export class CategoriesService {
       pathNames: string[];
     } | null = null;
 
-    const directChildren = await this.prisma.category.findMany({
+    const panelChildrenOfLeaf = await this.prisma.category.findMany({
       where: { parentId: leaf.id, isActive: true },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        parentId: true,
-        iconName: true,
-        imageUrl: true,
-        sortOrder: true
-      },
+      select: { id: true, name: true, slug: true, parentId: true, iconName: true, imageUrl: true, sortOrder: true },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
     });
 
     let navigationMode: "current_children" | "siblings";
-    let panelCategories: typeof directChildren;
+    let panelCategories: typeof panelChildrenOfLeaf;
 
-    if (directChildren.length > 0) {
+    if (panelChildrenOfLeaf.length > 0) {
       navigationMode = "current_children";
-      panelCategories = directChildren;
+      panelCategories = panelChildrenOfLeaf;
     } else {
       navigationMode = "siblings";
       if (leaf.parentId == null) {
@@ -485,24 +594,92 @@ export class CategoriesService {
       }
     }
 
-    const siblingEntries = await Promise.all(
-      panelCategories.map(async (s) => {
-        const path = await this.buildPathSegmentsFromLeafRow(s);
-        const productCount = await this.countProductsUnderCategorySubtree(s.id, f);
-        return {
-          id: s.id,
-          name: s.name,
-          slug: s.slug,
-          iconName: s.iconName,
-          imageUrl: s.imageUrl,
-          productCount,
-          pathSlugs: path.pathSlugs,
-          pathNames: path.pathNames
-        };
-      })
+    // Compute descendants once per visible panel category.
+    const panelDescendants = await Promise.all(
+      panelCategories.map(async (s) => ({
+        id: s.id,
+        ids: await this.getDescendantIdsByRootIdCached(s.id)
+      }))
+    );
+    const allPanelCategoryIds = Array.from(new Set(panelDescendants.flatMap((x) => x.ids)));
+    const productWhere: Prisma.ProductWhereInput = {
+      status: ProductStatus.ACTIVE,
+      categoryId: { in: allPanelCategoryIds }
+    };
+    applyBrandFilterToWhere(productWhere, f);
+    if (f?.minPrice !== undefined || f?.maxPrice !== undefined) {
+      productWhere.lowestPriceCache = {};
+      if (f.minPrice !== undefined) (productWhere.lowestPriceCache as Prisma.DecimalFilter).gte = f.minPrice;
+      if (f.maxPrice !== undefined) (productWhere.lowestPriceCache as Prisma.DecimalFilter).lte = f.maxPrice;
+    }
+
+    const grouped = allPanelCategoryIds.length
+      ? await this.prisma.product.groupBy({
+          by: ["categoryId"],
+          where: productWhere,
+          _count: { id: true }
+        })
+      : [];
+    const countByCategoryId = new Map(grouped.map((g) => [g.categoryId as number, g._count.id]));
+    const descendantSetByRoot = new Map(panelDescendants.map((d) => [d.id, new Set(d.ids)]));
+
+    const pathCache = new Map<number, { pathSlugs: string[]; pathNames: string[] }>();
+    const buildPathFromId = (id: number) => {
+      const hit = pathCache.get(id);
+      if (hit) return hit;
+      const chain: CompactCategoryNode[] = [];
+      let current: CompactCategoryNode | undefined = byId.get(id);
+      let safety = 0;
+      while (current && safety < 64) {
+        chain.push(current);
+        current = current.parentId != null ? byId.get(current.parentId) : undefined;
+        safety += 1;
+      }
+      chain.reverse();
+      const out = {
+        pathSlugs: chain.map((c) => c.slug),
+        pathNames: chain.map((c) => c.name)
+      };
+      pathCache.set(id, out);
+      return out;
+    };
+
+    const childPresenceGroups =
+      panelCategories.length > 0
+        ? await this.prisma.category.groupBy({
+            by: ["parentId"],
+            where: {
+              parentId: { in: panelCategories.map((c) => c.id) },
+              isActive: true
+            },
+            _count: { _all: true }
+          })
+        : [];
+    const panelIdHasChildren = new Map(
+      childPresenceGroups.map((g) => [g.parentId as number, (g._count._all ?? 0) > 0])
     );
 
-    return {
+    const siblingEntries = panelCategories.map((s) => {
+      const descendants = descendantSetByRoot.get(s.id) ?? new Set<number>([s.id]);
+      let productCount = 0;
+      descendants.forEach((id) => {
+        productCount += countByCategoryId.get(id) ?? 0;
+      });
+      const path = buildPathFromId(s.id);
+      return {
+        id: s.id,
+        name: s.name,
+        slug: s.slug,
+        iconName: s.iconName,
+        imageUrl: s.imageUrl,
+        productCount,
+        pathSlugs: path.pathSlugs,
+        pathNames: path.pathNames,
+        hasChildren: panelIdHasChildren.get(s.id) ?? false
+      };
+    });
+
+    const result = {
       navigationMode,
       current: {
         slug: leaf.slug,
@@ -513,6 +690,9 @@ export class CategoriesService {
       parent: parentInfo,
       siblings: siblingEntries
     };
+    await this.cache.set(cacheKey, result, 90);
+    this.logTiming(`categories.navigation slug=${leafSlug}`, startedAt);
+    return result;
   }
 }
 

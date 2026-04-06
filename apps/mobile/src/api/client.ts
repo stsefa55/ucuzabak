@@ -44,7 +44,8 @@ export const API_BASE_URL = normalizedApiBaseUrl;
 
 console.log("[MOBILE API DEBUG] resolved BASE_URL:", API_BASE_URL);
 
-export type ApiFetchOptions = Omit<RequestInit, "method" | "headers"> & {
+/** body: JSON olarak stringify edilir; RequestInit.body ile karışmasın diye ayrı. */
+export type ApiFetchOptions = Omit<RequestInit, "method" | "body"> & {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: unknown;
 };

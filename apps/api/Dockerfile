@@ -32,7 +32,11 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-RUN apk add --no-cache openssl
+# pg_dump / psql — yedek oluşturma ve geri yükleme (BACKUP_DIR, DATABASE_URL)
+# Kurulum doğrulaması: imajda ikili yoksa build burada düşer.
+RUN apk add --no-cache openssl postgresql-client \
+  && pg_dump --version \
+  && psql --version
 RUN corepack enable
 ENV NODE_ENV=production
 

@@ -1,35 +1,63 @@
 import { PrismaClient, UserRole } from "@prisma/client";
+import { slugifyCanonical as slugify } from "@ucuzabak/shared";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
+function requireSeedPassword(envName: string, value: string | undefined): string {
+  const v = value?.trim();
+  if (!v || v.length < 12) {
+    throw new Error(
+      `${envName} is required for prisma seed when NODE_ENV=production (min 12 characters).`,
+    );
+  }
+  return v;
+}
+
 export async function main() {
-  // Clean existing data in a safe order for development seeding.
+  const isProd = process.env.NODE_ENV === "production";
+  const adminPlain = isProd
+    ? requireSeedPassword("SEED_ADMIN_PASSWORD", process.env.SEED_ADMIN_PASSWORD)
+    : "Admin123!";
+  const userPlain = isProd
+    ? requireSeedPassword("SEED_USER_PASSWORD", process.env.SEED_USER_PASSWORD)
+    : "User123!";
+
+  // Clean existing data in a safe order (FKs); seed recreates only users + category tree.
   await prisma.affiliateClick.deleteMany();
   await prisma.unmatchedProductReview.deleteMany();
+  await prisma.storeProductMatchAuditLog.deleteMany();
   await prisma.feedImport.deleteMany();
   await prisma.review.deleteMany();
   await prisma.favorite.deleteMany();
   await prisma.priceAlert.deleteMany();
   await prisma.priceHistory.deleteMany();
   await prisma.offer.deleteMany();
+  await prisma.importSkippedRow.deleteMany();
   await prisma.storeProduct.deleteMany();
   await prisma.product.deleteMany();
+  await prisma.categoryMappingOverride.deleteMany();
   await prisma.category.deleteMany();
   await prisma.brand.deleteMany();
+  await prisma.banner.deleteMany();
+  await prisma.searchQueryStat.deleteMany();
+  await prisma.emailDeliveryLog.deleteMany();
+  await prisma.backupRestoreLog.deleteMany();
+  await prisma.bulkEmailQuotaDay.deleteMany();
   await prisma.store.deleteMany();
   await prisma.user.deleteMany();
 
-  const adminPasswordHash = await bcrypt.hash("Admin123!", 10);
-  const userPasswordHash = await bcrypt.hash("User123!", 10);
+  const adminPasswordHash = await bcrypt.hash(adminPlain, 10);
+  const userPasswordHash = await bcrypt.hash(userPlain, 10);
 
   await prisma.user.create({
     data: {
       email: "admin@ucuzabak.com",
       name: "Admin",
       passwordHash: adminPasswordHash,
-      role: UserRole.ADMIN
+      role: UserRole.ADMIN,
+      emailVerified: true
     }
   });
 
@@ -38,7 +66,8 @@ export async function main() {
       email: "user@ucuzabak.com",
       name: "Kullanıcı",
       passwordHash: userPasswordHash,
-      role: UserRole.USER
+      role: UserRole.USER,
+      emailVerified: true
     }
   });
 
@@ -266,32 +295,15 @@ export async function main() {
    * - Tüm kategoriler: name, slug, parentId, iconName, sortOrder, isActive (imageUrl: null)
    *
    * Not: Elektronik alt kategori slug'ları (cep-telefonu, laptop, televizyon) import eşlemesi için korunur.
-   */
-  const slugify = (input: string) => {
-    return input
-      .toLowerCase()
-      .trim()
-      .replace(/&/g, " ve ")
-      .replace(/[ç]/g, "c")
-      .replace(/[ğ]/g, "g")
-      .replace(/[ı]/g, "i")
-      .replace(/[i]/g, "i")
-      .replace(/[ö]/g, "o")
-      .replace(/[ş]/g, "s")
-      .replace(/[ü]/g, "u")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-  };
-
-  /**
-   * Aynı seed çalışması içinde birden fazla blok (newRoots, completeness, exhaustive, pet genişlemesi vb.)
-   * aynı global `slug` ile L2 oluşturmaya çalışabiliyordu. Slug global unique olduğu için çakışmayı önlemek için:
+   * Slug üretimi: `@ucuzabak/shared` slugifyCanonical (slugify).
+   *
+   * Aynı seed çalışması içinde birden fazla blok aynı global `slug` ile L2 oluşturmaya çalışabiliyordu.
+   * Slug global unique olduğu için çakışmayı önlemek için:
    * - L2: slug varsa yeniden oluşturma, mevcut düğümü kullan
    * - L3: yalnızca slug henüz yoksa ekle (eksik dalları tamamlar)
    */
   async function ensureCategoryL2WithChildren(
-    rootId: string,
+    rootId: number,
     rootSlug: string,
     row: {
       iconName: string;
@@ -884,7 +896,7 @@ export async function main() {
   }
 
   const completenessRows: Array<{
-    rootId: string;
+    rootId: number;
     rootSlug: string;
     iconName: string;
     sortOrder: number;
@@ -1091,14 +1103,6 @@ export async function main() {
       children: row.children
     });
   }
-
-  // Minimal baseline store for normalized JSON / feed import (slug must match importer default).
-  // No demo products, offers, or price history — catalog comes from import pipelines.
-  await prisma.store.upsert({
-    where: { slug: "trendyol" },
-    create: { name: "Trendyol", slug: "trendyol" },
-    update: { name: "Trendyol" }
-  });
 }
 
 if (require.main === module) {

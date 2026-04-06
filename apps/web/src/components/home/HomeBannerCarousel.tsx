@@ -2,9 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type TouchEventHandler } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { API_BASE_URL } from "../../lib/api-client";
+import { getApiBaseUrl, resolveApiMediaUrl } from "../../lib/api-client";
 
 
 interface Banner {
@@ -18,9 +18,11 @@ interface Banner {
 export function HomeBannerCarousel() {
   const [index, setIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
+  const touchX = useRef<number | null>(null);
   const { data: banners = [] } = useQuery<Banner[]>({
     queryKey: ["banners"],
-    queryFn: () => fetch(`${API_BASE_URL}/banners`, { credentials: "include" }).then((r) => r.json())
+    queryFn: () =>
+      fetch(`${getApiBaseUrl()}/banners`, { credentials: "include" }).then((r) => r.json())
   });
 
   const count = banners.length;
@@ -38,12 +40,29 @@ export function HomeBannerCarousel() {
     return () => clearInterval(t);
   }, [count, go]);
 
+  const onTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
+    touchX.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd: TouchEventHandler<HTMLDivElement> = (e) => {
+    if (touchX.current == null || count <= 1) {
+      touchX.current = null;
+      return;
+    }
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) < 48) return;
+    if (dx < 0) go(1);
+    else go(-1);
+  };
+
   if (banners.length === 0) return null;
 
   const current = banners[index];
 
   return (
     <section
+      className="home-banner-section"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -55,7 +74,19 @@ export function HomeBannerCarousel() {
         background: "#f3f4f6"
       }}
     >
-      <div style={{ position: "relative", width: "100%", aspectRatio: "32/10", minHeight: 140, maxHeight: 220 }}>
+      <div
+        className="home-banner-frame"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        style={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "32/11",
+          minHeight: 168,
+          maxHeight: 300,
+          touchAction: "pan-y"
+        }}
+      >
         {current && (
           <>
             {current.linkUrl ? (
@@ -67,7 +98,7 @@ export function HomeBannerCarousel() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={current.imageUrl}
+                  src={resolveApiMediaUrl(current.imageUrl)}
                   alt={current.title ?? "Kampanya"}
                   style={{
                     width: "100%",
@@ -80,7 +111,7 @@ export function HomeBannerCarousel() {
             ) : (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
-                src={current.imageUrl}
+                src={resolveApiMediaUrl(current.imageUrl)}
                 alt={current.title ?? "Kampanya"}
                 style={{
                   width: "100%",
