@@ -36,3 +36,8 @@ apps/api/data/uploads/
 !/apps/worker/imports/pending/.gitkeep
 !/apps/worker/imports/processed/.gitkeep
 !/apps/worker/imports/failed/.gitkeep
+
+apps/api/data/feed-imports/**
+apps/api/data/feed-imports
+*.dump
+ucuzabak.dump
