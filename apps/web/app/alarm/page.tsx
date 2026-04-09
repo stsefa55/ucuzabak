@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Bell, LogIn, ShieldCheck, Smartphone, UserPlus } from "lucide-react";
 import { Header } from "../../src/components/layout/Header";
 import { apiFetch } from "../../src/lib/api-client";
 import { getErrorStatus, parseNestErrorMessage } from "../../src/lib/nest-error";
@@ -85,14 +86,37 @@ export default function AlertsPage() {
           </h1>
 
           {!accessToken && (
-            <div className="card">
-              <p className="text-muted" style={{ marginBottom: "0.75rem" }}>
-                Fiyat alarmlarınızı görmek için giriş yapmanız gerekiyor.
+            <section className="auth-gate" aria-labelledby="alarm-gate-title">
+              <div className="auth-gate__icon-wrap">
+                <Bell size={32} strokeWidth={1.6} />
+              </div>
+              <h2 id="alarm-gate-title" className="auth-gate__title">
+                Fiyat alarmlarını kullanmak için giriş yapın
+              </h2>
+              <p className="auth-gate__desc">
+                Beğendiğiniz ürünlere fiyat alarmı kurun, fiyat düştüğünde anında e-posta ile bilgilendirilirsiniz.
               </p>
-              <button type="button" className="btn-primary" onClick={handleRequireLogin}>
-                Giriş yap
-              </button>
-            </div>
+              <ul className="auth-gate__features">
+                <li>
+                  <ShieldCheck size={16} strokeWidth={2} aria-hidden />
+                  <span>Hedef fiyat belirleme ve otomatik bildirim</span>
+                </li>
+                <li>
+                  <Smartphone size={16} strokeWidth={2} aria-hidden />
+                  <span>Tüm cihazlarınızda senkronize alarmlar</span>
+                </li>
+              </ul>
+              <div className="auth-gate__actions">
+                <Link href="/giris" className="auth-gate__btn auth-gate__btn--primary">
+                  <LogIn size={17} strokeWidth={2} aria-hidden />
+                  Giriş yap
+                </Link>
+                <Link href="/kayit" className="auth-gate__btn auth-gate__btn--secondary">
+                  <UserPlus size={17} strokeWidth={2} aria-hidden />
+                  Hesap oluştur
+                </Link>
+              </div>
+            </section>
           )}
 
           {accessToken && needsEmailVerification && (
@@ -128,7 +152,18 @@ export default function AlertsPage() {
                 <p className="text-danger">Fiyat alarmları yüklenirken bir hata oluştu.</p>
               )}
               {!isLoading && data && data.length === 0 && (
-                <p className="text-muted">Henüz kayıtlı fiyat alarmınız yok.</p>
+                <div style={{ textAlign: "center", padding: "2rem 1rem" }}>
+                  <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>🔔</div>
+                  <p style={{ fontSize: "1rem", fontWeight: 600, color: "#334155", marginBottom: "0.35rem" }}>
+                    Henüz fiyat alarmınız yok
+                  </p>
+                  <p className="text-muted" style={{ fontSize: "0.88rem", marginBottom: "1rem", maxWidth: 400, margin: "0 auto 1rem" }}>
+                    Beğendiğiniz ürünlerin sayfasından fiyat alarmı kurarak, fiyat düştüğünde e-posta ile bilgilendirilirsiniz.
+                  </p>
+                  <Link href="/" className="btn-primary" style={{ display: "inline-flex", padding: "0.5rem 1.25rem", fontSize: "0.88rem" }}>
+                    Ürünlere göz at
+                  </Link>
+                </div>
               )}
               {!isLoading && data && data.length > 0 && (
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>

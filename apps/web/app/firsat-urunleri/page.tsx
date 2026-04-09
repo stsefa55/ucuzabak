@@ -21,14 +21,14 @@ export default async function DealProductsPage() {
       <Header />
       <main className="main">
         <div className="container">
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.75rem" }}>Fırsat ürünleri</h1>
-          <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "1.25rem" }}>
-            Liste fiyatına göre indirim: orijinal fiyatı güncel fiyattan yüksek olan aktif teklifler (önce indirim oranı).
+          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.35rem" }}>Fırsat ürünleri</h1>
+          <p className="text-muted" style={{ fontSize: "0.88rem", marginBottom: "1.25rem" }}>
+            En yüksek indirim oranına sahip ürünler.
           </p>
           <ProductsInfiniteFromList
             items={products}
             pageSize={20}
-            emptyMessage="Su anda listelenecek firsat urunu bulunamadi."
+            emptyMessage="Şu anda listelenecek fırsat ürünü bulunamadı."
           />
         </div>
       </main>

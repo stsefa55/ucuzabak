@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "../../../src/components/layout/Header";
 import { apiFetch } from "../../../src/lib/api-client";
 import { useAuthStore } from "../../../src/stores/auth-store";
 
@@ -48,7 +47,6 @@ export default function AdminProductImportPage() {
 
   return (
     <>
-      <Header />
       <main className="main">
         <div className="container">
           <div className="card admin-page" style={{ maxWidth: 840, margin: "0 auto" }}>

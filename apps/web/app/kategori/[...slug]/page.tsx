@@ -224,6 +224,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 mode="category"
                 basePath={categoryPath}
                 sort={currentSort}
+                brands={brands}
                 searchParams={{
                   categorySlug: leafSlug,
                   brandSlug: searchParams.brandSlug,

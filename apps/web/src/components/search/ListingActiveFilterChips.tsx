@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, type ReactNode } from "react";
-import { buildFilterUrl, joinCsv, LISTING_SORT_LABELS, parseCsv } from "../../lib/listingFilterUrls";
+import { buildFilterUrl, joinCsv, LISTING_SORT_LABELS, parseCsv, removeSlugFromCsv } from "../../lib/listingFilterUrls";
 
 export type ListingActiveChipsSearchParams = {
   q?: string;
@@ -15,6 +15,7 @@ export type ListingActiveChipsSearchParams = {
 };
 
 type Category = { slug: string; name: string };
+type BrandInfo = { slug: string; name: string };
 
 type Props = {
   mode: "search" | "category";
@@ -22,7 +23,7 @@ type Props = {
   sort: string;
   searchParams: ListingActiveChipsSearchParams;
   categoriesWithCount?: Category[];
-  /** Aynı satırda sağa hizalanır (örn. arama sayfası SortSelect) */
+  brands?: BrandInfo[];
   trailingSlot?: ReactNode;
 };
 
@@ -47,6 +48,7 @@ export function ListingActiveFilterChips({
   sort,
   searchParams,
   categoriesWithCount = [],
+  brands = [],
   trailingSlot
 }: Props) {
   const resolvedSort = sort?.trim() || "popular";
@@ -69,15 +71,25 @@ export function ListingActiveFilterChips({
     [categoriesWithCount]
   );
 
+  const brandMap = useMemo(
+    () => new Map(brands.map((b) => [b.slug, b.name])),
+    [brands]
+  );
+
   const categorySlugs = parseCsv(searchParams.categorySlugs);
   const singleCategorySlug = searchParams.categorySlug?.trim() ?? "";
+
+  const brandSlugs = parseCsv(searchParams.brandSlugs);
+  const singleBrandSlug = searchParams.brandSlug?.trim() ?? "";
+  const hasBrandChips = brandSlugs.length > 0 || Boolean(singleBrandSlug);
 
   const hasPrice = Boolean(searchParams.minPrice?.trim() || searchParams.maxPrice?.trim());
   const sortActive = resolvedSort !== "popular";
 
   const hasSearchCategoryChips = mode === "search" && (categorySlugs.length > 0 || Boolean(singleCategorySlug));
   const hasFacetRow =
-    (mode === "search" && (hasSearchCategoryChips || hasPrice)) || (mode === "category" && hasPrice);
+    (mode === "search" && (hasSearchCategoryChips || hasPrice || hasBrandChips)) ||
+    (mode === "category" && (hasPrice || hasBrandChips));
 
   const showChipsSection = hasFacetRow || sortActive;
 
@@ -142,6 +154,37 @@ export function ListingActiveFilterChips({
                 );
               })
             : null}
+          {singleBrandSlug && !brandSlugs.includes(singleBrandSlug) ? (
+            <Link
+              key="brand-single"
+              role="listitem"
+              href={buildFilterUrl(basePath, baseParams, { brandSlug: null, brandSlugs: null })}
+              className="filter-chip filter-chip--brand"
+              aria-label={`${brandMap.get(singleBrandSlug) ?? singleBrandSlug} marka filtresini kaldır`}
+            >
+              <span className="filter-chip__label">Marka: {brandMap.get(singleBrandSlug) ?? singleBrandSlug}</span>
+              <span className="filter-chip__remove" aria-hidden>×</span>
+            </Link>
+          ) : null}
+          {brandSlugs.map((slug) => {
+            const label = brandMap.get(slug) ?? slug;
+            const next = removeSlugFromCsv(searchParams.brandSlugs, slug);
+            return (
+              <Link
+                key={`brand-${slug}`}
+                role="listitem"
+                href={buildFilterUrl(basePath, baseParams, {
+                  brandSlugs: next || null,
+                  brandSlug: null
+                })}
+                className="filter-chip filter-chip--brand"
+                aria-label={`${label} marka filtresini kaldır`}
+              >
+                <span className="filter-chip__label">Marka: {label}</span>
+                <span className="filter-chip__remove" aria-hidden>×</span>
+              </Link>
+            );
+          })}
           {hasPrice ? (
             <Link
               role="listitem"

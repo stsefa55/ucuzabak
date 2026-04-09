@@ -12,9 +12,7 @@ import { ProductCard, type ProductCardProduct } from "../../../src/components/pr
 import { ProductGallery } from "../../../src/components/products/ProductGallery";
 import { RecordProductView } from "../../../src/components/products/RecordProductView";
 import { ProductRailWithNav } from "../../../src/components/home/ProductRailWithNav";
-import { Card } from "../../../src/components/ui/card";
-import { Badge } from "../../../src/components/ui/badge";
-import { Tag, Store } from "lucide-react";
+import { Store, Tag, TrendingDown } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -146,224 +144,179 @@ export default async function ProductPage({ params }: ProductPageProps) {
       ? `${product.lowestPriceCache} TL`
       : "Fiyat bilgisi yok";
 
+  const lowestOriginal =
+    lowestOffer?.originalPrice != null ? Number(lowestOffer.originalPrice) : NaN;
+  const lowestCur =
+    lowestOffer?.currentPrice != null ? Number(lowestOffer.currentPrice) : NaN;
+  const showHeroDiscount =
+    lowestOffer?.storefrontListDiscountEligible === true &&
+    lowestOffer?.listDiscountPercent != null &&
+    lowestOffer.listDiscountPercent > 0 &&
+    Number.isFinite(lowestOriginal);
+
   return (
     <>
       <RecordProductView slug={params.slug} />
       <Header />
       <main className="main">
-        <div className="container">
-          <nav style={{ fontSize: "0.85rem", marginBottom: "0.75rem" }}>
+        <div className="container pdp">
+
+          {/* ── Breadcrumb ── */}
+          <nav className="page-with-filters__breadcrumb text-muted" style={{ marginBottom: "1.25rem" }} aria-label="Sayfa konumu">
             <Link href="/" className="text-muted">
               Anasayfa
             </Link>
-            {productPathSlugs.length > 0 ? (
-              productPathSlugs.map((slug: string, i: number) => {
-                const name = productPathNames[i] ?? slug;
-                const href = categoryPageBasePathFromSlugs(productPathSlugs.slice(0, i + 1));
-                return (
-                  <span key={`${slug}-${i}`}>
-                    {" "}
-                    /{" "}
-                    <Link href={href} className="text-muted">
-                      {name}
-                    </Link>
-                  </span>
-                );
-              })
-            ) : product.category ? (
-              <>
-                {" "}
-                /{" "}
-                <Link href={`/kategori/${product.category.slug}`} className="text-muted">
-                  {product.category.name}
-                </Link>
-              </>
-            ) : null}{" "}
-            / <span>{product.name}</span>
+            {productPathSlugs.length > 0
+              ? productPathSlugs.map((slug: string, i: number) => {
+                  const name = productPathNames[i] ?? slug;
+                  const href = categoryPageBasePathFromSlugs(productPathSlugs.slice(0, i + 1));
+                  return (
+                    <span key={`${slug}-${i}`}>
+                      {" "}
+                      /{" "}
+                      <Link href={href} className="text-muted">{name}</Link>
+                    </span>
+                  );
+                })
+              : product.category
+                ? (
+                    <span>
+                      {" "}
+                      /{" "}
+                      <Link href={`/kategori/${product.category.slug}`} className="text-muted">{product.category.name}</Link>
+                    </span>
+                  )
+                : null}
+            {" "}
+            /{" "}
+            <span className="page-with-filters__breadcrumb-current">{product.name}</span>
           </nav>
 
-          <section style={{ marginBottom: "1.5rem" }}>
-            <Card style={{ padding: "1.25rem" }}>
-              <div
-                className="product-detail-hero"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "minmax(200px, 320px) minmax(0, 1fr)",
-                  gap: "1.5rem",
-                  alignItems: "flex-start"
-                }}
-              >
-                <ProductGallery
-                  productName={product.name}
-                  mainImageUrl={product.mainImageUrl}
-                  images={product.productImages}
-                />
-                <div className="product-detail-hero__copy">
-                  <div className="product-detail-hero__top">
-                    <h1 className="product-detail-hero__title" style={{ fontSize: "1.75rem", fontWeight: 700, lineHeight: 1.25 }}>
-                      {product.name}
-                    </h1>
-                    <div className="product-detail-hero__actions" role="group" aria-label="Favori ve fiyat alarmı">
-                      <div className="product-detail-hero__toolbar">
-                        <div className="product-detail-hero__toolbar-main">
-                          <ProductFavoriteSection productId={product.id} productSlug={params.slug} compact />
-                          <span className="product-detail-hero__toolbar-sep" aria-hidden="true" />
-                          <ProductPriceAlertSection productId={product.id} compact />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
-                    {product.brand?.name && <span>{product.brand.name}</span>}
-                    {product.category && (
-                      <>
-                        {product.brand?.name && " • "}
-                        <Link
-                          href={categoryHrefFromSlugs(product.categoryPathSlugs, product.category.slug)}
-                          className="text-muted"
-                        >
-                          {product.category.name}
-                        </Link>
-                      </>
-                    )}
-                  </p>
-                  {product.brand?.name && (
-                    <Badge style={{ marginBottom: "0.75rem" }}>
-                      <Tag size={14} style={{ marginRight: 4 }} />
-                      {product.brand.name}
-                    </Badge>
+          {/* ── Hero ── */}
+          <section className="pdp-hero">
+            <div className="pdp-hero__gallery">
+              <ProductGallery
+                productName={product.name}
+                mainImageUrl={product.mainImageUrl}
+                images={product.productImages}
+              />
+            </div>
+
+            <div className="pdp-hero__info">
+              {/* Üst satır: marka+başlık + sağ üstte favori/alarm */}
+              <div className="pdp-hero__top-row">
+                <div className="pdp-hero__titles">
+                  {product.brand?.name?.trim() && (
+                    <span className="pdp-hero__brand">{product.brand.name.trim()}</span>
                   )}
-                  <p style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "0.25rem", color: "#1d4ed8" }}>
-                    {lowestPrice}
-                  </p>
-                  {lowestOffer?.store && (
-                    <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: 6 }}>
-                      <Store size={16} />
-                      En uygun teklif: {lowestOffer.store.name}
-                    </p>
-                  )}
-                  {product.description && (
-                    <p className="text-muted" style={{ fontSize: "0.95rem", lineHeight: 1.5 }}>
-                      {product.description}
-                    </p>
-                  )}
+                  <h1 className="pdp-hero__title">{product.name}</h1>
+                </div>
+                <div className="pdp-hero__actions">
+                  <ProductFavoriteSection productId={product.id} productSlug={params.slug} compact />
+                  <span className="pdp-hero__actions-sep" aria-hidden="true" />
+                  <ProductPriceAlertSection productId={product.id} compact />
                 </div>
               </div>
-            </Card>
+
+              {/* Kategori tag */}
+              {product.category && (
+                <Link
+                  href={categoryHrefFromSlugs(product.categoryPathSlugs, product.category.slug)}
+                  className="pdp-hero__cat-tag"
+                >
+                  <Tag size={12} />
+                  {product.category.name}
+                </Link>
+              )}
+
+              {/* Fiyat bloğu */}
+              <div className="pdp-hero__price-block">
+                <span className="pdp-hero__price">{lowestPrice}</span>
+                {showHeroDiscount && (
+                  <span className="pdp-hero__price-meta">
+                    <span className="pdp-hero__price-orig">{lowestOriginal.toLocaleString("tr-TR")} TL</span>
+                    <span className="pdp-hero__price-pct">
+                      <TrendingDown size={12} />
+                      %{lowestOffer!.listDiscountPercent}
+                    </span>
+                  </span>
+                )}
+                {lowestOffer?.store && (
+                  <span className="pdp-hero__store">
+                    <Store size={13} />
+                    {lowestOffer.store.name}
+                  </span>
+                )}
+              </div>
+
+              {/* Açıklama */}
+              {product.description && (
+                <p className="pdp-hero__desc">{product.description}</p>
+              )}
+            </div>
           </section>
 
-          <section style={{ marginBottom: "1.5rem" }}>
-            <div
-              className="product-detail-chart-offers"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-                gap: "1.25rem",
-                alignItems: "flex-start"
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", minWidth: 0 }}>
+          {/* ── Fiyat geçmişi + Teklifler (yan yana) ── */}
+          <section className="pdp-section">
+            <div className="pdp-two-col">
+              <div className="pdp-two-col__left">
                 <PriceHistoryChart slug={params.slug} />
               </div>
-              <div style={{ minWidth: 0 }}>
-                <div className="card product-detail-panel-card">
-                  <div className="product-detail-panel-card__head product-detail-panel-card__head--single">
-                    <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: 0 }}>Teklifler</h2>
+              <div className="pdp-two-col__right">
+                <div className="pdp-card pdp-card--stretch">
+                  <div className="pdp-card__head">
+                    <h2 className="pdp-card__heading">
+                      Teklifler
+                      <span className="pdp-badge-count">{offers.length}</span>
+                    </h2>
                   </div>
-                  <p className="text-muted" style={{ fontSize: "0.78rem", lineHeight: 1.5, margin: "0 0 0.65rem", padding: "0 1rem" }}>
-                    Tablodaki <strong>indirim %</strong>, mağazanın liste fiyatı (<code>originalPrice</code>) ile güncel
-                    fiyat arasındaki farktır. Grafikteki eğri ise <strong>PriceHistory</strong> ile zaman içi fiyat
-                    değişimidir. Rozet yalnızca veri taze ve koşullar sağlandığında gösterilir.
-                  </p>
-                  <div className="product-detail-panel-card__body product-detail-panel-card__body--scroll">
+                  <div className="pdp-card__body pdp-card__body--scroll">
                     {offers.length === 0 ? (
-                      <p className="text-muted" style={{ fontSize: "0.9rem", margin: 0 }}>
-                        Bu ürün için henüz kayıtlı teklif yok.
-                      </p>
+                      <p className="pdp-empty">Bu ürün için henüz kayıtlı teklif yok.</p>
                     ) : (
-                      <div className="product-detail-offers-table-wrap">
-                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
-                          <thead>
-                            <tr>
-                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Mağaza</th>
-                              <th style={{ textAlign: "right", padding: "0.45rem" }}>Güncel</th>
-                              <th style={{ textAlign: "right", padding: "0.45rem" }}>Liste</th>
-                              <th style={{ textAlign: "right", padding: "0.45rem" }}>İndirim</th>
-                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Stok</th>
-                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Durum</th>
-                              <th style={{ textAlign: "left", padding: "0.45rem" }}>Son görülme</th>
-                              <th style={{ textAlign: "right", padding: "0.45rem" }}>Git</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {offers.map((offer: OfferRow) => {
-                              const cur = offer.currentPrice != null ? Number(offer.currentPrice) : NaN;
-                              const orig = offer.originalPrice != null ? Number(offer.originalPrice) : NaN;
-                              const showStrike =
-                                offer.storefrontListDiscountEligible === true &&
-                                offer.listDiscountPercent != null &&
-                                offer.listDiscountPercent > 0;
-                              return (
-                                <tr key={offer.id} style={{ borderTop: "1px solid #e5e7eb" }}>
-                                  <td style={{ padding: "0.45rem", wordBreak: "break-word" }}>{offer.store?.name}</td>
-                                  <td style={{ padding: "0.45rem", textAlign: "right", whiteSpace: "nowrap", fontWeight: 600 }}>
+                      <div className="pdp-offers">
+                        {offers.map((offer: OfferRow) => {
+                          const cur = offer.currentPrice != null ? Number(offer.currentPrice) : NaN;
+                          const orig = offer.originalPrice != null ? Number(offer.originalPrice) : NaN;
+                          const showStrike =
+                            offer.storefrontListDiscountEligible === true &&
+                            offer.listDiscountPercent != null &&
+                            offer.listDiscountPercent > 0;
+                          return (
+                            <div key={offer.id} className="pdp-offer">
+                              <div className="pdp-offer__left">
+                                <span className="pdp-offer__store">
+                                  <Store size={14} />
+                                  {offer.store?.name ?? "—"}
+                                </span>
+                                <span className={`pdp-offer__stock ${offer.inStock ? "pdp-offer__stock--in" : "pdp-offer__stock--out"}`}>
+                                  {offer.inStock ? "Stokta" : "Stok yok"}
+                                </span>
+                              </div>
+                              <div className="pdp-offer__right">
+                                <div className="pdp-offer__pricing">
+                                  <span className="pdp-offer__cur">
                                     {Number.isFinite(cur) ? `${cur.toLocaleString("tr-TR")} TL` : "—"}
-                                  </td>
-                                  <td style={{ padding: "0.45rem", textAlign: "right", whiteSpace: "nowrap" }}>
-                                    {Number.isFinite(orig) ? (
-                                      <span style={showStrike ? { textDecoration: "line-through", color: "#64748b" } : undefined}>
-                                        {orig.toLocaleString("tr-TR")} TL
-                                      </span>
-                                    ) : (
-                                      "—"
-                                    )}
-                                  </td>
-                                  <td style={{ padding: "0.45rem", textAlign: "right", whiteSpace: "nowrap" }}>
-                                    {showStrike && offer.listDiscountPercent != null ? (
-                                      <span style={{ color: "#16a34a", fontWeight: 600 }}>%{offer.listDiscountPercent}</span>
-                                    ) : (
-                                      <span className="text-muted">—</span>
-                                    )}
-                                  </td>
-                                  <td style={{ padding: "0.45rem" }}>
-                                    {offer.inStock ? (
-                                      <span className="badge">Stokta</span>
-                                    ) : (
-                                      <span className="text-muted">Stok yok</span>
-                                    )}
-                                  </td>
-                                  <td style={{ padding: "0.45rem", fontSize: "0.8rem" }}>
-                                    {offer.status === "ACTIVE"
-                                      ? "Aktif"
-                                      : offer.status === "DISABLED"
-                                        ? "Kapalı"
-                                        : offer.status === "OUT_OF_STOCK"
-                                          ? "Stok dışı"
-                                          : (offer.status ?? "—")}
-                                  </td>
-                                  <td style={{ padding: "0.45rem", fontSize: "0.78rem", whiteSpace: "nowrap" }}>
-                                    {offer.lastSeenAt
-                                      ? new Date(offer.lastSeenAt).toLocaleString("tr-TR")
-                                      : offer.updatedAt
-                                        ? new Date(offer.updatedAt).toLocaleString("tr-TR")
-                                        : "—"}
-                                  </td>
-                                  <td style={{ padding: "0.45rem", textAlign: "right" }}>
-                                    <a
-                                      href={`${offerOutBase}/out/${offer.id}`}
-                                      className="btn-primary"
-                                      style={{ fontSize: "0.78rem", padding: "0.35rem 0.5rem", whiteSpace: "nowrap" }}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      Mağazaya git
-                                    </a>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
+                                  </span>
+                                  {showStrike && Number.isFinite(orig) && (
+                                    <span className="pdp-offer__orig">
+                                      <span className="pdp-offer__orig-val">{orig.toLocaleString("tr-TR")} TL</span>
+                                      <span className="pdp-offer__pct">%{offer.listDiscountPercent}</span>
+                                    </span>
+                                  )}
+                                </div>
+                                <a
+                                  href={`${offerOutBase}/out/${offer.id}`}
+                                  className="pdp-offer__cta"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  Mağazaya git
+                                </a>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -372,11 +325,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </section>
 
+          {/* ── Benzer ürünler ── */}
           {similarProducts.length > 0 && (
-            <section style={{ marginBottom: "1.5rem" }}>
-              <h2 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.75rem" }}>
-                Benzer ürünler
-              </h2>
+            <section className="pdp-section pdp-similar">
+              <h2 className="pdp-card__heading">Benzer ürünler</h2>
               <ProductRailWithNav ariaLabel="Benzer ürünler">
                 {similarProducts.map((p: any) => (
                   <div key={p.id} className="product-rail-card">

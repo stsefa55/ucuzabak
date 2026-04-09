@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { isValidCanonicalSlug } from "@ucuzabak/shared";
-import { Tag, ShoppingBag, Scale, ChevronLeft, ChevronRight, TrendingDown } from "lucide-react";
+import { ShoppingBag, ChevronLeft, ChevronRight, TrendingDown } from "lucide-react";
 import {
   memo,
   useCallback,
@@ -17,10 +17,7 @@ import {
 import { categoryHrefFromSlugs } from "../../lib/categoryPaths";
 import { buildCardImageUrls } from "../../lib/productCardImages";
 import { Card } from "../ui/card";
-import { Badge } from "../ui/badge";
 import { ProductFavoriteSection } from "./ProductFavoriteSection";
-import { useCompareStore } from "../../stores/compare-store";
-import { useProductQuickPreviewStore } from "../../stores/product-quick-preview-store";
 import { touchRecentlyViewed } from "../../stores/recent-viewed-store";
 
 /** Ürün kartı / liste API modeli */
@@ -33,6 +30,8 @@ export interface ProductCardProduct {
   productImages?: Array<{ imageUrl: string; position?: number }>;
   lowestPriceCache?: string | null;
   offerCountCache?: number;
+  /** API: canlı ACTIVE teklif sayısı (offerCountCache stale ise buna güven) */
+  cardActiveOfferCount?: number;
   brand?: { name: string | null } | null;
   category?: { name: string | null; slug: string } | null;
   /** API: kökten yaprağa slug zinciri (hiyerarşik /kategori/... URL için) */
@@ -41,6 +40,8 @@ export interface ProductCardProduct {
   ean?: string | null;
   modelNumber?: string | null;
   specsJson?: Record<string, unknown> | null;
+  /** API: canlı en ucuz teklif fiyatı (lowestPriceCache boş/stale ise) */
+  cardListingCurrentPrice?: string | null;
   /** API: en uygun teklifte liste fiyatı (üstü çizili) */
   cardOriginalPrice?: string | null;
   cardDiscountPercent?: number | null;
@@ -60,18 +61,17 @@ interface ProductCardProps {
   product: ProductCardProduct;
   /** true: galeri ok/swipe son gezilen sırasını güncellemez (ör. Son gezilen rail içinde kararlılık için) */
   suppressRecentViewedOnImageBrowse?: boolean;
-  /** Yalnızca vitrin «Öne çıkan» rayında göster */
-  showFeaturedBadge?: boolean;
 }
 
 function ProductCardImpl({
   product,
-  suppressRecentViewedOnImageBrowse = false,
-  showFeaturedBadge = false
+  suppressRecentViewedOnImageBrowse = false
 }: ProductCardProps) {
   const detailHref =
     product.slug && isValidCanonicalSlug(product.slug) ? `/urun/${product.slug}` : null;
-  const currentPriceLabel = formatTryLabel(product.lowestPriceCache);
+  const currentPriceLabel = formatTryLabel(
+    product.cardListingCurrentPrice ?? product.lowestPriceCache
+  );
   const originalPriceLabel =
     product.cardOriginalPrice != null && String(product.cardOriginalPrice).trim()
       ? formatTryLabel(product.cardOriginalPrice)
@@ -81,11 +81,6 @@ function ProductCardImpl({
     product.cardDiscountPercent > 0 &&
     product.cardOriginalPrice != null &&
     String(product.cardOriginalPrice).trim() !== "";
-  const compareProducts = useCompareStore((s) => s.compareProducts);
-  const addProduct = useCompareStore((s) => s.addProduct);
-
-  const alreadyInCompare = compareProducts.some((p) => p.id === product.id);
-  const canAddMore = compareProducts.length < 4 || alreadyInCompare;
   const imageUrls = useMemo(
     () => buildCardImageUrls(product),
     [product.productImages, product.imageUrls, product.mainImageUrl]
@@ -303,47 +298,40 @@ function ProductCardImpl({
         ) : null}
         {detailHref ? (
           <Link href={detailHref}>
-            <h3 className="product-card__title">{product.name}</h3>
+            <h3 className="product-card__title">
+              {product.brand?.name?.trim() ? (
+                <>
+                  <span className="product-card__brand-prefix">{product.brand.name.trim()}</span>
+                  <span className="product-card__title-sep"> · </span>
+                  <span className="product-card__title-name">{product.name}</span>
+                </>
+              ) : (
+                product.name
+              )}
+            </h3>
           </Link>
         ) : (
-          <h3 className="product-card__title">{product.name}</h3>
+          <h3 className="product-card__title">
+            {product.brand?.name?.trim() ? (
+              <>
+                <span className="product-card__brand-prefix">{product.brand.name.trim()}</span>
+                <span className="product-card__title-sep"> · </span>
+                <span className="product-card__title-name">{product.name}</span>
+              </>
+            ) : (
+              product.name
+            )}
+          </h3>
         )}
-        {(product.brand?.name || product.category) && (
-          <div className="product-card__meta text-muted" style={{ display: "grid", gap: 6 }}>
-            {product.brand?.name ? <span>{product.brand.name}</span> : null}
-            {product.category ? (
-              <div>
-                <Link
-                  href={categoryHrefFromSlugs(product.categoryPathSlugs, product.category.slug)}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 999,
-                    padding: "2px 8px",
-                    fontSize: 12,
-                    color: "#4b5563",
-                    background: "#f9fafb"
-                  }}
-                >
-                  {product.category.name}
-                </Link>
-              </div>
-            ) : null}
+        {product.category ? (
+          <div className="product-card__meta">
+            <Link
+              href={categoryHrefFromSlugs(product.categoryPathSlugs, product.category.slug)}
+              className="product-card__category-pill"
+            >
+              {product.category.name}
+            </Link>
           </div>
-        )}
-        {detailHref ? (
-          <button
-            type="button"
-            className="product-card__quick-preview"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              useProductQuickPreviewStore.getState().openPreview(product);
-            }}
-          >
-            Hızlı bak
-          </button>
         ) : null}
       </div>
       <div className="product-card__footer">
@@ -372,42 +360,8 @@ function ProductCardImpl({
           ) : null}
           <span className="product-card__offers text-muted">
             <ShoppingBag size={14} />
-            {product.offerCountCache ?? 0} teklif
+            {product.cardActiveOfferCount ?? product.offerCountCache ?? 0} teklif
           </span>
-        </div>
-        <div className="product-card__actions">
-          {showFeaturedBadge ? (
-            <Badge
-              style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "0.75rem" }}
-              className="product-card__badge"
-            >
-              <Tag size={14} />
-              Öne çıkan
-            </Badge>
-          ) : null}
-          <button
-            type="button"
-            className="btn-secondary btn-sm product-card__compare"
-            style={{ opacity: canAddMore || alreadyInCompare ? 1 : 0.6 }}
-            disabled={!canAddMore}
-            onClick={() =>
-              addProduct({
-                id: product.id,
-                name: product.name,
-                slug: product.slug,
-                lowestPriceCache: product.lowestPriceCache,
-                offerCountCache: product.offerCountCache,
-                brand: product.brand,
-                category: product.category,
-                ean: product.ean,
-                modelNumber: product.modelNumber,
-                specsJson: product.specsJson ?? undefined
-              })
-            }
-          >
-            <Scale size={12} />
-            {alreadyInCompare ? "Karşılaştırmada" : "Karşılaştır"}
-          </button>
         </div>
       </div>
     </Card>

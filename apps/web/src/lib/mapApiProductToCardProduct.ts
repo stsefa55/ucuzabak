@@ -74,6 +74,14 @@ export function mapApiProductToCardProduct(item: unknown): ProductCardProduct | 
     ...(imageUrls && imageUrls.length > 0 ? { imageUrls } : {}),
     lowestPriceCache: raw.lowestPriceCache != null ? String(raw.lowestPriceCache) : null,
     offerCountCache: typeof raw.offerCountCache === "number" ? raw.offerCountCache : 0,
+    cardListingCurrentPrice:
+      raw.cardListingCurrentPrice != null && String(raw.cardListingCurrentPrice).trim()
+        ? String(raw.cardListingCurrentPrice)
+        : null,
+    cardActiveOfferCount:
+      typeof raw.cardActiveOfferCount === "number" && Number.isFinite(raw.cardActiveOfferCount)
+        ? Math.max(0, Math.floor(raw.cardActiveOfferCount))
+        : undefined,
     cardOriginalPrice:
       raw.cardOriginalPrice != null && String(raw.cardOriginalPrice).trim()
         ? String(raw.cardOriginalPrice)

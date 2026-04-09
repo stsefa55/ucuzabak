@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { getApiBaseUrl } from "../../src/lib/api-client";
 import { fetchJsonOrNull } from "../../src/lib/server-api-fetch";
 import { Header } from "../../src/components/layout/Header";
@@ -85,7 +86,18 @@ export default function ComparePage() {
             )}
           </div>
           {displayProducts.length === 0 ? (
-            <p className="text-muted">Karşılaştırma için henüz ürün seçmediniz.</p>
+            <div className="card" style={{ textAlign: "center", padding: "2.5rem 1.5rem" }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>⚖️</div>
+              <p style={{ fontSize: "1rem", fontWeight: 600, color: "#334155", marginBottom: "0.35rem" }}>
+                Karşılaştırma listeniz boş
+              </p>
+              <p className="text-muted" style={{ fontSize: "0.88rem", maxWidth: 420, margin: "0 auto 1rem" }}>
+                Ürün kartlarındaki karşılaştır butonuna tıklayarak ürünleri buraya ekleyebilirsiniz. En fazla 4 ürünü yan yana karşılaştırabilirsiniz.
+              </p>
+              <Link href="/" className="btn-primary" style={{ display: "inline-flex", padding: "0.5rem 1.25rem", fontSize: "0.88rem" }}>
+                Ürünlere göz at
+              </Link>
+            </div>
           ) : (
             <div
               className="card"

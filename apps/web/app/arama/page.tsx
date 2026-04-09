@@ -49,12 +49,14 @@ async function fetchSearchData(productParams: URLSearchParams, facetParams: URLS
   const facetQuery = facetParams.toString();
   const url = `${base}/search/products${productQuery ? `?${productQuery}` : ""}`;
 
-  const productsData =
-    (await fetchJsonOrNull<{ items?: ProductCardProduct[]; total?: number }>(url, {
-      cache: "no-store"
-    })) ?? { items: [], total: 0 };
-  // Kategori facet sayıları, arama sonucu ile aynı filtrelerden hesaplanmalı.
-  // Not: facet endpoint categorySlug'u bilinçli olarak hesaba katmaz (kullanıcı kategori seçebilsin).
+  let fetchError = false;
+
+  const productsRaw = await fetchJsonOrNull<{ items?: ProductCardProduct[]; total?: number }>(url, {
+    cache: "no-store"
+  });
+  if (productsRaw === null) fetchError = true;
+  const productsData = productsRaw ?? { items: [], total: 0 };
+
   const categoriesWithCount =
     (await fetchJsonOrNull<CategoryWithCount[]>(`${base}/search/category-facets${facetQuery ? `?${facetQuery}` : ""}`, {
       cache: "no-store"
@@ -90,7 +92,7 @@ async function fetchSearchData(productParams: URLSearchParams, facetParams: URLS
     total: typeof productsData.total === "number" ? productsData.total : asArray(productsData.items).length
   };
 
-  return { productsData: safeProductsData, categoriesWithCount, brands, popularQueries, popularCategories };
+  return { productsData: safeProductsData, categoriesWithCount, brands, popularQueries, popularCategories, fetchError };
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -128,7 +130,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   productParams.set("page", "1");
   productParams.set("pageSize", "20");
 
-  const { productsData, categoriesWithCount, brands, popularQueries, popularCategories } =
+  const { productsData, categoriesWithCount, brands, popularQueries, popularCategories, fetchError } =
     await fetchSearchData(productParams, facetParams);
 
   const currentSort = resolvedSort;
@@ -150,41 +152,36 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <Header />
       <main className="main">
         <div className="container">
-          <nav className="search-breadcrumb" aria-label="Sayfa konumu">
-            <Link href="/" className="search-breadcrumb__link">
-              Ana Sayfa
-            </Link>
-            <span className="search-breadcrumb__sep" aria-hidden>
-              /
-            </span>
-            <span className="search-breadcrumb__current">Arama</span>
-          </nav>
+          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1rem" }}>
+            {searchParams.q ? `"${searchParams.q}" araması` : "Arama"}
+          </h1>
 
-          {searchParams.q && productsData.total > 0 ? (
-            <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "0.75rem" }}>
-              &quot;{searchParams.q}&quot; — <strong style={{ color: "#334155" }}>{productsData.total}</strong> sonuç
-            </p>
-          ) : null}
+          {fetchError && (
+            <div className="search-error-banner" role="alert">
+              <p style={{ margin: 0, fontWeight: 600, fontSize: "0.9rem" }}>
+                Arama sonuçları yüklenirken bir sorun oluştu
+              </p>
+              <p className="text-muted" style={{ margin: "0.25rem 0 0", fontSize: "0.84rem" }}>
+                Sunucu geçici olarak yanıt vermiyor olabilir. Lütfen sayfayı yenileyin veya biraz sonra tekrar deneyin.
+              </p>
+            </div>
+          )}
 
-          <section
-            className={hasResults ? "page-with-filters" : "page-with-filters page-with-filters--empty"}
-          >
-            {hasResults ? (
-              <SearchFilters
-                categoriesWithCount={categoriesWithCount}
-                brands={brands}
-                sort={currentSort}
-                searchParams={{
-                  q: searchParams.q,
-                  categorySlug: searchParams.categorySlug,
-                  categorySlugs: searchParams.categorySlugs,
-                  brandSlug: searchParams.brandSlug,
-                  brandSlugs: searchParams.brandSlugs,
-                  minPrice: searchParams.minPrice,
-                  maxPrice: searchParams.maxPrice
-                }}
-              />
-            ) : null}
+          <section className="page-with-filters">
+            <SearchFilters
+              categoriesWithCount={categoriesWithCount}
+              brands={brands}
+              sort={currentSort}
+              searchParams={{
+                q: searchParams.q,
+                categorySlug: searchParams.categorySlug,
+                categorySlugs: searchParams.categorySlugs,
+                brandSlug: searchParams.brandSlug,
+                brandSlugs: searchParams.brandSlugs,
+                minPrice: searchParams.minPrice,
+                maxPrice: searchParams.maxPrice
+              }}
+            />
 
             <section>
               {hasResults ? (
@@ -194,6 +191,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     basePath="/arama"
                     sort={currentSort}
                     categoriesWithCount={categoriesWithCount}
+                    brands={brands}
                     searchParams={{
                       q: searchParams.q,
                       categorySlug: searchParams.categorySlug,
@@ -203,25 +201,43 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       minPrice: searchParams.minPrice,
                       maxPrice: searchParams.maxPrice
                     }}
-                    trailingSlot={
-                      <SortSelect
-                        defaultValue={currentSort}
-                        searchParams={{
-                          q: searchParams.q,
-                          categorySlug: searchParams.categorySlug,
-                          categorySlugs: searchParams.categorySlugs,
-                          brandSlug: searchParams.brandSlug,
-                          brandSlugs: searchParams.brandSlugs,
-                          minPrice: searchParams.minPrice,
-                          maxPrice: searchParams.maxPrice,
-                          sort: currentSort
-                        }}
-                        labelInTrigger
-                        className="input"
-                        style={{ minWidth: "220px" }}
-                      />
-                    }
                   />
+                  <div className="page-with-filters__main-head">
+                    <nav className="page-with-filters__breadcrumb text-muted" aria-label="Sayfa konumu">
+                      <Link href="/" className="text-muted">
+                        Anasayfa
+                      </Link>
+                      <span> / </span>
+                      <span className="page-with-filters__breadcrumb-current">
+                        {searchParams.q ? `"${searchParams.q}" araması` : "Arama"}
+                      </span>
+                    </nav>
+                    <div className="page-with-filters__toolbar">
+                      <span className="text-muted" style={{ fontSize: "0.85rem" }}>
+                        <strong style={{ color: "#334155" }}>{productsData.total}</strong> sonuç
+                      </span>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <label htmlFor="sort" style={{ fontSize: "0.85rem", whiteSpace: "nowrap" }}>
+                          Sırala:
+                        </label>
+                        <SortSelect
+                          defaultValue={currentSort}
+                          searchParams={{
+                            q: searchParams.q,
+                            categorySlug: searchParams.categorySlug,
+                            categorySlugs: searchParams.categorySlugs,
+                            brandSlug: searchParams.brandSlug,
+                            brandSlugs: searchParams.brandSlugs,
+                            minPrice: searchParams.minPrice,
+                            maxPrice: searchParams.maxPrice,
+                            sort: currentSort
+                          }}
+                          className="input"
+                          style={{ width: "auto", minWidth: "160px" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </>
               ) : null}
               <SearchResultsInfinite

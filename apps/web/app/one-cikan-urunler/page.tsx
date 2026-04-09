@@ -21,14 +21,14 @@ export default async function FeaturedProductsPage() {
       <Header />
       <main className="main">
         <div className="container">
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.75rem" }}>Öne çıkan ürünler</h1>
-          <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "1.25rem" }}>
-            Yönetim panelinden seçilen vitrin ürünleri (sıra: öne çıkan sıra alanı).
+          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.35rem" }}>Öne çıkan ürünler</h1>
+          <p className="text-muted" style={{ fontSize: "0.88rem", marginBottom: "1.25rem" }}>
+            Editör seçimi ile öne çıkarılan ürünler.
           </p>
           <ProductsInfiniteFromList
             items={products}
             pageSize={20}
-            emptyMessage="Su anda one cikan olarak isaretlenmis urun yok."
+            emptyMessage="Şu anda öne çıkan olarak işaretlenmiş ürün yok."
           />
         </div>
       </main>

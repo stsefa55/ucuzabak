@@ -7,7 +7,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/"
+        allow: "/",
+        disallow: ["/admin/", "/profil", "/alarm", "/favoriler", "/karsilastir"]
       },
       {
         userAgent: "Amazonbot",

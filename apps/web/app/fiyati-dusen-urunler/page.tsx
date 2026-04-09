@@ -21,16 +21,16 @@ export default async function PriceDroppedProductsPage() {
       <Header />
       <main className="main">
         <div className="container">
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.75rem" }}>
+          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.35rem" }}>
             Fiyatı düşen ürünler
           </h1>
-          <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "1.25rem" }}>
-            Fiyat geçmişine göre: güncel kayıt, yakın geçmişteki en yüksek fiyatın altına düşmüş teklifler (ürün bazında en güçlü düşüş).
+          <p className="text-muted" style={{ fontSize: "0.88rem", marginBottom: "1.25rem" }}>
+            Son dönemde fiyatı düşüş gösteren ürünler.
           </p>
           <ProductsInfiniteFromList
             items={products}
             pageSize={20}
-            emptyMessage="Su anda listelenecek fiyati dusen urun bulunamadi."
+            emptyMessage="Şu anda listelenecek fiyatı düşen ürün bulunamadı."
           />
         </div>
       </main>

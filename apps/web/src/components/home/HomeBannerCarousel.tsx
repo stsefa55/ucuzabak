@@ -129,50 +129,18 @@ export function HomeBannerCarousel() {
             <button
               type="button"
               onClick={() => go(-1)}
-              className="btn-ghost"
+              className="btn-ghost home-banner__nav home-banner__nav--prev"
               aria-label="Önceki banner"
-              style={{
-                position: "absolute",
-                left: 8,
-                top: "50%",
-                transform: "translateY(-50%)",
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.9)",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                opacity: hovered ? 1 : 0,
-                pointerEvents: hovered ? "auto" : "none",
-                transition: "opacity 0.2s ease"
-              }}
+              data-hovered={hovered || undefined}
             >
               <ChevronLeft size={22} />
             </button>
             <button
               type="button"
               onClick={() => go(1)}
-              className="btn-ghost"
+              className="btn-ghost home-banner__nav home-banner__nav--next"
               aria-label="Sonraki banner"
-              style={{
-                position: "absolute",
-                right: 8,
-                top: "50%",
-                transform: "translateY(-50%)",
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.9)",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                opacity: hovered ? 1 : 0,
-                pointerEvents: hovered ? "auto" : "none",
-                transition: "opacity 0.2s ease"
-              }}
+              data-hovered={hovered || undefined}
             >
               <ChevronRight size={22} />
             </button>

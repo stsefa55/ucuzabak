@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
-  Line,
-  LineChart,
+  Area,
+  AreaChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -12,6 +12,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { apiFetch } from "../../lib/api-client";
+import { TrendingDown, TrendingUp, Minus } from "lucide-react";
 
 type RangeKey = "7d" | "30d" | "90d" | "1y" | "all";
 
@@ -33,12 +34,33 @@ interface Props {
 }
 
 const RANGE_OPTIONS: { key: RangeKey; label: string }[] = [
-  { key: "7d", label: "7 gün" },
-  { key: "30d", label: "30 gün" },
-  { key: "90d", label: "90 gün" },
-  { key: "1y", label: "1 yıl" },
+  { key: "7d", label: "7G" },
+  { key: "30d", label: "1A" },
+  { key: "90d", label: "3A" },
+  { key: "1y", label: "1Y" },
   { key: "all", label: "Tümü" }
 ];
+
+function formatPrice(v: number): string {
+  return v.toLocaleString("tr-TR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
+}
+
+function CustomTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  const price = Number(payload[0]?.value);
+  return (
+    <div className="pdp-chart-tooltip">
+      <span className="pdp-chart-tooltip__date">{formatDate(label)}</span>
+      <span className="pdp-chart-tooltip__price">{formatPrice(price)} TL</span>
+    </div>
+  );
+}
 
 export function PriceHistoryChart({ slug }: Props) {
   const [range, setRange] = useState<RangeKey>("90d");
@@ -49,28 +71,53 @@ export function PriceHistoryChart({ slug }: Props) {
       apiFetch<PriceHistoryResponse>(`/products/${slug}/price-history?range=${range}`)
   });
 
-  const handleRangeChange = (key: RangeKey) => {
-    setRange(key);
-  };
+  const chartData = useMemo(
+    () =>
+      data?.points.map((p) => ({
+        date: p.date,
+        price: Number(p.minPrice)
+      })) ?? [],
+    [data]
+  );
 
-  const chartData =
-    data?.points.map((p) => ({
-      date: p.date,
-      price: Number(p.minPrice)
-    })) ?? [];
+  const stats = useMemo(() => {
+    if (chartData.length === 0) return null;
+    const prices = chartData.map((d) => d.price);
+    const first = prices[0];
+    const last = prices[prices.length - 1];
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    const displayMin = Math.round(min);
+    const displayMax = Math.round(max);
+    const meaningful = displayMin !== displayMax;
+    const diff = meaningful ? last - first : 0;
+    const pct = meaningful && first > 0 ? ((diff / first) * 100) : 0;
+    return { first, last, min, max, diff, pct };
+  }, [chartData]);
+
+  const trendIcon = stats
+    ? stats.diff < 0
+      ? <TrendingDown size={14} />
+      : stats.diff > 0
+        ? <TrendingUp size={14} />
+        : <Minus size={14} />
+    : null;
+
+  const trendClass = stats
+    ? stats.diff < 0 ? "pdp-chart-trend--down" : stats.diff > 0 ? "pdp-chart-trend--up" : "pdp-chart-trend--flat"
+    : "";
 
   return (
-    <div className="card product-detail-panel-card">
-      <div className="product-detail-panel-card__head">
-        <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: 0 }}>Fiyat geçmişi</h2>
-        <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap", justifyContent: "flex-end" }}>
+    <div className="pdp-card pdp-card--stretch pdp-chart-card">
+      <div className="pdp-card__head">
+        <h2 className="pdp-card__heading">Fiyat geçmişi</h2>
+        <div className="pdp-chart-ranges">
           {RANGE_OPTIONS.map((opt) => (
             <button
               key={opt.key}
               type="button"
-              className={range === opt.key ? "btn-secondary" : "btn-ghost"}
-              style={{ paddingInline: "0.6rem" }}
-              onClick={() => handleRangeChange(opt.key)}
+              className={`pdp-chart-range-btn ${range === opt.key ? "pdp-chart-range-btn--active" : ""}`}
+              onClick={() => setRange(opt.key)}
             >
               {opt.label}
             </button>
@@ -78,51 +125,73 @@ export function PriceHistoryChart({ slug }: Props) {
         </div>
       </div>
 
-      <div className="product-detail-panel-card__body">
-        {isLoading && <p className="text-muted" style={{ fontSize: "0.9rem", margin: 0 }}>Fiyat geçmişi yükleniyor...</p>}
-        {error && (
-          <p className="text-danger" style={{ fontSize: "0.85rem", margin: 0 }}>
-            Fiyat geçmişi yüklenirken bir hata oluştu.
-          </p>
-        )}
+      {/* Özet bar */}
+      {stats && !isLoading && !error && (
+        <div className="pdp-chart-stats">
+          <div className="pdp-chart-stat">
+            <span className="pdp-chart-stat__label">En düşük</span>
+            <span className="pdp-chart-stat__value">{formatPrice(stats.min)} TL</span>
+          </div>
+          <div className="pdp-chart-stat">
+            <span className="pdp-chart-stat__label">En yüksek</span>
+            <span className="pdp-chart-stat__value">{formatPrice(stats.max)} TL</span>
+          </div>
+          <div className="pdp-chart-stat">
+            <span className="pdp-chart-stat__label">Değişim</span>
+            <span className={`pdp-chart-stat__value pdp-chart-trend ${trendClass}`}>
+              {trendIcon}
+              {stats.diff > 0 ? "+" : ""}{Math.abs(stats.pct).toFixed(1)}%
+            </span>
+          </div>
+        </div>
+      )}
+
+      <div className="pdp-chart-body">
+        {isLoading && <p className="pdp-empty">Fiyat geçmişi yükleniyor...</p>}
+        {error && <p className="pdp-empty" style={{ color: "#ef4444" }}>Fiyat geçmişi yüklenirken bir hata oluştu.</p>}
         {!isLoading && !error && chartData.length === 0 && (
-          <p className="text-muted" style={{ fontSize: "0.9rem", margin: 0 }}>
-            Bu ürün için henüz fiyat geçmişi yok.
-          </p>
+          <p className="pdp-empty">Bu ürün için henüz fiyat geçmişi yok.</p>
         )}
         {!isLoading && !error && chartData.length > 0 && (
-          <div className="product-detail-panel-card__chart">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ left: 0, right: 0, top: 10, bottom: 0 }}>
-                <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
-                <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                <YAxis
-                  tick={{ fontSize: 10 }}
-                  tickFormatter={(v: number) => `${v.toLocaleString("tr-TR")}`}
-                />
-                <Tooltip
-                  formatter={(value: any) =>
-                    `${Number(value).toLocaleString("tr-TR", {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 2
-                    })} TL`
-                  }
-                  labelFormatter={(label) => `Tarih: ${label}`}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="price"
-                  stroke="#2563eb"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ left: -10, right: 8, top: 8, bottom: 0 }}>
+              <defs>
+                <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="#f1f5f9" strokeDasharray="none" vertical={false} />
+              <XAxis
+                dataKey="date"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tickFormatter={formatDate}
+                interval="preserveStartEnd"
+                minTickGap={40}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tickFormatter={(v: number) => formatPrice(v)}
+                width={55}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#cbd5e1", strokeWidth: 1, strokeDasharray: "4 4" }} />
+              <Area
+                type="monotone"
+                dataKey="price"
+                stroke="#3b82f6"
+                strokeWidth={2}
+                fill="url(#priceGradient)"
+                dot={false}
+                activeDot={{ r: 4, strokeWidth: 2, stroke: "#fff", fill: "#3b82f6" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         )}
       </div>
     </div>
   );
 }
-

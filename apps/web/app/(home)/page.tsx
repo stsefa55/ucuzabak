@@ -1,11 +1,11 @@
-import { getApiBaseUrl } from "../src/lib/api-client";
-import { Header } from "../src/components/layout/Header";
-import { HomeBannerCarousel } from "../src/components/home/HomeBannerCarousel";
-import { HomeCategoryShortcuts, type HomeCategoryItem } from "../src/components/home/HomeCategoryShortcuts";
-import { HomeSectionHeader } from "../src/components/home/HomeSectionHeader";
-import { ProductRailWithNav } from "../src/components/home/ProductRailWithNav";
-import { RecentlyViewedRail } from "../src/components/home/RecentlyViewedRail";
-import { ProductCard } from "../src/components/products/ProductCard";
+import { getApiBaseUrl } from "../../src/lib/api-client";
+import { Header } from "../../src/components/layout/Header";
+import { HomeBannerCarousel } from "../../src/components/home/HomeBannerCarousel";
+import { HomeCategoryShortcuts, type HomeCategoryItem } from "../../src/components/home/HomeCategoryShortcuts";
+import { HomeSectionHeader } from "../../src/components/home/HomeSectionHeader";
+import { ProductRailWithNav } from "../../src/components/home/ProductRailWithNav";
+import { RecentlyViewedRail } from "../../src/components/home/RecentlyViewedRail";
+import { ProductCard } from "../../src/components/products/ProductCard";
 
 export const dynamic = "force-dynamic";
 
@@ -71,7 +71,7 @@ export default async function HomePage() {
             ) : (
               <div className="grid grid-3">
                 {featuredProducts.slice(0, 10).map((p: any) => (
-                  <ProductCard key={p.id} product={p} showFeaturedBadge />
+                  <ProductCard key={p.id} product={p} />
                 ))}
               </div>
             )}

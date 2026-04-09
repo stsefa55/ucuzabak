@@ -6,25 +6,27 @@ export default function LoadingSearchPage() {
       <Header />
       <main className="main">
         <div className="container">
-          <section className="page-with-filters">
-            <aside className="search-filters filter-panel" style={{ alignSelf: "flex-start" }}>
-              <div className="card" style={{ minHeight: 420, background: "#f8fafc", border: "1px solid #eef2f7" }} />
+          <div className="skel skel--title" style={{ width: 220, marginBottom: "1rem" }} aria-hidden />
+
+          <div className="skel-page-filters" aria-hidden>
+            <aside>
+              <div className="skel skel--filter" />
             </aside>
+
             <section>
-              <div className="grid grid-3">
-                {Array.from({ length: 9 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="card"
-                    style={{ height: 240, background: "#f8fafc", border: "1px solid #eef2f7" }}
-                  />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                <div className="skel skel--text" style={{ width: "40%", height: 14 }} />
+                <div className="skel" style={{ width: 160, height: 36, borderRadius: 8 }} />
+              </div>
+              <div className="skel-grid">
+                {Array.from({ length: 20 }).map((_, i) => (
+                  <div key={i} className="skel skel--card" />
                 ))}
               </div>
             </section>
-          </section>
+          </div>
         </div>
       </main>
     </>
   );
 }
-

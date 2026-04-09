@@ -19,10 +19,10 @@ export function resolveStorefrontBaseUrlForBackend(env: NodeJS.ProcessEnv = proc
 }
 
 /**
- * Next.js layout / robots.
+ * Next.js layout / robots / sitemap.
  * - STOREFRONT_BASE_URL öncelikli.
- * - Vercel production: canonical www (build sırasında NODE_ENV=production tuzaklarından kaçınmak için VERCEL_ENV kullanılır).
- * - Diğer barındırma: üretimde STOREFRONT_BASE_URL tanımlayın.
+ * - Vercel production veya Docker production (RUNNING_IN_DOCKER): canonical www.
+ * - Diğer (yerel dev): localhost.
  */
 export function resolveStorefrontBaseUrlForWeb(env: NodeJS.ProcessEnv = process.env): string {
   const explicit = env.STOREFRONT_BASE_URL?.trim();
@@ -30,6 +30,9 @@ export function resolveStorefrontBaseUrlForWeb(env: NodeJS.ProcessEnv = process.
     return explicit.replace(/\/$/, "");
   }
   if (env.VERCEL_ENV === "production") {
+    return CANONICAL_STOREFRONT_PRODUCTION.replace(/\/$/, "");
+  }
+  if (env.RUNNING_IN_DOCKER === "true" && env.NODE_ENV === "production") {
     return CANONICAL_STOREFRONT_PRODUCTION.replace(/\/$/, "");
   }
   return "http://localhost:3000";

@@ -267,28 +267,35 @@ export class ProductsService {
         break;
     }
 
-    /** Offer id listesi + IN(...) yerine JOIN: çok teklifte daha güvenilir ve hızlı. */
     type PhRow = { price: Prisma.Decimal; recordedAt: Date };
-    const histories = await this.prisma.$queryRaw<PhRow[]>(
-      fromDate
-        ? Prisma.sql`
-            SELECT ph.price, ph."recordedAt"
-            FROM "PriceHistory" ph
-            INNER JOIN "Offer" o ON o.id = ph."offerId"
-            WHERE o."productId" = ${product.id}
-              AND ph."recordedAt" >= ${fromDate}
-            ORDER BY ph."recordedAt" ASC
-          `
-        : Prisma.sql`
-            SELECT ph.price, ph."recordedAt"
-            FROM "PriceHistory" ph
-            INNER JOIN "Offer" o ON o.id = ph."offerId"
-            WHERE o."productId" = ${product.id}
-            ORDER BY ph."recordedAt" ASC
-          `
-    );
+    const [histories, lowestActiveOffer] = await Promise.all([
+      this.prisma.$queryRaw<PhRow[]>(
+        fromDate
+          ? Prisma.sql`
+              SELECT ph.price, ph."recordedAt"
+              FROM "PriceHistory" ph
+              INNER JOIN "Offer" o ON o.id = ph."offerId"
+              WHERE o."productId" = ${product.id}
+                AND o.status = 'ACTIVE'
+                AND ph."recordedAt" >= ${fromDate}
+              ORDER BY ph."recordedAt" ASC
+            `
+          : Prisma.sql`
+              SELECT ph.price, ph."recordedAt"
+              FROM "PriceHistory" ph
+              INNER JOIN "Offer" o ON o.id = ph."offerId"
+              WHERE o."productId" = ${product.id}
+                AND o.status = 'ACTIVE'
+              ORDER BY ph."recordedAt" ASC
+            `
+      ),
+      this.prisma.offer.findFirst({
+        where: { productId: product.id, status: OfferStatus.ACTIVE },
+        orderBy: { currentPrice: "asc" },
+        select: { currentPrice: true }
+      })
+    ]);
 
-    // Aggregate by day, taking min price of the day
     const byDay = new Map<
       string,
       {
@@ -333,6 +340,24 @@ export class ProductsService {
     const points = Array.from(byDay.values()).sort((a, b) =>
       a.date.localeCompare(b.date),
     );
+
+    if (lowestActiveOffer) {
+      const livePrice = lowestActiveOffer.currentPrice.toString();
+      const todayKey = now.toISOString().split("T")[0];
+      const todayIdx = points.findIndex((p) => p.date === todayKey);
+      const todayPoint = {
+        date: todayKey,
+        minPrice: livePrice,
+        maxPrice: livePrice,
+        avgPrice: livePrice,
+        count: 1
+      };
+      if (todayIdx >= 0) {
+        points[todayIdx] = todayPoint;
+      } else {
+        points.push(todayPoint);
+      }
+    }
 
     return {
       range,
@@ -390,46 +415,46 @@ export class ProductsService {
   }
 
   /**
-   * PriceHistory: teklif bazında son kayıt, önceki penceredeki max fiyattan düşükse anlamlı düşüş.
-   * Ürün skoru = teklif başına düşüş tutarının ürün içi maksimumu; azalan sıra.
+   * Offer.currentPrice ile PriceHistory'deki önceki penceredeki max fiyatı karşılaştırır.
+   * Canlı fiyat kullanıldığı için fiyatı geri yükselen ürünler hariç tutulur.
+   * Minimum %3 düşüş eşiği uygulanır; yüzdeye göre sıralanır.
    */
   async getPriceDroppedProducts() {
-    type Row = { productId: number; drop_amt: unknown };
+    type Row = { productId: number; drop_pct: unknown };
     const rows = await this.prisma.$queryRaw<Row[]>`
-      WITH latest_per_offer AS (
-        SELECT DISTINCT ON (ph."offerId")
-          ph."offerId",
-          o."productId" AS pid,
-          ph.price AS latest_price,
-          ph."recordedAt" AS latest_at
-        FROM "PriceHistory" ph
-        INNER JOIN "Offer" o ON o.id = ph."offerId"
+      WITH active_offers AS (
+        SELECT o.id AS offer_id,
+               o."productId" AS pid,
+               o."currentPrice" AS live_price
+        FROM "Offer" o
         INNER JOIN "Product" p ON p.id = o."productId"
         WHERE o.status = 'ACTIVE'
+          AND o."currentPrice" IS NOT NULL
+          AND o."currentPrice" > 0
           AND p.status = 'ACTIVE'
           AND p.slug <> ''
-          AND ph."recordedAt" >= NOW() - (${PRICE_DROP_HISTORY_DAYS}::int * INTERVAL '1 day')
-        ORDER BY ph."offerId", ph."recordedAt" DESC
       ),
       prior_max AS (
-        SELECT ph."offerId", MAX(ph.price) AS max_price_before
+        SELECT ph."offerId",
+               MAX(ph.price) AS max_price_before
         FROM "PriceHistory" ph
-        INNER JOIN latest_per_offer l ON l."offerId" = ph."offerId"
-        WHERE ph."recordedAt" < l.latest_at
-          AND ph."recordedAt" >= l.latest_at - (${PRICE_DROP_PRIOR_WINDOW_DAYS}::int * INTERVAL '1 day')
+        INNER JOIN active_offers ao ON ao.offer_id = ph."offerId"
+        WHERE ph."recordedAt" >= NOW() - (${PRICE_DROP_PRIOR_WINDOW_DAYS}::int * INTERVAL '1 day')
+          AND ph.price > ao.live_price
         GROUP BY ph."offerId"
       ),
       per_product AS (
-        SELECT l.pid AS "productId",
-               (pm.max_price_before - l.latest_price) AS drop_amt
-        FROM latest_per_offer l
-        INNER JOIN prior_max pm ON pm."offerId" = l."offerId"
-        WHERE pm.max_price_before > l.latest_price
+        SELECT ao.pid AS "productId",
+               (pm.max_price_before - ao.live_price) AS drop_amt,
+               ((pm.max_price_before - ao.live_price) / pm.max_price_before * 100) AS drop_pct
+        FROM active_offers ao
+        INNER JOIN prior_max pm ON pm."offerId" = ao.offer_id
       )
-      SELECT "productId", MAX(drop_amt) AS drop_amt
+      SELECT "productId", MAX(drop_pct) AS drop_pct
       FROM per_product
+      WHERE drop_pct >= 3
       GROUP BY "productId"
-      ORDER BY MAX(drop_amt) DESC
+      ORDER BY MAX(drop_pct) DESC
       LIMIT 60
     `;
 
@@ -534,6 +559,10 @@ export class ProductsService {
         cardDiscountPercent: number | null;
         cardInStock: boolean | null;
         cardStoreName: string | null;
+        /** Ürün satırındaki lowestPriceCache boş/stale olsa bile vitrin fiyatı (canlı en ucuz teklif). */
+        cardListingCurrentPrice: string | null;
+        /** ACTIVE teklif sayısı (offerCountCache ile çelişince liste doğru gösterilsin). */
+        cardActiveOfferCount: number;
       }
     >
   > {
@@ -543,21 +572,33 @@ export class ProductsService {
         cardDiscountPercent: number | null;
         cardInStock: boolean | null;
         cardStoreName: string | null;
+        cardListingCurrentPrice: string | null;
+        cardActiveOfferCount: number;
       }
     >;
     const ids = items.map((i) => i.id);
-    const offers = await this.prisma.offer.findMany({
-      where: { productId: { in: ids }, status: OfferStatus.ACTIVE },
-      select: {
-        productId: true,
-        currentPrice: true,
-        originalPrice: true,
-        inStock: true,
-        lastSeenAt: true,
-        updatedAt: true,
-        store: { select: { name: true } }
-      }
-    });
+    const [offers, offerCounts] = await Promise.all([
+      this.prisma.offer.findMany({
+        where: { productId: { in: ids }, status: OfferStatus.ACTIVE },
+        select: {
+          productId: true,
+          currentPrice: true,
+          originalPrice: true,
+          inStock: true,
+          lastSeenAt: true,
+          updatedAt: true,
+          store: { select: { name: true } }
+        }
+      }),
+      this.prisma.offer.groupBy({
+        by: ["productId"],
+        where: { productId: { in: ids }, status: OfferStatus.ACTIVE },
+        _count: { _all: true }
+      })
+    ]);
+    const countByProduct = new Map<number, number>(
+      offerCounts.map((r) => [r.productId, r._count._all])
+    );
     const best = new Map<
       number,
       {
@@ -586,13 +627,16 @@ export class ProductsService {
     }
     return items.map((item) => {
       const b = best.get(item.id);
+      const activeCount = countByProduct.get(item.id) ?? 0;
       if (!b) {
         return {
           ...item,
           cardOriginalPrice: null,
           cardDiscountPercent: null,
           cardInStock: null,
-          cardStoreName: null
+          cardStoreName: null,
+          cardListingCurrentPrice: null,
+          cardActiveOfferCount: activeCount
         };
       }
       const loParsed =
@@ -618,7 +662,9 @@ export class ProductsService {
         cardOriginalPrice: showOrig ? String(b.original) : null,
         cardDiscountPercent: pct,
         cardInStock: b.inStock,
-        cardStoreName: b.storeName
+        cardStoreName: b.storeName,
+        cardListingCurrentPrice: String(b.current),
+        cardActiveOfferCount: activeCount
       };
     });
   }

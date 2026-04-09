@@ -21,14 +21,14 @@ export default async function PopularProductsPage() {
       <Header />
       <main className="main">
         <div className="container">
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.75rem" }}>Popüler ürünler</h1>
-          <p className="text-muted" style={{ fontSize: "0.9rem", marginBottom: "1.25rem" }}>
-            Son günlerde affiliate yönlendirme tıklaması en çok olan ürünler (mağaza çıkış tıklamaları).
+          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.35rem" }}>Popüler ürünler</h1>
+          <p className="text-muted" style={{ fontSize: "0.88rem", marginBottom: "1.25rem" }}>
+            Son günlerde en çok ilgi gören ürünler.
           </p>
           <ProductsInfiniteFromList
             items={products}
             pageSize={20}
-            emptyMessage="Su anda listelenecek populer urun bulunamadi."
+            emptyMessage="Şu anda listelenecek popüler ürün bulunamadı."
           />
         </div>
       </main>
