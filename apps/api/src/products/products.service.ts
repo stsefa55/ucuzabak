@@ -480,55 +480,50 @@ export class ProductsService {
   }
 
   /**
-   * Liste indirimi: originalPrice > currentPrice; önce indirim oranı, sonra tutar (ACTIVE teklif + vitrin ürünü).
+   * Fırsat ürünleri: son 21 gün içindeki PriceHistory max ile canlı fiyat karşılaştırması.
+   * Minimum %5 düşüş eşiği; yüzdeye göre sıralı.
    */
   async getDealProducts() {
-    const offers = await this.prisma.offer.findMany({
-      where: {
-        status: OfferStatus.ACTIVE,
-        originalPrice: { not: null }
-      },
-      select: {
-        productId: true,
-        currentPrice: true,
-        originalPrice: true,
-        lastSeenAt: true,
-        updatedAt: true
-      }
-    });
+    const DEAL_WINDOW_DAYS = 21;
 
-    type Score = { productId: number; pct: number; amount: number };
-    const byProduct = new Map<number, Score>();
+    type Row = { productId: number; deal_pct: unknown };
+    const rows = await this.prisma.$queryRaw<Row[]>`
+      WITH active_offers AS (
+        SELECT o.id AS offer_id,
+               o."productId" AS pid,
+               o."currentPrice" AS live_price
+        FROM "Offer" o
+        INNER JOIN "Product" p ON p.id = o."productId"
+        WHERE o.status = 'ACTIVE'
+          AND o."currentPrice" IS NOT NULL
+          AND o."currentPrice" > 0
+          AND p.status = 'ACTIVE'
+          AND p.slug <> ''
+      ),
+      recent_max AS (
+        SELECT ph."offerId",
+               MAX(ph.price) AS max_price
+        FROM "PriceHistory" ph
+        INNER JOIN active_offers ao ON ao.offer_id = ph."offerId"
+        WHERE ph."recordedAt" >= NOW() - (${DEAL_WINDOW_DAYS}::int * INTERVAL '1 day')
+          AND ph.price > ao.live_price
+        GROUP BY ph."offerId"
+      ),
+      per_product AS (
+        SELECT ao.pid AS "productId",
+               ((rm.max_price - ao.live_price) / rm.max_price * 100) AS deal_pct
+        FROM active_offers ao
+        INNER JOIN recent_max rm ON rm."offerId" = ao.offer_id
+      )
+      SELECT "productId", MAX(deal_pct) AS deal_pct
+      FROM per_product
+      WHERE deal_pct >= 5
+      GROUP BY "productId"
+      ORDER BY MAX(deal_pct) DESC
+      LIMIT 60
+    `;
 
-    for (const o of offers) {
-      if (!o.originalPrice) continue;
-      const current = Number(o.currentPrice);
-      const original = Number(o.originalPrice);
-      if (!(original > 0) || current >= original) continue;
-      if (
-        !canShowStorefrontListDiscountBadge({
-          status: OfferStatus.ACTIVE,
-          currentPrice: current,
-          originalPrice: original,
-          lastSeenAt: o.lastSeenAt,
-          updatedAt: o.updatedAt
-        })
-      ) {
-        continue;
-      }
-      const amount = original - current;
-      const pct = amount / original;
-      const prev = byProduct.get(o.productId);
-      if (!prev || pct > prev.pct || (pct === prev.pct && amount > prev.amount)) {
-        byProduct.set(o.productId, { productId: o.productId, pct, amount });
-      }
-    }
-
-    const sorted = Array.from(byProduct.values())
-      .sort((a, b) => b.pct - a.pct || b.amount - a.amount)
-      .slice(0, 60);
-
-    const productIds = sorted.map((x) => x.productId);
+    const productIds = rows.map((r) => r.productId).filter((id) => Number.isInteger(id));
     if (productIds.length === 0) {
       return [];
     }
@@ -639,28 +634,10 @@ export class ProductsService {
           cardActiveOfferCount: activeCount
         };
       }
-      const loParsed =
-        item.lowestPriceCache != null && item.lowestPriceCache !== ""
-          ? Number(String(item.lowestPriceCache))
-          : NaN;
-      const lo = Number.isFinite(loParsed) ? loParsed : b.current;
-      const showOrig =
-        b.original != null &&
-        b.original > lo &&
-        b.original > 0 &&
-        canShowStorefrontListDiscountBadge({
-          status: OfferStatus.ACTIVE,
-          currentPrice: lo,
-          originalPrice: b.original,
-          lastSeenAt: b.lastSeenAt,
-          updatedAt: b.updatedAt
-        });
-      const pct =
-        showOrig && b.original != null ? computeListDiscountPercent(lo, b.original) : null;
       return {
         ...item,
-        cardOriginalPrice: showOrig ? String(b.original) : null,
-        cardDiscountPercent: pct,
+        cardOriginalPrice: null,
+        cardDiscountPercent: null,
         cardInStock: b.inStock,
         cardStoreName: b.storeName,
         cardListingCurrentPrice: String(b.current),

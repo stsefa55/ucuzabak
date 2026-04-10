@@ -3050,32 +3050,27 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
     --header-height: 56px;
   }
   .header-inner {
-    gap: 0.5rem !important;
+    display: grid !important;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0 !important;
     min-height: 56px;
-    position: relative;
   }
-  /* Mobil logo tam ortada */
+  .header-hamburger {
+    justify-self: start;
+  }
   .header-logo-mobile {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    width: fit-content;
-    pointer-events: auto;
-    z-index: 1;
   }
   .header-logo-mobile img {
     height: 36px !important;
     width: auto !important;
   }
   .header-nav {
+    justify-self: end;
     gap: 0.15rem;
-    margin-left: auto;
   }
   .desktop-only {
     display: none !important;

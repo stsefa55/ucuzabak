@@ -9,6 +9,8 @@ import { Footer } from "../src/components/layout/Footer";
 import { MenuBackdropProvider } from "../src/components/layout/MenuBackdrop";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 const storefrontBase = resolveStorefrontBaseUrlForWeb();
 
 export const metadata: Metadata = {
