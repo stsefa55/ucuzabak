@@ -16,6 +16,7 @@ import {
 } from "react";
 import { categoryHrefFromSlugs } from "../../lib/categoryPaths";
 import { buildCardImageUrls } from "../../lib/productCardImages";
+import { formatTL } from "../../lib/utils";
 import { Card } from "../ui/card";
 import { ProductFavoriteSection } from "./ProductFavoriteSection";
 import { touchRecentlyViewed } from "../../stores/recent-viewed-store";
@@ -51,10 +52,7 @@ export interface ProductCardProduct {
 
 function formatTryLabel(value: string | null | undefined): string {
   if (value == null || String(value).trim() === "") return "Fiyat bilgisi yok";
-  const s = String(value).trim();
-  if (/^\s*[\d.,]+\s*$/.test(s)) return `${s} TL`;
-  if (s.toLowerCase().includes("tl")) return s;
-  return `${s} TL`;
+  return formatTL(value);
 }
 
 interface ProductCardProps {
@@ -275,27 +273,27 @@ function ProductCardImpl({
             </div>
           ) : null}
         </div>
-        {hasMultipleImages ? (
-          <div className="product-card-image-dots" role="group" aria-label="Ürün görselleri">
-            {imageUrls.map((_, i) => (
-              <button
-                key={`${product.id}-dot-${i}`}
-                type="button"
-                className={`product-card-image-dot ${i === imageIndex ? "product-card-image-dot--active" : ""}`}
-                aria-label={`Görsel ${i + 1} / ${imageUrls.length}`}
-                aria-current={i === imageIndex ? "true" : undefined}
-                onPointerDown={stopRailDrag}
-                onMouseDown={stopRailDrag}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  blockDetailNavRef.current = false;
-                  setImageIndex(i);
-                }}
-              />
-            ))}
-          </div>
-        ) : null}
+        <div className="product-card-image-dots" role="group" aria-label="Ürün görselleri">
+          {hasMultipleImages
+            ? imageUrls.map((_, i) => (
+                <button
+                  key={`${product.id}-dot-${i}`}
+                  type="button"
+                  className={`product-card-image-dot ${i === imageIndex ? "product-card-image-dot--active" : ""}`}
+                  aria-label={`Görsel ${i + 1} / ${imageUrls.length}`}
+                  aria-current={i === imageIndex ? "true" : undefined}
+                  onPointerDown={stopRailDrag}
+                  onMouseDown={stopRailDrag}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    blockDetailNavRef.current = false;
+                    setImageIndex(i);
+                  }}
+                />
+              ))
+            : null}
+        </div>
         {detailHref ? (
           <Link href={detailHref}>
             <h3 className="product-card__title">

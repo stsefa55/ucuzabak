@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import { apiFetch } from "../../lib/api-client";
 import { getErrorStatus, parseNestErrorMessage } from "../../lib/nest-error";
+import { formatTL } from "../../lib/utils";
 import { useAuthStore } from "../../stores/auth-store";
 
 interface Props {
@@ -83,7 +84,7 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
             Fiyat alarmı
           </span>
           {existingAlert ? (
-            <span className="product-detail-hero__alert-pill">Hedef {existingAlert.targetPrice} TL</span>
+            <span className="product-detail-hero__alert-pill">Hedef {formatTL(existingAlert.targetPrice)}</span>
           ) : null}
         </div>
         {accessToken && needsEmailVerification ? (
@@ -129,7 +130,7 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
       <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "0.5rem" }}>Fiyat alarmı</h3>
       {existingAlert && (
         <p className="text-muted" style={{ fontSize: "0.85rem", marginBottom: "0.5rem" }}>
-          Bu ürün için kayıtlı bir fiyat alarmınız var. Hedef fiyat: {existingAlert.targetPrice} TL
+          Bu ürün için kayıtlı bir fiyat alarmınız var. Hedef fiyat: {formatTL(existingAlert.targetPrice)}
         </p>
       )}
       {accessToken && needsEmailVerification ? (

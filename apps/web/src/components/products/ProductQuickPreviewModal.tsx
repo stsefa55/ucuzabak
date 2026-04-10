@@ -9,6 +9,7 @@ import { createPortal } from "react-dom";
 import { categoryHrefFromSlugs } from "../../lib/categoryPaths";
 import { buildQuickPreviewImageUrls } from "../../lib/productCardImages";
 import { pickPreviewSpecs } from "../../lib/previewSpecs";
+import { formatTL } from "../../lib/utils";
 import { useCompareStore } from "../../stores/compare-store";
 import { useProductQuickPreviewStore } from "../../stores/product-quick-preview-store";
 
@@ -148,7 +149,7 @@ export function ProductQuickPreviewModal() {
   if (!mounted || !open || !product) return null;
 
   const lowestPrice =
-    product.lowestPriceCache != null ? `${product.lowestPriceCache} TL` : "Fiyat bilgisi yok";
+    product.lowestPriceCache != null ? formatTL(product.lowestPriceCache) : "Fiyat bilgisi yok";
   const currentImg = imageUrls[imgIdx] ?? null;
   const hasMany = imageUrls.length > 1;
 

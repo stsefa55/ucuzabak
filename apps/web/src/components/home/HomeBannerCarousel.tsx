@@ -66,7 +66,6 @@ export function HomeBannerCarousel() {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        marginTop: "0.75rem",
         marginBottom: "1.75rem",
         borderRadius: "0.75rem",
         overflow: "hidden",

@@ -6,6 +6,7 @@ import { getApiBaseUrl } from "../../src/lib/api-client";
 import { fetchJsonOrNull } from "../../src/lib/server-api-fetch";
 import { Header } from "../../src/components/layout/Header";
 import { useCompareStore, type CompareProduct } from "../../src/stores/compare-store";
+import { formatTL } from "../../src/lib/utils";
 
 type CompareRow = CompareProduct & { _fetchError?: boolean };
 
@@ -226,7 +227,7 @@ export default function ComparePage() {
                             Ürün artık mevcut değil
                           </span>
                         ) : p.lowestPriceCache ? (
-                          `${p.lowestPriceCache} TL`
+                          formatTL(p.lowestPriceCache)
                         ) : (
                           "-"
                         )}

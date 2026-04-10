@@ -1,8 +1,8 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { buildFilterUrl, joinCsv, parseCsv } from "../../lib/listingFilterUrls";
 import { CategoryAccordionNav } from "../category/CategoryAccordionNav";
 import { CategorySubcategoryGrid } from "../category/CategorySubcategoryGrid";
@@ -59,9 +59,9 @@ export function SearchFilters({
   sort: sortProp
 }: SearchFiltersProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const urlSearchParams = useSearchParams();
   const listingQueryKey = urlSearchParams.toString();
-  /** Tek arama kutusu: hem kategori hem marka listelerini süzer (fiyat ayrı) */
   const [facetFilterQuery, setFacetFilterQuery] = useState("");
   const [brandFilterQuery, setBrandFilterQuery] = useState("");
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -88,6 +88,35 @@ export function SearchFilters({
     return one ? [one] : [];
   }, [searchParams.brandSlugs, searchParams.brandSlug]);
   const selectedBrandSet = useMemo(() => new Set(selectedBrandSlugs), [selectedBrandSlugs]);
+
+  const [pendingBrandSlugs, setPendingBrandSlugs] = useState<string[]>(selectedBrandSlugs);
+  const pendingBrandSet = useMemo(() => new Set(pendingBrandSlugs), [pendingBrandSlugs]);
+
+  useEffect(() => {
+    setPendingBrandSlugs(selectedBrandSlugs);
+  }, [selectedBrandSlugs]);
+
+  const togglePendingBrand = useCallback((slug: string) => {
+    setPendingBrandSlugs((prev) => {
+      const idx = prev.indexOf(slug);
+      if (idx >= 0) return prev.filter((s) => s !== slug);
+      return [...prev, slug];
+    });
+  }, []);
+
+  const pendingChanged = useMemo(() => {
+    if (pendingBrandSlugs.length !== selectedBrandSlugs.length) return true;
+    const s = new Set(selectedBrandSlugs);
+    return pendingBrandSlugs.some((slug) => !s.has(slug));
+  }, [pendingBrandSlugs, selectedBrandSlugs]);
+
+  const applyBrandFilter = useCallback(() => {
+    const href = buildFilterUrl(basePath, baseParams, {
+      brandSlugs: joinCsv(pendingBrandSlugs) || null,
+      brandSlug: null
+    });
+    router.push(href, { scroll: false });
+  }, [pendingBrandSlugs, basePath, baseParams, router]);
 
   const filteredCategories = useMemo(() => {
     if (!facetFilterQuery.trim()) return categoriesWithCount;
@@ -391,26 +420,36 @@ export function SearchFilters({
         </div>
         <ul className="filter-panel__brand-scroll-area" role="list" aria-label="Markalar">
           {filteredBrands.map((b) => {
-            const checked = selectedBrandSet.has(b.slug);
+            const checked = pendingBrandSet.has(b.slug);
             return (
               <li key={b.id} className="filter-panel__brand-scroll-item">
-                <FilterCheckboxRow
-                  mode="link"
-                  href={buildFilterUrl(basePath, baseParams, {
-                    brandSlugs: toggleSearchBrandSlug(b.slug),
-                    brandSlug: null
-                  })}
-                  checked={checked}
-                  label={b.name}
-                  ariaCurrentWhenChecked={false}
-                  className="filter-check__row--brand-panel"
-                />
+                <button
+                  type="button"
+                  className={`filter-check__row filter-check__row--brand-panel${checked ? " filter-check__row--checked" : ""}`}
+                  onClick={() => togglePendingBrand(b.slug)}
+                >
+                  <span
+                    className="filter-check__box"
+                    {...(checked ? { "data-checked": "true" as const } : {})}
+                    aria-hidden
+                  />
+                  <span className="filter-check__label">{b.name}</span>
+                </button>
               </li>
             );
           })}
         </ul>
         {brandFilterQuery.trim() && filteredBrands.length === 0 && brands.length > 0 ? (
           <p className="filter-panel__hint-text">Aramanızla eşleşen marka yok</p>
+        ) : null}
+        {pendingChanged ? (
+          <button
+            type="button"
+            className="btn-primary filter-panel__apply-brand"
+            onClick={applyBrandFilter}
+          >
+            Uygula ({pendingBrandSlugs.length})
+          </button>
         ) : null}
       </FilterPanelSection>
 

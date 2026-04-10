@@ -12,6 +12,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { apiFetch } from "../../lib/api-client";
+import { formatTL } from "../../lib/utils";
 import { TrendingDown, TrendingUp, Minus } from "lucide-react";
 
 type RangeKey = "7d" | "30d" | "90d" | "1y" | "all";
@@ -42,6 +43,10 @@ const RANGE_OPTIONS: { key: RangeKey; label: string }[] = [
 ];
 
 function formatPrice(v: number): string {
+  return formatTL(v);
+}
+
+function formatAxisPrice(v: number): string {
   return v.toLocaleString("tr-TR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
@@ -57,7 +62,7 @@ function CustomTooltip({ active, payload, label }: any) {
   return (
     <div className="pdp-chart-tooltip">
       <span className="pdp-chart-tooltip__date">{formatDate(label)}</span>
-      <span className="pdp-chart-tooltip__price">{formatPrice(price)} TL</span>
+      <span className="pdp-chart-tooltip__price">{formatPrice(price)}</span>
     </div>
   );
 }
@@ -130,11 +135,11 @@ export function PriceHistoryChart({ slug }: Props) {
         <div className="pdp-chart-stats">
           <div className="pdp-chart-stat">
             <span className="pdp-chart-stat__label">En düşük</span>
-            <span className="pdp-chart-stat__value">{formatPrice(stats.min)} TL</span>
+            <span className="pdp-chart-stat__value">{formatPrice(stats.min)}</span>
           </div>
           <div className="pdp-chart-stat">
             <span className="pdp-chart-stat__label">En yüksek</span>
-            <span className="pdp-chart-stat__value">{formatPrice(stats.max)} TL</span>
+            <span className="pdp-chart-stat__value">{formatPrice(stats.max)}</span>
           </div>
           <div className="pdp-chart-stat">
             <span className="pdp-chart-stat__label">Değişim</span>
@@ -175,7 +180,7 @@ export function PriceHistoryChart({ slug }: Props) {
                 axisLine={false}
                 tickLine={false}
                 tick={{ fontSize: 10, fill: "#94a3b8" }}
-                tickFormatter={(v: number) => formatPrice(v)}
+                tickFormatter={(v: number) => formatAxisPrice(v)}
                 width={55}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#cbd5e1", strokeWidth: 1, strokeDasharray: "4 4" }} />

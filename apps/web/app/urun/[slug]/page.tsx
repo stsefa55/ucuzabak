@@ -13,6 +13,7 @@ import { ProductGallery } from "../../../src/components/products/ProductGallery"
 import { RecordProductView } from "../../../src/components/products/RecordProductView";
 import { ProductRailWithNav } from "../../../src/components/home/ProductRailWithNav";
 import { Store, Tag, TrendingDown } from "lucide-react";
+import { formatTL } from "../../../src/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -139,9 +140,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const lowestOffer: OfferRow | null = offers.length > 0 ? (offers[0] ?? null) : null;
   const lowestPrice =
     lowestOffer?.currentPrice != null
-      ? `${lowestOffer.currentPrice} TL`
+      ? formatTL(lowestOffer.currentPrice)
       : product.lowestPriceCache != null
-      ? `${product.lowestPriceCache} TL`
+      ? formatTL(product.lowestPriceCache)
       : "Fiyat bilgisi yok";
 
   const lowestOriginal =
@@ -234,7 +235,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <span className="pdp-hero__price">{lowestPrice}</span>
                 {showHeroDiscount && (
                   <span className="pdp-hero__price-meta">
-                    <span className="pdp-hero__price-orig">{lowestOriginal.toLocaleString("tr-TR")} TL</span>
+                    <span className="pdp-hero__price-orig">{formatTL(lowestOriginal)}</span>
                     <span className="pdp-hero__price-pct">
                       <TrendingDown size={12} />
                       %{lowestOffer!.listDiscountPercent}
@@ -296,11 +297,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                               <div className="pdp-offer__right">
                                 <div className="pdp-offer__pricing">
                                   <span className="pdp-offer__cur">
-                                    {Number.isFinite(cur) ? `${cur.toLocaleString("tr-TR")} TL` : "—"}
+                                    {Number.isFinite(cur) ? formatTL(cur) : "—"}
                                   </span>
                                   {showStrike && Number.isFinite(orig) && (
                                     <span className="pdp-offer__orig">
-                                      <span className="pdp-offer__orig-val">{orig.toLocaleString("tr-TR")} TL</span>
+                                      <span className="pdp-offer__orig-val">{formatTL(orig)}</span>
                                       <span className="pdp-offer__pct">%{offer.listDiscountPercent}</span>
                                     </span>
                                   )}

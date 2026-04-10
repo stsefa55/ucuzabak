@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, type ReactNode } from "react";
 import { buildFilterUrl, joinCsv, LISTING_SORT_LABELS, parseCsv, removeSlugFromCsv } from "../../lib/listingFilterUrls";
+import { formatTL } from "../../lib/utils";
 
 export type ListingActiveChipsSearchParams = {
   q?: string;
@@ -36,9 +37,9 @@ function toggleCategorySlugInCsv(currentCsv: string | undefined, slug: string): 
 }
 
 function priceChipLabel(min?: string, max?: string): string {
-  if (min?.trim() && max?.trim()) return `Fiyat aralığı: ${min} – ${max} TL`;
-  if (min?.trim()) return `Fiyat aralığı: en az ${min} TL`;
-  if (max?.trim()) return `Fiyat aralığı: en çok ${max} TL`;
+  if (min?.trim() && max?.trim()) return `Fiyat aralığı: ${formatTL(min)} – ${formatTL(max)}`;
+  if (min?.trim()) return `Fiyat aralığı: en az ${formatTL(min)}`;
+  if (max?.trim()) return `Fiyat aralığı: en çok ${formatTL(max)}`;
   return "Fiyat aralığı";
 }
 

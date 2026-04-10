@@ -7,6 +7,7 @@ import { Bell, LogIn, ShieldCheck, Smartphone, UserPlus } from "lucide-react";
 import { Header } from "../../src/components/layout/Header";
 import { apiFetch } from "../../src/lib/api-client";
 import { getErrorStatus, parseNestErrorMessage } from "../../src/lib/nest-error";
+import { formatTL } from "../../src/lib/utils";
 import { useAuthStore } from "../../src/stores/auth-store";
 
 export default function AlertsPage() {
@@ -183,7 +184,7 @@ export default function AlertsPage() {
                           <strong>{alert.product.name}</strong>
                         </Link>
                         <div className="text-muted" style={{ fontSize: "0.85rem" }}>
-                          Hedef fiyat: {alert.targetPrice} TL •{" "}
+                          Hedef fiyat: {formatTL(alert.targetPrice)} •{" "}
                           {alert.isActive ? "Aktif" : "Pasif"}
                         </div>
                       </div>
