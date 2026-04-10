@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { buildFilterUrl, joinCsv, parseCsv } from "../../lib/listingFilterUrls";
@@ -220,26 +221,11 @@ export function SearchFilters({
     return mapped.filter((c) => c.productCount > 0 && c.slug === currentCategorySlug);
   }, [filteredCategories, categoryFilterCollapsible, categoryChoicesExpanded, currentCategorySlug]);
 
-  const toggleSearchCategorySlug = (slug: string) => {
-    const arr = [...selectedCategorySlugs];
-    const idx = arr.indexOf(slug);
-    if (idx >= 0) {
-      arr.splice(idx, 1);
-    } else {
-      arr.push(slug);
+  const selectSingleCategorySlug = (slug: string) => {
+    if (selectedCategorySlugs.length === 1 && selectedCategorySlugs[0] === slug) {
+      return "";
     }
-    return joinCsv(arr);
-  };
-
-  const toggleSearchBrandSlug = (slug: string) => {
-    const arr = [...selectedBrandSlugs];
-    const idx = arr.indexOf(slug);
-    if (idx >= 0) {
-      arr.splice(idx, 1);
-    } else {
-      arr.push(slug);
-    }
-    return joinCsv(arr);
+    return slug;
   };
 
   const categoryPanelTitle = categoryNavigation ? "Kategori" : "Kategoriler";
@@ -308,11 +294,8 @@ export function SearchFilters({
           </div>
         ) : (
           <div className="filter-panel__category-stack filter-panel__category-stack--tight">
-            {!categoryNavigation ? (
-              <p className="filter-panel__multi-hint">Birden fazla kategori birlikte seçilebilir.</p>
-            ) : null}
             <div
-              className={`filter-panel__check-stack filter-panel__check-stack--tight ${!categoryNavigation ? "filter-panel__check-stack--search-categories" : ""}`}
+              className="filter-panel__check-stack filter-panel__check-stack--tight filter-panel__check-stack--search-categories"
               role="list"
             >
               {categoryItemsForPanel.map((c) => (
@@ -320,7 +303,7 @@ export function SearchFilters({
                   key={c.id}
                   mode="link"
                   href={buildFilterUrl(basePath, baseParams, {
-                    categorySlugs: toggleSearchCategorySlug(c.slug),
+                    categorySlugs: selectSingleCategorySlug(c.slug) || null,
                     categorySlug: null
                   })}
                   checked={selectedCategorySet.has(c.slug)}
@@ -464,29 +447,6 @@ export function SearchFilters({
           </FilterPanelSection>
 
           <div className="filter-panel__divider" aria-hidden />
-          <FilterPanelSection title="Cinsiyet" defaultOpen={false}>
-            <div className="filter-panel__check-stack">
-              <FilterCheckboxRow mode="static" label="Kadın" meta={<span className="filter-check__soon">Yakında</span>} />
-              <FilterCheckboxRow mode="static" label="Erkek" meta={<span className="filter-check__soon">Yakında</span>} />
-              <FilterCheckboxRow mode="static" label="Unisex" meta={<span className="filter-check__soon">Yakında</span>} />
-            </div>
-          </FilterPanelSection>
-
-          <div className="filter-panel__divider" aria-hidden />
-          <FilterPanelSection title="Ürün puanı" defaultOpen={false}>
-            <div className="filter-panel__check-stack">
-              <FilterCheckboxRow mode="static" label="4+ yıldız" meta={<span className="filter-check__soon">Yakında</span>} />
-            </div>
-          </FilterPanelSection>
-
-          <div className="filter-panel__divider" aria-hidden />
-          <FilterPanelSection title="Renk" defaultOpen={false}>
-            <div className="filter-panel__check-stack">
-              <FilterCheckboxRow mode="static" label="Renk filtreleri" meta={<span className="filter-check__soon">Yakında</span>} />
-            </div>
-          </FilterPanelSection>
-
-          <div className="filter-panel__divider" aria-hidden />
           <FilterPanelSection title="Satıcı" defaultOpen={false}>
             <div className="filter-panel__check-stack">
               <FilterCheckboxRow mode="static" label="Onaylı satıcı" meta={<span className="filter-check__soon">Yakında</span>} />
@@ -500,13 +460,6 @@ export function SearchFilters({
             <div className="filter-panel__check-stack">
               <FilterCheckboxRow mode="static" label="Kuponlu ürünler" meta={<span className="filter-check__soon">Yakında</span>} />
               <FilterCheckboxRow mode="static" label="Çok al az öde" meta={<span className="filter-check__soon">Yakında</span>} />
-            </div>
-          </FilterPanelSection>
-          <div className="filter-panel__divider" aria-hidden />
-          <FilterPanelSection title="Cinsiyet" defaultOpen={false}>
-            <div className="filter-panel__check-stack">
-              <FilterCheckboxRow mode="static" label="Kadın" meta={<span className="filter-check__soon">Yakında</span>} />
-              <FilterCheckboxRow mode="static" label="Erkek" meta={<span className="filter-check__soon">Yakında</span>} />
             </div>
           </FilterPanelSection>
           <div className="filter-panel__divider" aria-hidden />

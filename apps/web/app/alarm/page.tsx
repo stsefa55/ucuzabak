@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, LogIn, ShieldCheck, Smartphone, UserPlus } from "lucide-react";
+import { Bell, LogIn, ShieldCheck, Smartphone, UserPlus, ShoppingBag } from "lucide-react";
 import { Header } from "../../src/components/layout/Header";
 import { apiFetch } from "../../src/lib/api-client";
 import { getErrorStatus, parseNestErrorMessage } from "../../src/lib/nest-error";
@@ -73,18 +73,17 @@ export default function AlertsPage() {
     }
   });
 
-  const handleRequireLogin = () => {
-    router.push("/giris");
-  };
-
   return (
     <>
       <Header />
       <main className="main">
         <div className="container">
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1rem" }}>
-            Fiyat alarmlarım
-          </h1>
+          <div className="alarm-page__header">
+            <div className="alarm-page__icon">
+              <Bell size={20} strokeWidth={1.8} />
+            </div>
+            <h1 className="alarm-page__title">Fiyat alarmlarım</h1>
+          </div>
 
           {!accessToken && (
             <section className="auth-gate" aria-labelledby="alarm-gate-title">
@@ -121,91 +120,74 @@ export default function AlertsPage() {
           )}
 
           {accessToken && needsEmailVerification && (
-            <div
-              className="card"
-              style={{
-                marginBottom: "1rem",
-                borderColor: "#fde68a",
-                background: "linear-gradient(180deg, #fffbeb 0%, #fefce8 100%)"
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", fontWeight: 700, color: "#92400e", margin: "0 0 0.35rem" }}>
-                E-posta doğrulaması gerekli
-              </p>
-              <p style={{ fontSize: "0.85rem", color: "#78350f", margin: 0, lineHeight: 1.5 }}>
+            <div className="alarm-verify-banner">
+              <p className="alarm-verify-banner__title">E-posta doğrulaması gerekli</p>
+              <p className="alarm-verify-banner__desc">
                 Alarm hedefini değiştirmek veya durumu güncellemek için önce e-postanızı doğrulayın.{" "}
-                <Link href="/profil" style={{ fontWeight: 700, color: "#b45309" }}>
-                  Hesabım
-                </Link>
+                <Link href="/profil">Hesabım</Link>
               </p>
             </div>
           )}
 
           {accessToken && (
             <div className="card">
-              {isLoading && <p>Yükleniyor...</p>}
+              {isLoading && <p className="text-muted" style={{ padding: "1rem" }}>Yükleniyor...</p>}
+
               {error && (error as any).status === 401 && (
-                <p className="text-muted">
+                <p className="text-muted" style={{ padding: "1rem" }}>
                   Oturumunuzun süresi dolmuş. Fiyat alarmlarınızı görmek için yeniden giriş yapın.
                 </p>
               )}
+
               {error && (error as any).status !== 401 && (error as any).message !== "UNAUTHENTICATED" && (
-                <p className="text-danger">Fiyat alarmları yüklenirken bir hata oluştu.</p>
+                <p className="text-danger" style={{ padding: "1rem" }}>
+                  Fiyat alarmları yüklenirken bir hata oluştu.
+                </p>
               )}
+
               {!isLoading && data && data.length === 0 && (
-                <div style={{ textAlign: "center", padding: "2rem 1rem" }}>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>🔔</div>
-                  <p style={{ fontSize: "1rem", fontWeight: 600, color: "#334155", marginBottom: "0.35rem" }}>
-                    Henüz fiyat alarmınız yok
-                  </p>
-                  <p className="text-muted" style={{ fontSize: "0.88rem", marginBottom: "1rem", maxWidth: 400, margin: "0 auto 1rem" }}>
+                <div className="alarm-empty">
+                  <div className="alarm-empty__icon">
+                    <Bell size={26} strokeWidth={1.6} />
+                  </div>
+                  <p className="alarm-empty__title">Henüz fiyat alarmınız yok</p>
+                  <p className="alarm-empty__desc">
                     Beğendiğiniz ürünlerin sayfasından fiyat alarmı kurarak, fiyat düştüğünde e-posta ile bilgilendirilirsiniz.
                   </p>
-                  <Link href="/" className="btn-primary" style={{ display: "inline-flex", padding: "0.5rem 1.25rem", fontSize: "0.88rem" }}>
+                  <Link href="/" className="alarm-empty__btn">
+                    <ShoppingBag size={16} strokeWidth={2} />
                     Ürünlere göz at
                   </Link>
                 </div>
               )}
+
               {!isLoading && data && data.length > 0 && (
-                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                <ul className="alarm-list">
                   {data.map((alert: any) => (
-                    <li
-                      key={alert.id}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "0.6rem 0",
-                        borderBottom: "1px solid #e5e7eb"
-                      }}
-                    >
-                      <div>
-                        <Link href={`/urun/${alert.product.slug}`}>
-                          <strong>{alert.product.name}</strong>
+                    <li key={alert.id} className="alarm-list__item">
+                      <div className="alarm-list__info">
+                        <Link href={`/urun/${alert.product.slug}`} className="alarm-list__name">
+                          {alert.product.name}
                         </Link>
-                        <div className="text-muted" style={{ fontSize: "0.85rem" }}>
-                          Hedef fiyat: {formatTL(alert.targetPrice)} •{" "}
-                          {alert.isActive ? "Aktif" : "Pasif"}
-                        </div>
+                        <span className="alarm-list__meta">
+                          Hedef: {formatTL(alert.targetPrice)}
+                          <span className={`alarm-list__badge ${alert.isActive ? "alarm-list__badge--active" : "alarm-list__badge--paused"}`}>
+                            {alert.isActive ? "Aktif" : "Pasif"}
+                          </span>
+                        </span>
                       </div>
-                      <div style={{ display: "flex", gap: "0.4rem" }}>
+                      <div className="alarm-list__actions">
                         <button
                           type="button"
-                          className="btn-secondary"
-                          style={{ fontSize: "0.8rem" }}
+                          className="alarm-list__action-btn"
                           disabled={updateMutation.isPending || needsEmailVerification}
                           title={needsEmailVerification ? "Önce e-postanızı doğrulayın" : undefined}
                           onClick={() => {
                             if (needsEmailVerification) {
-                              window.alert(
-                                "Alarmı güncellemek için önce e-postanızı doğrulayın. Hesabım sayfasından devam edebilirsiniz.",
-                              );
+                              window.alert("Alarmı güncellemek için önce e-postanızı doğrulayın.");
                               return;
                             }
-                            const next = window.prompt(
-                              "Yeni hedef fiyat (TL)",
-                              String(alert.targetPrice),
-                            );
+                            const next = window.prompt("Yeni hedef fiyat (TL)", String(alert.targetPrice));
                             if (!next) return;
                             const value = Number(next);
                             if (!Number.isFinite(value) || value <= 0) return;
@@ -216,33 +198,26 @@ export default function AlertsPage() {
                         </button>
                         <button
                           type="button"
-                          className="btn-ghost"
-                          style={{ fontSize: "0.8rem" }}
+                          className="alarm-list__action-btn"
                           disabled={updateMutation.isPending || needsEmailVerification}
                           title={needsEmailVerification ? "Önce e-postanızı doğrulayın" : undefined}
                           onClick={() => {
                             if (needsEmailVerification) {
-                              window.alert(
-                                "Alarmı güncellemek için önce e-postanızı doğrulayın. Hesabım sayfasından devam edebilirsiniz.",
-                              );
+                              window.alert("Alarmı güncellemek için önce e-postanızı doğrulayın.");
                               return;
                             }
-                            updateMutation.mutate({
-                              id: alert.id,
-                              isActive: !alert.isActive
-                            });
+                            updateMutation.mutate({ id: alert.id, isActive: !alert.isActive });
                           }}
                         >
                           {alert.isActive ? "Pasifleştir" : "Aktifleştir"}
                         </button>
                         <button
                           type="button"
-                          className="btn-ghost"
-                          style={{ fontSize: "0.8rem" }}
+                          className="alarm-list__action-btn alarm-list__action-btn--danger"
                           disabled={deleteMutation.isPending}
                           onClick={() => deleteMutation.mutate(alert.id)}
                         >
-                          {deleteMutation.isPending ? "Kaldırılıyor..." : "Alarmı kaldır"}
+                          {deleteMutation.isPending ? "Kaldırılıyor..." : "Kaldır"}
                         </button>
                       </div>
                     </li>
@@ -256,4 +231,3 @@ export default function AlertsPage() {
     </>
   );
 }
-

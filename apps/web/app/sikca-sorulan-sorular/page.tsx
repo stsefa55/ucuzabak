@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HelpCircle } from "lucide-react";
 import { Header } from "../../src/components/layout/Header";
 
 export const metadata = {
@@ -7,10 +8,22 @@ export const metadata = {
 };
 
 const faqs = [
-  { q: "UcuzaBak nedir?", a: "Farklı mağazalardaki ürün fiyatlarını karşılaştıran ve indirimleri takip etmenizi sağlayan ücretsiz bir platformdur." },
-  { q: "Buradan alışveriş yapabilir miyim?", a: "Hayır. UcuzaBak mağaza değildir; size en uygun fiyatı sunan mağazaya yönlendirir, satın alma orada yapılır." },
-  { q: "Fiyat alarmı nasıl kurulur?", a: "Giriş yaptıktan sonra ürün sayfasında hedef fiyat belirleyip alarmı kaydedin; fiyat düştüğünde bilgilendirilirsiniz." },
-  { q: "Fiyatlar ne sıklıkla güncellenir?", a: "Veriler mağazalardan belirli aralıklarla alınır. En güncel fiyat için ilgili mağaza sayfasını kontrol etmeniz iyi olur." }
+  {
+    q: "UcuzaBak nedir?",
+    a: "Farklı mağazalardaki ürün fiyatlarını karşılaştıran ve indirimleri takip etmenizi sağlayan ücretsiz bir platformdur."
+  },
+  {
+    q: "Buradan alışveriş yapabilir miyim?",
+    a: "Hayır. UcuzaBak mağaza değildir; size en uygun fiyatı sunan mağazaya yönlendirir, satın alma orada yapılır."
+  },
+  {
+    q: "Fiyat alarmı nasıl kurulur?",
+    a: "Giriş yaptıktan sonra ürün sayfasında hedef fiyat belirleyip alarmı kaydedin; fiyat düştüğünde bilgilendirilirsiniz."
+  },
+  {
+    q: "Fiyatlar ne sıklıkla güncellenir?",
+    a: "Veriler mağazalardan belirli aralıklarla alınır. En güncel fiyat için ilgili mağaza sayfasını kontrol etmeniz iyi olur."
+  }
 ];
 
 export default function SikcaSorulanSorularPage() {
@@ -20,25 +33,27 @@ export default function SikcaSorulanSorularPage() {
       <main className="main">
         <div className="container">
           <article className="content-page">
-            <h1>Sıkça Sorulan Sorular</h1>
-            <p className="content-page-lead">Merak ettiklerinizin kısa yanıtları.</p>
+            <div className="content-page__hero">
+              <div className="content-page__hero-icon">
+                <HelpCircle size={24} strokeWidth={1.8} />
+              </div>
+              <h1>Sıkça Sorulan Sorular</h1>
+              <p className="content-page-lead">Merak ettiklerinizin kısa yanıtları.</p>
+            </div>
 
-            <section>
-              <dl style={{ margin: 0 }}>
-                {faqs.map((item, i) => (
-                  <div key={i} style={{ marginBottom: "1.25rem" }}>
-                    <dt style={{ fontWeight: 600, marginBottom: "0.35rem", color: "#111827" }}>{item.q}</dt>
-                    <dd style={{ margin: 0, color: "#4b5563" }}>{item.a}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
+            <dl className="content-page__faq-list">
+              {faqs.map((item, i) => (
+                <div key={i} className="content-page__faq-item">
+                  <dt className="content-page__faq-q">{item.q}</dt>
+                  <dd className="content-page__faq-a">{item.a}</dd>
+                </div>
+              ))}
+            </dl>
 
-            <p className="content-page-back">
-              <Link href="/iletisim">Sorunuz mu var? Bize ulaşın</Link>
-              {" · "}
-              <Link href="/">Anasayfa</Link>
-            </p>
+            <nav className="content-page-nav">
+              <Link href="/iletisim" className="content-page-nav__link">Sorunuz mu var? Bize ulaşın</Link>
+              <Link href="/" className="content-page-nav__link">Anasayfa</Link>
+            </nav>
           </article>
         </div>
       </main>

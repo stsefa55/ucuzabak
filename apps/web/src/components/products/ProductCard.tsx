@@ -294,32 +294,15 @@ function ProductCardImpl({
               ))
             : null}
         </div>
+        {product.brand?.name?.trim() ? (
+          <span className="product-card__brand-prefix">{product.brand.name.trim()}</span>
+        ) : null}
         {detailHref ? (
           <Link href={detailHref}>
-            <h3 className="product-card__title">
-              {product.brand?.name?.trim() ? (
-                <>
-                  <span className="product-card__brand-prefix">{product.brand.name.trim()}</span>
-                  <span className="product-card__title-sep"> · </span>
-                  <span className="product-card__title-name">{product.name}</span>
-                </>
-              ) : (
-                product.name
-              )}
-            </h3>
+            <h3 className="product-card__title">{product.name}</h3>
           </Link>
         ) : (
-          <h3 className="product-card__title">
-            {product.brand?.name?.trim() ? (
-              <>
-                <span className="product-card__brand-prefix">{product.brand.name.trim()}</span>
-                <span className="product-card__title-sep"> · </span>
-                <span className="product-card__title-name">{product.name}</span>
-              </>
-            ) : (
-              product.name
-            )}
-          </h3>
+          <h3 className="product-card__title">{product.name}</h3>
         )}
         {product.category ? (
           <div className="product-card__meta">

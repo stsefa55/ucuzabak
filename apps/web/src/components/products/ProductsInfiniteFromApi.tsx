@@ -121,20 +121,9 @@ export function ProductsInfiniteFromApi({
       </div>
 
       {q.isFetchingNextPage ? (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-            gap: "1rem",
-            marginTop: "1rem"
-          }}
-        >
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="card"
-              style={{ height: "220px", background: "#f8fafc", border: "1px solid #eef2f7" }}
-            />
+        <div className="skel-grid" style={{ marginTop: "1rem" }}>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="skel skel--card" />
           ))}
         </div>
       ) : null}

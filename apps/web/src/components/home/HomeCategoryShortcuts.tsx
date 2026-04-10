@@ -26,7 +26,7 @@ export function HomeCategoryShortcuts({ categories }: { categories: HomeCategory
               <li key={cat.id} className="home-category-shortcuts__item-wrap">
                 <Link href={`/kategori/${encodeURIComponent(cat.slug)}`} className="home-category-shortcuts__item">
                   <span className="home-category-shortcuts__icon" aria-hidden>
-                    <Icon size={22} strokeWidth={1.65} color="#1e40af" />
+                    <Icon size={24} strokeWidth={1.6} color="#4338ca" />
                   </span>
                   <span className="home-category-shortcuts__label">{cat.name}</span>
                 </Link>

@@ -62,7 +62,7 @@ export default async function HomePage() {
           <HomeBannerCarousel />
           <HomeCategoryShortcuts categories={homeCategories} />
 
-          <section style={{ marginBottom: "2rem" }}>
+          <section className="home-section">
             <HomeSectionHeader title="Öne çıkan ürünler" href="/one-cikan-urunler" />
             {featuredProducts.length === 0 ? (
               <p className="home-section__empty">
@@ -79,7 +79,7 @@ export default async function HomePage() {
 
           <RecentlyViewedRail />
 
-          <section style={{ marginTop: "2rem" }}>
+          <section className="home-section">
             <HomeSectionHeader title="Popüler ürünler" href="/populer-urunler" />
             {popularProducts.length === 0 ? (
               <p className="home-section__empty">Henüz popüler ürün bulunamadı.</p>
@@ -94,7 +94,7 @@ export default async function HomePage() {
             )}
           </section>
 
-          <section style={{ marginTop: "2rem" }}>
+          <section className="home-section">
             <HomeSectionHeader title="Fiyatı düşen ürünler" href="/fiyati-dusen-urunler" />
             {priceDropProducts.length === 0 ? (
               <p className="home-section__empty">Henüz fiyatı düşen ürün bulunamadı.</p>
@@ -109,7 +109,7 @@ export default async function HomePage() {
             )}
           </section>
 
-          <section style={{ marginTop: "2rem", marginBottom: "1rem" }}>
+          <section className="home-section home-section--last">
             <HomeSectionHeader title="Fırsat ürünleri" href="/firsat-urunleri" />
             {dealProducts.length === 0 ? (
               <p className="home-section__empty">Henüz fırsat ürünü bulunamadı.</p>

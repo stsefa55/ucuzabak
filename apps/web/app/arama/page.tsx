@@ -152,16 +152,30 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <Header />
       <main className="main">
         <div className="container">
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1rem" }}>
-            {searchParams.q ? `"${searchParams.q}" araması` : "Arama"}
-          </h1>
+          <div className="search-page-header">
+            <h1 className="search-page-header__title">
+              {searchParams.q ? (
+                <>
+                  <span className="search-page-header__query">&ldquo;{searchParams.q}&rdquo;</span>{" "}
+                  araması
+                </>
+              ) : (
+                "Arama"
+              )}
+            </h1>
+            {hasResults && (
+              <span className="search-page-header__count">
+                {productsData.total.toLocaleString("tr-TR")} sonuç
+              </span>
+            )}
+          </div>
 
           {fetchError && (
             <div className="search-error-banner" role="alert">
-              <p style={{ margin: 0, fontWeight: 600, fontSize: "0.9rem" }}>
+              <p className="search-error-banner__title">
                 Arama sonuçları yüklenirken bir sorun oluştu
               </p>
-              <p className="text-muted" style={{ margin: "0.25rem 0 0", fontSize: "0.84rem" }}>
+              <p className="search-error-banner__desc">
                 Sunucu geçici olarak yanıt vermiyor olabilir. Lütfen sayfayı yenileyin veya biraz sonra tekrar deneyin.
               </p>
             </div>
@@ -213,11 +227,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       </span>
                     </nav>
                     <div className="page-with-filters__toolbar">
-                      <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                        <strong style={{ color: "#334155" }}>{productsData.total}</strong> sonuç
-                      </span>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <label htmlFor="sort" style={{ fontSize: "0.85rem", whiteSpace: "nowrap" }}>
+                      <div className="page-with-filters__sort-wrap">
+                        <label htmlFor="sort" className="page-with-filters__sort-label">
                           Sırala:
                         </label>
                         <SortSelect

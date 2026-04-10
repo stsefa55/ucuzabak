@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, type ReactNode } from "react";
-import { buildFilterUrl, joinCsv, LISTING_SORT_LABELS, parseCsv, removeSlugFromCsv } from "../../lib/listingFilterUrls";
+import { buildFilterUrl, joinCsv, parseCsv, removeSlugFromCsv } from "../../lib/listingFilterUrls";
 import { formatTL } from "../../lib/utils";
 
 export type ListingActiveChipsSearchParams = {
@@ -85,14 +85,13 @@ export function ListingActiveFilterChips({
   const hasBrandChips = brandSlugs.length > 0 || Boolean(singleBrandSlug);
 
   const hasPrice = Boolean(searchParams.minPrice?.trim() || searchParams.maxPrice?.trim());
-  const sortActive = resolvedSort !== "popular";
 
   const hasSearchCategoryChips = mode === "search" && (categorySlugs.length > 0 || Boolean(singleCategorySlug));
   const hasFacetRow =
     (mode === "search" && (hasSearchCategoryChips || hasPrice || hasBrandChips)) ||
     (mode === "category" && (hasPrice || hasBrandChips));
 
-  const showChipsSection = hasFacetRow || sortActive;
+  const showChipsSection = hasFacetRow;
 
   if (!showChipsSection && !trailingSlot) return null;
 
@@ -195,21 +194,6 @@ export function ListingActiveFilterChips({
             >
               <span className="filter-chip__label">
                 {priceChipLabel(searchParams.minPrice, searchParams.maxPrice)}
-              </span>
-              <span className="filter-chip__remove" aria-hidden>
-                ×
-              </span>
-            </Link>
-          ) : null}
-          {sortActive ? (
-            <Link
-              role="listitem"
-              href={buildFilterUrl(basePath, baseParams, { sort: null })}
-              className="filter-chip filter-chip--sort"
-              aria-label="Sıralamayı varsayılana döndür"
-            >
-              <span className="filter-chip__label">
-                Sırala: {LISTING_SORT_LABELS[resolvedSort] ?? resolvedSort}
               </span>
               <span className="filter-chip__remove" aria-hidden>
                 ×

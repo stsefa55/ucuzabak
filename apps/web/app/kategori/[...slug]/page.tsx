@@ -199,9 +199,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       <Header />
       <main className="main">
         <div className="container">
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1rem" }}>
-            {categoryName}
-          </h1>
+          <div className="category-page-header">
+            <h1 className="category-page-header__title">{categoryName}</h1>
+            {initialPage.total > 0 && (
+              <span className="category-page-header__count">
+                {initialPage.total.toLocaleString("tr-TR")} ürün
+              </span>
+            )}
+          </div>
 
           <section className="page-with-filters">
             <SearchFilters
@@ -258,8 +263,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                   })}
                 </nav>
                 <div className="page-with-filters__toolbar">
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <label htmlFor="sort" style={{ fontSize: "0.85rem", whiteSpace: "nowrap" }}>
+                  <div className="page-with-filters__sort-wrap">
+                    <label htmlFor="sort" className="page-with-filters__sort-label">
                       Sırala:
                     </label>
                     <SortSelect

@@ -11,7 +11,7 @@ export function ContactScreen() {
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Bize Ulaşın</Text>
-          <Text style={styles.cardText}>E-posta: destek@ucuzabak.com</Text>
+          <Text style={styles.cardText}>E-posta: info@ucuzabak.com</Text>
           <Text style={styles.cardText}>Çalışma saatleri: Hafta içi 09:00 - 18:00</Text>
         </View>
 
