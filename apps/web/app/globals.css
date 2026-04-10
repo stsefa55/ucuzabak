@@ -5813,6 +5813,42 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
 }
 
 /* Banner carousel nav */
+.home-banner-section {
+  margin-bottom: 1.75rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  position: relative;
+  background: #f3f4f6;
+}
+
+@media (max-width: 768px) {
+  .home-banner-section {
+    border-radius: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
+.home-banner-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 32 / 11;
+  max-height: 300px;
+  touch-action: pan-y;
+}
+
+@media (max-width: 768px) {
+  .home-banner-frame {
+    aspect-ratio: 16 / 7;
+    max-height: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-banner-frame {
+    aspect-ratio: 16 / 8;
+  }
+}
+
 .home-banner__nav {
   position: absolute;
   top: 50%;

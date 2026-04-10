@@ -65,26 +65,11 @@ export function HomeBannerCarousel() {
       className="home-banner-section"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        marginBottom: "1.75rem",
-        borderRadius: "0.75rem",
-        overflow: "hidden",
-        position: "relative",
-        background: "#f3f4f6"
-      }}
     >
       <div
         className="home-banner-frame"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        style={{
-          position: "relative",
-          width: "100%",
-          aspectRatio: "32/11",
-          minHeight: 168,
-          maxHeight: 300,
-          touchAction: "pan-y"
-        }}
       >
         {current && (
           <>
