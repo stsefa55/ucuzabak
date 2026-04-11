@@ -3201,6 +3201,11 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
   touch-action: manipulation;
 }
 
+/* Yatay ray: görsel alanı üst ray kaydırmasına bırak (galeri swipe JS kapalı) */
+.product-card-image-wrap--gallery .product-card-image--in-rail {
+  touch-action: pan-x;
+}
+
 .product-card-image-nav {
   position: absolute;
   inset: 0;

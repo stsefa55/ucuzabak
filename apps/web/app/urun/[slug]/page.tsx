@@ -346,7 +346,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <ProductRailWithNav ariaLabel="Benzer ürünler">
                 {similarProducts.map((p: any) => (
                   <div key={p.id} className="product-rail-card">
-                    <ProductCard product={p} />
+                    <ProductCard product={p} inHorizontalRail />
                   </div>
                 ))}
               </ProductRailWithNav>
