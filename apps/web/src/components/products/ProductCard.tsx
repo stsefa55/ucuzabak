@@ -59,14 +59,11 @@ interface ProductCardProps {
   product: ProductCardProduct;
   /** true: galeri ok/swipe son gezilen sırasını güncellemez (ör. Son gezilen rail içinde kararlılık için) */
   suppressRecentViewedOnImageBrowse?: boolean;
-  /** true: yatay ürün rayında; görsel üzeri sağa/sola kaydırma rayı kaydırsın, galeri swipe kapalı */
-  inHorizontalRail?: boolean;
 }
 
 function ProductCardImpl({
   product,
-  suppressRecentViewedOnImageBrowse = false,
-  inHorizontalRail = false
+  suppressRecentViewedOnImageBrowse = false
 }: ProductCardProps) {
   const detailHref =
     product.slug && isValidCanonicalSlug(product.slug) ? `/urun/${product.slug}` : null;
@@ -174,9 +171,6 @@ function ProductCardImpl({
     e.stopPropagation();
   };
 
-  const gallerySwipeEnabled = hasMultipleImages && !inHorizontalRail;
-  const imageAreaClassName = `product-card-image${inHorizontalRail ? " product-card-image--in-rail" : ""}`;
-
   return (
     <Card className="product-card" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div className="product-card__content">
@@ -198,11 +192,11 @@ function ProductCardImpl({
               }}
             >
               <div
-                className={imageAreaClassName}
-                onPointerDown={gallerySwipeEnabled ? handleImagePointerDown : undefined}
-                onPointerUp={gallerySwipeEnabled ? handleImagePointerUp : undefined}
+                className="product-card-image"
+                onPointerDown={hasMultipleImages ? handleImagePointerDown : undefined}
+                onPointerUp={hasMultipleImages ? handleImagePointerUp : undefined}
                 onPointerCancel={
-                  gallerySwipeEnabled
+                  hasMultipleImages
                     ? (e) => {
                         releaseSwipeCapture(e.currentTarget, e.pointerId);
                         swipeStartX.current = null;
@@ -226,13 +220,13 @@ function ProductCardImpl({
             </Link>
           ) : (
             <div
-              className={imageAreaClassName}
+              className="product-card-image"
               aria-disabled="true"
               style={{ cursor: "not-allowed", opacity: 0.85 }}
-              onPointerDown={gallerySwipeEnabled ? handleImagePointerDown : undefined}
-              onPointerUp={gallerySwipeEnabled ? handleImagePointerUp : undefined}
+              onPointerDown={hasMultipleImages ? handleImagePointerDown : undefined}
+              onPointerUp={hasMultipleImages ? handleImagePointerUp : undefined}
               onPointerCancel={
-                gallerySwipeEnabled
+                hasMultipleImages
                   ? (e) => {
                       releaseSwipeCapture(e.currentTarget, e.pointerId);
                       swipeStartX.current = null;

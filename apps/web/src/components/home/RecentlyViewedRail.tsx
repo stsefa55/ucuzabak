@@ -85,7 +85,7 @@ export function RecentlyViewedRail({ title = "Son gezilen ürünler" }: Recently
       <ProductRailWithNav ariaLabel="Son gezilen ürünler">
         {products.map((p) => (
           <div key={p.slug} className="product-rail-card">
-            <ProductCard product={p} suppressRecentViewedOnImageBrowse inHorizontalRail />
+            <ProductCard product={p} suppressRecentViewedOnImageBrowse />
           </div>
         ))}
       </ProductRailWithNav>

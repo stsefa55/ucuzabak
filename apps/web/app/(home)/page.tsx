@@ -87,7 +87,7 @@ export default async function HomePage() {
               <ProductRailWithNav ariaLabel="Popüler ürünler">
                 {popularProducts.slice(0, 12).map((p: any) => (
                   <div key={p.id} className="product-rail-card">
-                    <ProductCard product={p} inHorizontalRail />
+                    <ProductCard product={p} />
                   </div>
                 ))}
               </ProductRailWithNav>
@@ -102,7 +102,7 @@ export default async function HomePage() {
               <ProductRailWithNav ariaLabel="Fiyatı düşen ürünler">
                 {priceDropProducts.slice(0, 12).map((p: any) => (
                   <div key={p.id} className="product-rail-card">
-                    <ProductCard product={p} inHorizontalRail />
+                    <ProductCard product={p} />
                   </div>
                 ))}
               </ProductRailWithNav>
@@ -117,7 +117,7 @@ export default async function HomePage() {
               <ProductRailWithNav ariaLabel="Fırsat ürünleri">
                 {dealProducts.slice(0, 12).map((p: any) => (
                   <div key={p.id} className="product-rail-card">
-                    <ProductCard product={p} inHorizontalRail />
+                    <ProductCard product={p} />
                   </div>
                 ))}
               </ProductRailWithNav>

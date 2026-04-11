@@ -2988,6 +2988,11 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
   transform: translateY(-2px);
 }
 
+/* Yatay ray: overflow kartı kırpar; hover translate üst border’ı kesiyordu */
+.product-rail .product-card:hover {
+  transform: none;
+}
+
 .product-card__content {
   flex: 1 1 auto;
   min-height: 0;
@@ -3194,11 +3199,6 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
 /* Yatay kaydırma ile ürün görseli değişsin; pan-y yatay jesti engelliyordu */
 .product-card-image-wrap--gallery .product-card-image {
   touch-action: manipulation;
-}
-
-/* Yatay ray: görsel alanı üst ray kaydırmasına bırak (galeri swipe JS kapalı) */
-.product-card-image-wrap--gallery .product-card-image--in-rail {
-  touch-action: pan-x;
 }
 
 .product-card-image-nav {
