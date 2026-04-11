@@ -32,6 +32,18 @@ html {
   scrollbar-gutter: stable;
 }
 
+/*
+ * iOS Safari: Odaklanan input/select/textarea 16px altındaysa sayfayı yakınlaştırır.
+ * Tüm formlarda tutarlı 16px minimum (mobil / dar pencere).
+ */
+@media (max-width: 1023px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="image"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 .layout-wrap {
   min-height: 100vh;
   display: flex;
@@ -2764,6 +2776,7 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
 .product-rail-scroll-x {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
+  touch-action: pan-x;
 }
 
 .btn-primary {
@@ -3178,8 +3191,14 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
   background: rgba(239, 246, 255, 0.96);
 }
 
+/* Yatay kaydırma ile ürün görseli değişsin; pan-y yatay jesti engelliyordu */
 .product-card-image-wrap--gallery .product-card-image {
-  touch-action: pan-y;
+  touch-action: manipulation;
+}
+
+/* Yatay ray: görsel alanı üst ray kaydırmasına bırak (galeri swipe JS kapalı) */
+.product-card-image-wrap--gallery .product-card-image--in-rail {
+  touch-action: pan-x;
 }
 
 .product-card-image-nav {
@@ -3564,6 +3583,22 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
   height: 100%;
   width: auto;
   border-radius: 6px;
+}
+
+.product-lightbox__swipe-hint {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .product-lightbox__swipe-hint {
+    display: block;
+    text-align: center;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin: 0.4rem 0 0;
+    padding: 0 0.5rem;
+    line-height: 1.35;
+  }
 }
 
 .product-lightbox__counter {
@@ -3953,6 +3988,7 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
   overflow: hidden;
   background: #fff;
   cursor: zoom-in;
+  touch-action: manipulation;
 }
 
 .pdp-gallery__main img {
@@ -4463,6 +4499,14 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
   gap: 0.4rem;
 }
 
+.product-detail-hero__alert-hint {
+  flex: 1 1 100%;
+  width: 100%;
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
 /* Fiyat alarmÄ± hedef fiyat: tarayÄ±cÄ± sayÄ± oklarÄ±nÄ± gizle */
 .product-detail-hero__alert-number::-webkit-outer-spin-button,
 .product-detail-hero__alert-number::-webkit-inner-spin-button {
@@ -4559,6 +4603,8 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
   .product-detail-hero__alert-input {
     max-width: none;
     flex: 1 1 140px;
+    /* iOS odak zoom’u / sayfa “büyümesi” */
+    font-size: 16px !important;
   }
 
   .pdp-two-col {
@@ -6326,6 +6372,13 @@ button:has(.sort-dropdown-trigger) .sort-dropdown-chevron,
     pointer-events: auto;
     width: 36px;
     height: 36px;
+  }
+}
+
+/* Mobil: banner üzerinde okları gizle (kaydırma / noktalar yeterli) */
+@media (max-width: 767px) {
+  .home-banner__nav {
+    display: none !important;
   }
 }
 

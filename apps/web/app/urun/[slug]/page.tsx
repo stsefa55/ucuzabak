@@ -155,6 +155,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
     lowestOffer.listDiscountPercent > 0 &&
     Number.isFinite(lowestOriginal);
 
+  const currentLowestForAlert = (() => {
+    if (Number.isFinite(lowestCur) && lowestCur > 0) return lowestCur;
+    if (product.lowestPriceCache != null && String(product.lowestPriceCache).trim() !== "") {
+      const n = Number(product.lowestPriceCache);
+      if (Number.isFinite(n) && n > 0) return n;
+    }
+    return null;
+  })();
+
   return (
     <>
       <RecordProductView slug={params.slug} />
@@ -215,7 +224,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <div className="pdp-hero__actions">
                   <ProductFavoriteSection productId={product.id} productSlug={params.slug} compact />
                   <span className="pdp-hero__actions-sep" aria-hidden="true" />
-                  <ProductPriceAlertSection productId={product.id} compact />
+                  <ProductPriceAlertSection
+                    productId={product.id}
+                    compact
+                    currentLowestPrice={currentLowestForAlert}
+                  />
                 </div>
               </div>
 
@@ -333,7 +346,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <ProductRailWithNav ariaLabel="Benzer ürünler">
                 {similarProducts.map((p: any) => (
                   <div key={p.id} className="product-rail-card">
-                    <ProductCard product={p} />
+                    <ProductCard product={p} inHorizontalRail />
                   </div>
                 ))}
               </ProductRailWithNav>

@@ -120,4 +120,16 @@ export class EmailQueueService implements OnModuleDestroy {
       );
     });
   }
+
+  async enqueueEmailChange(data: VerifyEmailJobData): Promise<void> {
+    await this.addNamedJob("email_change", data);
+  }
+
+  safeEnqueueEmailChange(data: VerifyEmailJobData): void {
+    void this.enqueueEmailChange(data).catch((err: unknown) => {
+      this.logger.error(
+        `E-posta değişikliği işi kuyruğa alınamadı: ${String(err)}${err instanceof Error ? ` | ${err.stack}` : ""}`,
+      );
+    });
+  }
 }

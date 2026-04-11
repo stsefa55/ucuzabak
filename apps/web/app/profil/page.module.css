@@ -311,3 +311,16 @@
 .statusMini strong {
   color: #0f172a;
 }
+
+.emailChangeBlock {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.emailChangeTitle {
+  font-size: 0.95rem;
+  font-weight: 650;
+  margin: 0 0 0.5rem;
+  color: #0f172a;
+}

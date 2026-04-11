@@ -14,7 +14,8 @@ const NOINDEX_PREFIXES = [
   "/karsilastir",
   "/sifremi-unuttum",
   "/sifre-sifirla",
-  "/eposta-dogrula"
+  "/eposta-dogrula",
+  "/eposta-degistir-onay"
 ];
 
 export function middleware(request: NextRequest) {

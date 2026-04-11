@@ -14,6 +14,7 @@ import { Job } from "bullmq";
 import { createMailTransport, getFromAddress } from "./createMailer";
 import { appendEmailDeliveryLog } from "./emailDeliveryLog";
 import {
+  emailChangeVerifyTemplate,
   priceAlertTemplate,
   resetPasswordTemplate,
   testEmailTemplate,
@@ -100,6 +101,13 @@ export async function processEmailJob(job: Job): Promise<void> {
   if (name === "verify_email") {
     const data = job.data as VerifyEmailJobData;
     const { subject, html, text } = verifyEmailTemplate(data.verifyLink, resolveEmailVerificationTtlSeconds());
+    await sendOneAndLog(job, name, data.to, subject, html, text, data as unknown as Record<string, unknown>);
+    return;
+  }
+
+  if (name === "email_change") {
+    const data = job.data as VerifyEmailJobData;
+    const { subject, html, text } = emailChangeVerifyTemplate(data.verifyLink, resolveEmailVerificationTtlSeconds());
     await sendOneAndLog(job, name, data.to, subject, html, text, data as unknown as Record<string, unknown>);
     return;
   }

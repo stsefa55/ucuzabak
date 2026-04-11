@@ -14,9 +14,15 @@ interface Props {
   productId: number;
   /** Ürün kartı sağ üst: küçük form */
   compact?: boolean;
+  /** Güncel en düşük fiyat (TL); biliniyorsa hedef bunun altında olmalı (istemci kontrolü) */
+  currentLowestPrice?: number | null;
 }
 
-export function ProductPriceAlertSection({ productId, compact = false }: Props) {
+export function ProductPriceAlertSection({
+  productId,
+  compact = false,
+  currentLowestPrice = null
+}: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { accessToken, user } = useAuthStore();
@@ -42,6 +48,13 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
       if (!Number.isFinite(priceNumber) || priceNumber <= 0) {
         throw new Error("Lütfen geçerli bir hedef fiyat girin.");
       }
+      if (
+        currentLowestPrice != null &&
+        Number.isFinite(currentLowestPrice) &&
+        priceNumber >= currentLowestPrice
+      ) {
+        throw new Error("Hedef fiyat, güncel en düşük fiyatın altında olmalıdır.");
+      }
       return apiFetch("/me/price-alerts", {
         method: "POST",
         body: { productId, targetPrice: priceNumber },
@@ -53,7 +66,7 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
       queryClient.invalidateQueries({ queryKey: ["price-alerts"] });
     },
     onError: (err: unknown) => {
-      if (getErrorStatus(err) === 403) {
+      if (getErrorStatus(err) === 403 || getErrorStatus(err) === 400) {
         setError(parseNestErrorMessage(err));
         return;
       }
@@ -70,6 +83,16 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
     }
     if (needsEmailVerification) {
       router.push("/profil");
+      return;
+    }
+    const priceNumber = Number(targetPrice);
+    if (
+      currentLowestPrice != null &&
+      Number.isFinite(currentLowestPrice) &&
+      Number.isFinite(priceNumber) &&
+      priceNumber >= currentLowestPrice
+    ) {
+      setError("Hedef fiyat, güncel en düşük fiyatın altında olmalıdır.");
       return;
     }
     createMutation.mutate();
@@ -97,6 +120,11 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
           </p>
         ) : accessToken ? (
           <form className="product-detail-hero__alert-form" onSubmit={handleSubmit}>
+            {currentLowestPrice != null && Number.isFinite(currentLowestPrice) ? (
+              <p className="product-detail-hero__alert-hint text-muted">
+                Güncel en düşük: {formatTL(String(currentLowestPrice))} — hedef bunun altında olmalıdır.
+              </p>
+            ) : null}
             <input
               type="number"
               min={0}
@@ -139,7 +167,13 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
           <Link href="/profil">e-postanızı doğrulayın</Link>.
         </p>
       ) : (
-        <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.35rem", marginBottom: "0.5rem" }}>
+          {currentLowestPrice != null && Number.isFinite(currentLowestPrice) ? (
+            <p className="text-muted" style={{ fontSize: "0.85rem", margin: 0 }}>
+              Güncel en düşük: {formatTL(String(currentLowestPrice))} — hedef bunun altında olmalıdır.
+            </p>
+          ) : null}
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <input
             type="number"
             min={0}
@@ -152,6 +186,7 @@ export function ProductPriceAlertSection({ productId, compact = false }: Props) 
           <button type="submit" className="btn-secondary" disabled={createMutation.isPending}>
             {createMutation.isPending ? "Kaydediliyor..." : "Alarm oluştur"}
           </button>
+          </div>
         </form>
       )}
       {error && (

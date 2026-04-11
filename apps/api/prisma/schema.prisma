@@ -30,6 +30,7 @@ model User {
   refreshTokens RefreshToken[]
   passwordResetTokens PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
+  emailChangeTokens       EmailChangeToken[]
   createdReviews UnmatchedProductReview[] @relation("UnmatchedCreatedBy")
   resolvedReviews UnmatchedProductReview[] @relation("UnmatchedResolvedBy")
   moderatedReviews Review[] @relation("ReviewModeratedBy")
@@ -75,6 +76,21 @@ model EmailVerificationToken {
   id        String    @id @default(uuid())
   userId    Int
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+/// Yeni e-posta adresine geçiş onayı (bağlantı yalnızca yeni adrese gider).
+model EmailChangeToken {
+  id        String    @id @default(uuid())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newEmail  String
   tokenHash String    @unique
   expiresAt DateTime
   usedAt    DateTime?

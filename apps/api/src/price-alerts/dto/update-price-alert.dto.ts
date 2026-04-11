@@ -1,12 +1,12 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsBoolean, IsInt, IsOptional, Min } from "class-validator";
+import { IsBoolean, IsNumber, IsOptional, Min } from "class-validator";
 
 export class UpdatePriceAlertDto {
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: "TL cinsinden; güncel en düşük fiyatın altında olmalıdır." })
   @Type(() => Number)
-  @IsInt()
-  @Min(0)
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0.01)
   @IsOptional()
   targetPrice?: number;
 

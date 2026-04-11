@@ -67,7 +67,8 @@ export default function AlertsPage() {
       queryClient.invalidateQueries({ queryKey: ["price-alerts"] });
     },
     onError: (err: unknown) => {
-      if (getErrorStatus(err) === 403) {
+      const st = getErrorStatus(err);
+      if (st === 403 || st === 400) {
         window.alert(parseNestErrorMessage(err));
       }
     }
@@ -191,6 +192,13 @@ export default function AlertsPage() {
                             if (!next) return;
                             const value = Number(next);
                             if (!Number.isFinite(value) || value <= 0) return;
+                            const lowRaw = alert.product?.lowestPriceCache;
+                            const low =
+                              lowRaw != null && String(lowRaw).trim() !== "" ? Number(lowRaw) : NaN;
+                            if (Number.isFinite(low) && low > 0 && value >= low) {
+                              window.alert("Hedef fiyat, güncel en düşük fiyatın altında olmalıdır.");
+                              return;
+                            }
                             updateMutation.mutate({ id: alert.id, targetPrice: value });
                           }}
                         >

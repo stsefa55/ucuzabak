@@ -1624,6 +1624,9 @@ export class AdminController {
       case "verify_email":
         await this.emailQueue.enqueueVerifyEmail(jd as VerifyEmailJobData);
         break;
+      case "email_change":
+        await this.emailQueue.enqueueEmailChange(jd as VerifyEmailJobData);
+        break;
       case "price_alert":
         await this.emailQueue.enqueuePriceAlert(jd as PriceAlertEmailJobData);
         break;

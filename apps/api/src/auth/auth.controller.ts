@@ -23,6 +23,8 @@ import { RegisterDto } from "./dto/register.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { VerifyEmailDto } from "./dto/verify-email.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { RequestEmailChangeDto } from "./dto/request-email-change.dto";
+import { ConfirmEmailChangeDto } from "./dto/confirm-email-change.dto";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { Throttle } from "@nestjs/throttler";
 
@@ -49,6 +51,13 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
   ) {}
+
+  @Post("confirm-email-change")
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 10, ttl: 3_600_000 } })
+  async confirmEmailChange(@Body() body: ConfirmEmailChangeDto) {
+    return this.authService.confirmEmailChange(body.token);
+  }
 
   @Post("forgot-password")
   @HttpCode(HttpStatus.OK)
@@ -205,6 +214,17 @@ export class AuthController {
     });
     const { passwordHash, ...safeUser } = updated;
     return { user: safeUser };
+  }
+
+  @Post("me/request-email-change")
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("access-token")
+  @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  async requestEmailChange(@Req() req: Request, @Body() body: RequestEmailChangeDto) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload = (req as any).user;
+    return this.authService.requestEmailChange(payload.sub, body.newEmail, body.currentPassword);
   }
 
   @Post("me/resend-verification-email")

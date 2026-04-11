@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserRole, UserStatus } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
@@ -183,6 +188,118 @@ export class AuthService {
     });
 
     return { success: true, message: "E-posta adresiniz doğrulandı." };
+  }
+
+  async requestEmailChange(
+    userId: number,
+    newEmailRaw: string,
+    currentPassword: string
+  ): Promise<{ message: string }> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || user.status !== UserStatus.ACTIVE) {
+      throw new UnauthorizedException("Oturum geçersiz.");
+    }
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) {
+      throw new UnauthorizedException("Şifre hatalı.");
+    }
+    const newEmail = newEmailRaw?.trim().toLowerCase();
+    if (!newEmail) {
+      throw new BadRequestException("E-posta gerekli.");
+    }
+    if (user.email.toLowerCase() === newEmail) {
+      throw new BadRequestException("Yeni adres mevcut adresle aynı olamaz.");
+    }
+    const taken = await this.prisma.user.findFirst({
+      where: { email: { equals: newEmail, mode: "insensitive" } }
+    });
+    if (taken && taken.id !== userId) {
+      throw new BadRequestException("Bu e-posta adresi zaten kayıtlı.");
+    }
+
+    await this.prisma.emailChangeToken.updateMany({
+      where: { userId, usedAt: null },
+      data: { usedAt: new Date() }
+    });
+
+    const plainToken = crypto.randomBytes(32).toString("base64url");
+    const tokenHash = this.hashEmailChangeToken(plainToken);
+    const ttlSec = resolveEmailVerificationTtlSeconds();
+
+    await this.prisma.emailChangeToken.create({
+      data: {
+        userId,
+        newEmail,
+        tokenHash,
+        expiresAt: new Date(Date.now() + ttlSec * 1000)
+      }
+    });
+
+    const verifyLink = this.buildEmailChangeLink(plainToken);
+    this.emailQueue.safeEnqueueEmailChange({ to: newEmail, verifyLink });
+
+    return {
+      message:
+        "Yeni e-posta adresinize onay bağlantısı gönderildi. Bağlantıyı açmadan adres değişmez."
+    };
+  }
+
+  async confirmEmailChange(plainToken: string): Promise<{ success: true; message: string }> {
+    const token = plainToken?.trim();
+    if (!token || token.length < 20) {
+      throw new BadRequestException("Onay bağlantısı geçersiz veya süresi dolmuş.");
+    }
+    const tokenHash = this.hashEmailChangeToken(token);
+    const now = new Date();
+
+    await this.prisma.$transaction(async (tx) => {
+      const row = await tx.emailChangeToken.findUnique({
+        where: { tokenHash },
+        include: { user: true }
+      });
+      if (!row) {
+        throw new BadRequestException("Onay bağlantısı geçersiz veya süresi dolmuş.");
+      }
+      if (row.usedAt != null) {
+        throw new BadRequestException("Bu bağlantı zaten kullanılmış.");
+      }
+      if (row.expiresAt <= now) {
+        throw new BadRequestException("Onay bağlantısının süresi dolmuş.");
+      }
+      if (row.user.status !== UserStatus.ACTIVE) {
+        throw new BadRequestException("Hesap aktif değil.");
+      }
+
+      const taken = await tx.user.findFirst({
+        where: { email: { equals: row.newEmail, mode: "insensitive" } }
+      });
+      if (taken && taken.id !== row.userId) {
+        throw new BadRequestException("Bu e-posta adresi artık başka bir hesaba ait.");
+      }
+
+      await tx.emailChangeToken.update({
+        where: { id: row.id },
+        data: { usedAt: now }
+      });
+
+      await tx.user.update({
+        where: { id: row.userId },
+        data: {
+          email: row.newEmail,
+          emailVerified: true
+        }
+      });
+
+      await tx.refreshToken.updateMany({
+        where: { userId: row.userId, revoked: false },
+        data: { revoked: true }
+      });
+    });
+
+    return {
+      success: true,
+      message: "E-posta adresiniz güncellendi. Güvenlik için yeniden giriş yapın."
+    };
   }
 
   /**
@@ -475,6 +592,18 @@ export class AuthService {
   private buildEmailVerificationLink(token: string): string {
     const base = resolveStorefrontBaseUrlForBackend();
     return `${base}/eposta-dogrula?token=${encodeURIComponent(token)}`;
+  }
+
+  private buildEmailChangeLink(token: string): string {
+    const base = resolveStorefrontBaseUrlForBackend();
+    return `${base}/eposta-degistir-onay?token=${encodeURIComponent(token)}`;
+  }
+
+  private hashEmailChangeToken(plain: string): string {
+    return crypto
+      .createHash("sha256")
+      .update(`${getEmailVerificationPepper()}:email-change:${plain}`)
+      .digest("hex");
   }
 
   private getAccessTtlSeconds() {

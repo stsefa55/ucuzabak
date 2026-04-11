@@ -47,6 +47,12 @@ export default function ProfilePage() {
   const [resendMsg, setResendMsg] = useState<string | null>(null);
   const [resendBusy, setResendBusy] = useState(false);
 
+  const [newEmail, setNewEmail] = useState("");
+  const [emailChangePassword, setEmailChangePassword] = useState("");
+  const [emailChangeBusy, setEmailChangeBusy] = useState(false);
+  const [emailChangeMsg, setEmailChangeMsg] = useState<string | null>(null);
+  const [emailChangeErr, setEmailChangeErr] = useState<string | null>(null);
+
   useEffect(() => {
     if (user) {
       setName(user.name ?? "");
@@ -116,6 +122,37 @@ export default function ProfilePage() {
     setSuccess(null);
     setSaving(true);
     mutation.mutate();
+  };
+
+  const handleEmailChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessToken) return;
+    setEmailChangeErr(null);
+    setEmailChangeMsg(null);
+    const trimmed = newEmail.trim().toLowerCase();
+    if (!trimmed || !emailChangePassword) {
+      setEmailChangeErr("Yeni e-posta ve mevcut şifrenizi girin.");
+      return;
+    }
+    if (trimmed === user?.email?.toLowerCase()) {
+      setEmailChangeErr("Yeni adres mevcut adresle aynı olamaz.");
+      return;
+    }
+    setEmailChangeBusy(true);
+    try {
+      const res = await apiFetch<{ message: string }>("/auth/me/request-email-change", {
+        method: "POST",
+        body: { newEmail: trimmed, currentPassword: emailChangePassword },
+        accessToken
+      });
+      setEmailChangeMsg(res.message);
+      setNewEmail("");
+      setEmailChangePassword("");
+    } catch (err: unknown) {
+      setEmailChangeErr(parseApiError(err));
+    } finally {
+      setEmailChangeBusy(false);
+    }
   };
 
   return (
@@ -189,8 +226,7 @@ export default function ProfilePage() {
                 <div className={styles.panel}>
                   <div className={styles.panelHead}>
                     <h2>Kişisel bilgiler</h2>
-                    <p>Adınız ve telefonunuz hesabınızda güvenle saklanır. E-posta adresi güvenlik nedeniyle buradan
-                      değiştirilemez.</p>
+                    <p>Adınız ve telefonunuz hesabınızda güvenle saklanır.</p>
                   </div>
                   <div className={styles.panelBody}>
                     <div className={styles.statusMini}>
@@ -223,7 +259,46 @@ export default function ProfilePage() {
                           readOnly
                           autoComplete="email"
                         />
-                        <p className={styles.fieldHint}>Değişiklik için müşteri hizmetleri ile iletişime geçebilirsiniz.</p>
+                      </div>
+
+                      <div className={styles.emailChangeBlock}>
+                        <h3 className={styles.emailChangeTitle}>E-posta adresini değiştir</h3>
+                        <p className={styles.fieldHint}>
+                          Yeni adrese onay bağlantısı gider; bağlantıyı açana kadar giriş e-postanız değişmez.
+                          Onaydan sonra güvenlik nedeniyle yeniden giriş yapmanız gerekir.
+                        </p>
+                        <form className={styles.formGrid} onSubmit={handleEmailChange}>
+                          <div className={styles.field}>
+                            <label htmlFor="profile-new-email">Yeni e-posta</label>
+                            <input
+                              id="profile-new-email"
+                              className="input"
+                              type="email"
+                              value={newEmail}
+                              onChange={(e) => setNewEmail(e.target.value)}
+                              autoComplete="email"
+                              placeholder="yeni@ornek.com"
+                            />
+                          </div>
+                          <div className={styles.field}>
+                            <label htmlFor="profile-email-pw">Mevcut şifre</label>
+                            <input
+                              id="profile-email-pw"
+                              className="input"
+                              type="password"
+                              value={emailChangePassword}
+                              onChange={(e) => setEmailChangePassword(e.target.value)}
+                              autoComplete="current-password"
+                            />
+                          </div>
+                          {emailChangeErr ? <p className={styles.alertErr}>{emailChangeErr}</p> : null}
+                          {emailChangeMsg ? <p className={styles.alertOk}>{emailChangeMsg}</p> : null}
+                          <div className={styles.formActions}>
+                            <button type="submit" className="btn-secondary" disabled={emailChangeBusy}>
+                              {emailChangeBusy ? "Gönderiliyor…" : "Onay e-postası gönder"}
+                            </button>
+                          </div>
+                        </form>
                       </div>
                       <div className={styles.field}>
                         <label htmlFor="profile-phone">

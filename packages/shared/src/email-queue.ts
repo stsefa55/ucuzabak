@@ -1,6 +1,6 @@
 /**
  * BullMQ "email" kuyruğu: API iş üretir, worker SMTP ile gönderir.
- * job.name: welcome_email | reset_password | verify_email | price_alert | test_email | bulk_email_batch
+ * job.name: welcome_email | reset_password | verify_email | email_change | price_alert | test_email | bulk_email_batch
  */
 
 export const EMAIL_QUEUE_NAME = "email" as const;
@@ -9,6 +9,7 @@ export type EmailJobName =
   | "welcome_email"
   | "reset_password"
   | "verify_email"
+  | "email_change"
   | "price_alert"
   | "test_email"
   | "bulk_email_batch";

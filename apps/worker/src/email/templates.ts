@@ -156,6 +156,52 @@ Bu hesabı siz oluşturmadıysanız bu mesajı yok sayın.`;
   );
 }
 
+/** Hesap e-postası değişikliği — bağlantı yeni adrese gider. */
+export function emailChangeVerifyTemplate(link: string, ttlSeconds: number): TransactionalEmail {
+  const href = escapeAttr(link);
+  const linkText = escapeHtml(link);
+  const validity = formatLinkValidityTurkish(ttlSeconds);
+  const safeValidity = escapeHtml(validity);
+
+  const mainHtml = `
+<h2 style="margin:0 0 14px;font-size:18px;font-weight:600;color:#0f172a;line-height:1.35;">Yeni e-posta adresinizi onaylayın</h2>
+<p style="margin:0 0 16px;color:#334155;line-height:1.55;">${escapeHtml(brand)} hesabınız için e-posta değişikliği talep edildi. Bu adresi kullanmak için aşağıdaki düğmeye tıklayın.</p>
+<p style="margin:0 0 22px;">
+  <a href="${href}" style="display:inline-block;padding:14px 28px;background:#2563eb;color:#ffffff !important;text-decoration:none;border-radius:8px;font-weight:600;font-size:15px;">Adresi onayla</a>
+</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 20px;width:100%;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;">
+  <tr>
+    <td style="padding:12px 14px;font-size:13px;line-height:1.5;color:#92400e;">
+      <strong>Önemli:</strong> Bu bağlantı yalnızca <strong>${safeValidity}</strong> geçerlidir.
+    </td>
+  </tr>
+</table>
+<p style="margin:0 0 6px;color:#64748b;font-size:13px;">Düğmeye tıklayamıyorsanız adresi tarayıcınıza kopyalayın:</p>
+<p style="margin:0 0 20px;word-break:break-all;font-size:13px;line-height:1.45;color:#475569;">${linkText}</p>
+<p style="margin:0;padding:12px 14px;background:#f1f5f9;border-radius:8px;font-size:13px;line-height:1.5;color:#475569;border:1px solid #e2e8f0;">
+  <strong>Bu değişikliği siz talep etmediyseniz</strong> bu e-postayı yok sayın; mevcut adresiniz değişmez.
+</p>`.trim();
+
+  const mainText = `E-POSTA DEĞİŞİKLİĞİ — ${brand}
+
+Hesabınız için yeni e-posta adresi onayı gerekiyor.
+
+Onaylamak için (yalnızca ${validity} geçerlidir):
+
+${link}
+
+Bu talebi siz yapmadıysanız bu mesajı yok sayın.`;
+
+  return build(
+    {
+      preheader: `Yeni e-posta adresinizi onaylayın — ${validity} geçerli.`,
+      mainHtml,
+      mainText
+    },
+    `${brand} — E-posta değişikliğini onaylayın`
+  );
+}
+
 export function priceAlertTemplate(
   product: { name: string; url: string },
   price: string,
