@@ -9,7 +9,6 @@ import { apiFetch } from "../../lib/api-client";
 type Phase = "loading" | "ok" | "err";
 
 export function EmailChangeConfirmForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token")?.trim() ?? "";
   const [phase, setPhase] = useState<Phase>("loading");
